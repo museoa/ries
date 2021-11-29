@@ -1,8 +1,8 @@
 /* ries.c
 
     RIES -- Find Algebraic Equations, Given Their Solution
-    Copyright (C) 2000-2016 Robert P. Munafo
-    This is the 2016 Oct 08 version of "ries.c"
+    Copyright (C) 2000-2017 Robert P. Munafo
+    This is the 2017 Feb 12 version of "ries.c"
 
 
     This program is free software: you can redistribute it and/or modify
@@ -2461,6 +2461,8 @@ signed-vs.-unsigned cleanup.
 20160423 Finish re-indenting the big block of options tests in 
 parse.args()
 
+20170211 Add '--show-work' as a synonym for '-Ds'
+
 */ /*
 
 BUGS and TO-DO
@@ -2705,7 +2707,7 @@ variants. */
 
 /* -------------- defines ------------------------------------------------- */
 
-#define RIES_VERSION "2016 Oct 08"
+#define RIES_VERSION "2017 Feb 12"
 
 /* Default search level. For backwards compatibility, the -l option adds
    a number to the DEFAULT_LEV_BASE value. Without a -l option, it acts as if
@@ -3644,7 +3646,7 @@ char * pa_def_path;
 void show_version(void)
 {
   printf(
-    "ries version of %s, Copyright (C) 2000-2016 Robert P. Munafo\n",
+    "ries version of %s, Copyright (C) 2000-2017 Robert P. Munafo\n",
     RIES_VERSION);
 
   printf(
@@ -11507,6 +11509,10 @@ void parse_args(size_t nargs, char *argv[])
         g_relative_x = B_TRUE;
       }
 
+    } else if (strcmp(pa_this_arg, "--show-work") == 0) {
+      /* Same as -Ds (sets debug_s flag) */
+      set_debug_opts((char *) "s");
+
     } else if (strcmp(pa_this_arg, "--significance-loss-margin") == 0) {
       ries_dif t;
       pa_get_arg();
@@ -12184,6 +12190,10 @@ int main(int nargs, char *argv[])
      I still need to look more closely at how I handle SIG_LOSS errors
      and how that affects operation when the target is close to zero. */
   if ((FABS(g_target) > 1.0) || (FABS(g_target) < 0.25)) {
+    /* %%% 20170211: The numbers here should be adjusted in such a way that
+       there is a smooth transition when the target goes outside the default
+       range. To check, do commands like "ries 1.001 -Dz | grep kmbm" and
+       "ries 0.249 -Dz | grep kmbm" and note what kmbm is being set to. */
     k_min_best_match = fabs((ries_dif)g_target) * 8.0 * k_precision_ulp;
     if (debug_z) {
       if (FABS(g_target) > 1.0) {
@@ -12461,7 +12471,7 @@ int main(int nargs, char *argv[])
 /*
     ries.c
     RIES -- Find Algebraic Equations, Given Their Solution
-    Copyright (C) 2000-2016 Robert P. Munafo
+    Copyright (C) 2000-2017 Robert P. Munafo
 
     See copyright notice at beginning of this file.
  */
