@@ -1,8 +1,8 @@
 /* ries.c
 
     RIES -- Find Algebraic Equations, Given Their Solution
-    Copyright (C) 2000-2017 Robert P. Munafo
-    This is the 2017 Feb 12 version of "ries.c"
+    Copyright (C) 2000-2018 Robert P. Munafo
+    This is the 2018 Mar 01 version of "ries.c"
 
 
     This program is free software: you can redistribute it and/or modify
@@ -2707,7 +2707,7 @@ variants. */
 
 /* -------------- defines ------------------------------------------------- */
 
-#define RIES_VERSION "2017 Feb 12"
+#define RIES_VERSION "2018 Mar 01"
 
 /* Default search level. For backwards compatibility, the -l option adds
    a number to the DEFAULT_LEV_BASE value. Without a -l option, it acts as if
@@ -3646,7 +3646,7 @@ char * pa_def_path;
 void show_version(void)
 {
   printf(
-    "ries version of %s, Copyright (C) 2000-2017 Robert P. Munafo\n",
+    "ries version of %s, Copyright (C) 2000-2018 Robert P. Munafo\n",
     RIES_VERSION);
 
   printf(
@@ -12471,7 +12471,7 @@ int main(int nargs, char *argv[])
 /*
     ries.c
     RIES -- Find Algebraic Equations, Given Their Solution
-    Copyright (C) 2000-2017 Robert P. Munafo
+    Copyright (C) 2000-2018 Robert P. Munafo
 
     See copyright notice at beginning of this file.
  */
