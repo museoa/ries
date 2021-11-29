@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1"> <meta name="GENERATOR" content="Rilybot AROS" />
+ <meta name="Author" content="Robert Munafo" />
+ <meta name="format-detection" content="telephone=no">
+ <link rel="search" type="application/opensearchdescription+xml" title="mrob" href="/opensearch.xml" />
+ <meta name="keywords" content="RIES, Change, History" />
+ <meta name="description" content="RIES Change History -- Explore a wide variety of topics from large numbers to sociology at mrob.com" />
+ <meta name="x-rhtf-glname" content="ries-changes" />
+<link rel="shortcut icon" href="http://mrob.com/favicon.ico" />
+<title> RIES Change History at MROB </title>
+<link rel="stylesheet" href="../../style.css" />
+</head>
+
+<body >
+<div id="banner">
+<div id="topnav">
+<a href="../../pub/index.html">mrob</a>
+&#8195;
+<a href="index.html">RIES</a> <a href="../../pub/math/numbers.html">Numbers</a> <a href="../../pub/math/largenum.html">Largenum</a> <a href="../../pub/math/nu-sequences.html">Sequences</a> <a href="../../pub/muency.html">Mandelbrot</a>
+&#8195;
+<a href="../../pub/comp/xmorphia/index.html">Xmorphia</a>
+</div>
+<div id="search">
+  <form action="http://www.google.com/search" style="margin:0; padding:0;">
+  <label for="q">Search:</label>
+  <input name="query" type="hidden" value="site:mrob.com" />
+  <input style="font-family:Palatino" name="q" id="q" size="15" value="" />
+  <input name="btnG" type="submit" value="Go" />
+  </form>
+</div>
+</div>
+<div style="clear:both;"></div>
+<div id="content">
+<h1>RIES Change History&#8195;&#8195;</h1>
+<p class="a">
+
+</p>
+
+<p class="a">
+This page lists changes I've made to the <a href="index.html">RIES</a> program, which
+searches for equations given their solution. It's a great tool for
+solving puzzles like "<span class="i">What's so special about 2.131?</span>" or "<span class="i">How
+do I make 11 out of a 2 and two 3's?</span>"
+</p>
+
+<h2>The Short List</h2>
+
+<p class="a"><span class="i">(For details on all of the new options, see the manual, which is
+linked near the top of the <a href="index.html">main RIES page</a>.)</span>
+</p>
+
+<p class="a"><span class="b">2014 Dec</span>
+</p>
+
+<p class="a">
+Add a few rules to make RIES avoid redundant forms (such as e<sup>f(x)</sup>
+using the two-argument ^ operator rather than the one-argument e<sup>x</sup>
+function). This makes deep (level-4 or higher) searches a little more
+efficient and eliminates some roundoff tautologies, including the
+dreaded "e<sup>x<sup>2</sup></sup>-e<sup>x<sup>2</sup></sup> = 1/4<sup>9</sup>"
+</p>
+
+<p class="a">
+If you use a restricted class option, like <span class="m">-a</span>, and a subsequentargument enables an operator or function that had been disabled by the
+class restriction, that operator won't be used unless you also relax
+the class using <span class="m">--any-subexpressions</span>. However you can still re-enablea constant, so for example <span class="m">-a -Ep</span> produces algebraic-like answersthat can also involve &#960;.
+</p>
+
+<p class="a"><span class="b">2014 Nov</span>
+</p>
+
+<p class="a">
+Switch the license from GPLv2 to GPLv3.
+</p>
+
+<p class="a">
+Make <span class="m">-i</span> (integer subexpressions) option more efficient. All classrestrictions (like <span class="m">-a</span>, <span class="m">-l</span>, etc.) now also exclude W.</p>
+
+<p class="a">
+Add the Lambert W function, with symbol 'W', available if you compile
+with the <span class="m">RIES_USE_SA_M64</span> compile-time option, which requires the extrasource file "msal_math64.c".
+</p>
+
+<p class="a">
+Add <span class="m">RIES_WANT_LDBL</span> compile-time option.</p>
+
+<p class="a">
+Try to make the Visual Studio C++ instructions more complete and
+accurate. (These are in a block comment in
+<a href="src/ries-for-windows.c.txt">ries-for-windows.c</a>)
+</p>
+
+<p class="a"><span class="b">2014 Oct</span>
+</p>
+
+<p class="a">
+Add <span class="m">--max-equate-value</span> and <span class="m">--min-equate-value</span> options.</p>
+
+<p class="a"><span class="b">2014 Sep</span>
+</p>
+
+<p class="a">
+Add a little to the brief help (given by the <span class="m">--help</span> or <span class="m">-h</span> option).</p>
+
+<p class="a"><span class="b">2014 Jan-Aug and 2013 Sep-Dec</span>
+</p>
+
+<p class="a"><span class="i">(There were no changes during this period)</span>
+</p>
+
+<p class="a"><span class="b">2013 Aug</span>
+</p>
+
+<p class="a">
+For Windows users, there is now a special source file,
+<a href="src/ries-for-windows.c.txt">ries-for-windows.c</a>, that you can use to
+build the RIES command-line tool for use within the console (DOS
+command prompt) in MS Windows. Read the source code's header
+comments for instructions.
+</p>
+
+<p class="a">
+RIES now contains its own formatting routine ('ries_spfg', replacing
+'snprintf' with a '%g' format specifier) to convert floating-point
+values to strings for output.
+</p>
+
+<p class="a">
+On the PowerPC architecture using the GCC compiler (version 4.0.1 or
+later), the 'long double' data type gives 32 decimal digits of
+precision. Some initialization and result-reporting code was changed
+to work properly with this 'double-double' precision. Only 31 digits
+are printed, to account for common roundoff error.
+</p>
+
+<p class="a">
+Disallow calculations that make the derivative overflow; this prevents
+bogus 'solutions' that happened with a very small target value (for
+example, <span class="m">ries 1.0e-319</span> formerly gave the answer '1/sqrt(<span class="i">x</span>) =4').
+</p>
+
+<p class="a">
+Exit with an error if the target value is zero (formerly <span class="k">ries</span> would
+run forever and generate no output).
+</p>
+
+<p class="a">
+RIES will now use the 'long double' data type for its calculations, if
+it is compiled with the option <span class="m">-DRIES_VAL_LDBL</span> (defining the #ifdefswitch '<span class="m">RIES_VAL_LDBL</span>'). On Intel processors using most compilers thisprovides about 3 extra digits of precision (18 "usable" decimal digits
+rather than 15).
+</p>
+<p class="i">
+  There is still a problem with <span class="m">RIES_VAL_LDBL</span> in MinGW using theMicrosoft runtime library; the sscanf function does not handle long
+doubles so <span class="k">ries</span> cannot be compiled. This will be fixed in the future.
+</p>
+
+<p class="a">
+Rename <span class="m">boolean</span> data type to '<span class="m">b001</span>' to avoid conflict with apredefined 'boolean' type (that is included in many compilers and
+libraries).
+</p>
+
+<p class="a">
+Allow proportional <span class="m">--min-match-distance</span> argument (specified bygiving a negative value).
+</p>
+
+<p class="a">
+You can now define a symbol to its normal name (important in the
+postfix formats <span class="m">-F</span>, <span class="m">-F0</span> and <span class="m">-F3</span>), e.g. "--symbol-names ':^:^'" inthe sample profile <a href="src/dc.ries.txt">dc.ries</a>
+</p>
+
+<p class="a"><span class="b">2013 Jun</span>
+</p>
+
+<p class="a">
+New option <span class="m">--no-slow-messages</span>, which suppresses the "Stillsearching..." messages that you would see if you run a search with
+very restrictive options. For example, the command "<span class="m">ries -s
+2.50618423523463 --max-match-distance 1e-12 -l6</span>" typically
+takes more than 30 seconds to find its first answer.
+</p>
+
+<p class="a">
+For very small targets, <span class="k">ries</span> now auto-sets the <span class="i">k_min_best_match</span>
+and <span class="i">k_vanished_dx</span> variables; this enables it to find answers that
+previously it could not. Example: "ries -l5 2.30557392e-30" now gives
+answers, where formerly it found nothing.
+</p>
+
+<p class="a">
+The online RIES queries in <a href="en-query.html">English</a> and
+<a href="fr-query.html">French</a> now allow users to issue queries with the
+<a href="index-2.html#liouville">Liouvillian</a>, <a href="index-2.html#chow_closed">Chow closed-form</a>,
+<a href="index-2.html#algebraic">Algebraic</a>, <a href="index-2.html#constructible">Constructible</a>, and
+<a href="index-2.html#rational">Rational</a> restrictions (in addition to the already
+extant options for <a href="index-2.html#integer">Integer</a> and unrestricted searches).
+For more information on each of these, begin at
+<a href="index.html#classes">this table</a>.
+</p>
+
+<p class="a"><span class="b">2013 May</span>
+</p>
+
+<p class="a"><span class="i">(There were no changes in April or May)</span>
+</p>
+
+<p class="a"><span class="b">2013 Mar</span>
+</p>
+
+<p class="a">
+New option "<span class="m">-l</span>" (or <span class="m">--liouvillian-subexpressions</span>) to restrict <span class="k">ries</span>to only give equations whose roots are <a href="index-2.html#liouville">Liouvillian</a>.
+</p>
+<p class="i">
+  There is now a rather full complement of easy options to limit
+answers to well-known classes (<span class="m">-i</span>, <span class="m">-r</span>, <span class="m">-c</span>, <span class="m">-a</span>, <span class="m">-Ox</span> and<span class="m">-l</span>). See <a href="index.html#classes">this section</a> for more details on each ofthese options.
+</p>
+
+<p class="a">
+With the syntax "<span class="m">:.:.</span>" you can define a character to stand in forblank space when changing symbol names. This is used in (for example)
+the <a href="src/latin.ries.txt">Latin profile</a> to set the name of square root
+to "radix quadrata".
+</p>
+
+<p class="a">
+New option "<span class="m">-a</span>" (or <span class="m">--algebraic-subexpressions</span>) makes <span class="k">ries</span> limitits answers to <a href="index-2.html#algebraic">algebraic numbers</a> (those that are a
+root of a polynomial with rational coefficients).
+</p>
+
+<p class="a">
+New options <span class="m">--rational-exponents</span> and <span class="m">--rational-trig-args</span> (mainlyto support <span class="m">-a</span>). <span class="m">--rational-trig-args</span> also sets<span class="m">--trig-argument-scale</span> to &#960;.</p>
+<p class="i">
+  New options <span class="m">--any-exponents</span> and <span class="m">--any-trig-args</span> to cancel thesetting of <span class="m">--rational-exponents</span> or <span class="m">--rational-trig-args</span>.</p>
+
+<p class="a">
+New option <span class="m">--max-matches</span> (or <span class="m">-n</span>) to control how many results are given(useful with <span class="m">--no-refinement</span>)</p>
+
+<p class="a">
+New option "<span class="m">--no-refinement</span>" tells <span class="k">ries</span> to print any answer it finds,regardless of whether it is a closer approximation than the previous
+answer.
+</p>
+
+<p class="a">
+New option "<span class="m">-c</span>" (or <span class="m">--constructible-subexpressions</span>) tells <span class="k">ries</span> tolimit its answers to <a href="index-2.html#constructible">constructible numbers</a>.
+</p>
+
+<p class="a">
+New option "<span class="m">-r</span>" (or <span class="m">--rational-subexpressions</span>) tells <span class="k">ries</span> tolimit its answers to <a href="index-2.html#rational">rational numbers</a>.
+</p>
+
+<p class="a">
+New <span class="m">--symbol-names</span> option allows you to redefine the strings used toprint each part of an equation. Two example <span class="k">ries</span> profiles show how to
+use this option to format <span class="k">ries</span> output for Mathematica and in Latin:
+</p>
+
+<p class="q">
+   <a href="src/latin.ries.txt">Latin</a>
+ <br />
+ <a href="src/Mathematica.ries.txt">Mathematica</a>
+</p>
+<p class="a">
+
+New option <span class="m">--no-solve-for-x</span> turns off the <span class="m">--try-solve-for-x</span> option(mainly useful if you have <span class="m">--try-solve-for-x</span> in your <span class="m">.ries_profile</span>and want to see output in the normal <span class="k">ries</span> "equation format" instead).
+</p>
+
+<p class="a">
+The <span class="m">-i</span> option is now implemented by an entirely different method(using attribute tags, to provide for upcoming changes). Results
+should not be affected.
+</p>
+
+<p class="a">
+A new option "<span class="m">--absolute-roots</span>" is a synonym for the existing"<span class="m">-x</span>"; and a new option "<span class="m">--relative-roots</span>" cancels it.</p>
+
+<p class="a">
+Added <span class="b">default settings file</span> (profile):
+</p>
+<p class="i">
+  RIES now looks in your home directory for a file called <span class="m">.ries_profile</span>or <span class="m">ries_profile.txt</span> and if found, automatically reads it as if it weregiven with the <span class="m">--include</span> option at the beginning of the RIES parameterlist. Thus (for example) if <span class="m">ries_profile.txt</span> contains a single line"--try-solve-for-x", every RIES command you run will behave as if you
+gave that option.
+</p>
+<p class="i">
+  If you give the option "-p" at the <span class="i">beginning</span> of your RIES arguments,
+RIES will <span class="i">not</span> use the .ries_profile settings.
+</p>
+<p class="i">
+  If you give the option "-p" anywhere else in your RIES arguments,
+RIES will load the .ries_profile settings at that point. This allows
+you to insert options <span class="i">before</span> your default (profile) options with
+a command like "ries -p -option1 -option2 -p -option3". The first "-p"
+makes it skip the profile, and the second "-p" makes it read
+the profile at that point.
+</p>
+<p class="i">
+  ("-p" with a name, like "-pfilename", is still a synonym for
+"--include filename".)
+</p>
+<p class="i">
+  Windows Users: your "home directory" is probably something like
+C:\Users\yourname
+</p>
+
+<p class="a"><span class="b">2013 Feb</span>
+</p>
+
+<p class="a">
+The <span class="m">-N</span>, <span class="m">-O</span> and <span class="m">-S</span> options now pre-empt each other in whateverorder they are given. A new option <span class="m">-E</span> can be used to enable symbolsthat were previously disabled with <span class="m">-S</span> or <span class="m">-N</span>. (This is mainly to makeit easier to combine multiple <span class="m">--include</span> settings files).</p>
+
+<p class="a">
+The option ''<span class="m">-</span>'' (a single dash) can be used to end a list ofparameters to an option like <span class="m">--symbol-weights</span>.</p>
+
+<p class="a">
+New option <span class="m">--min-match-distance 0</span> will cause RIES to exit if andwhen it finds an "exact" match.
+</p>
+<p class="i">
+  If an "exact" match is reported, RIES now prints a warning that it
+may be a result of roundoff error and not actual mathematical truth
+(unless the <span class="m">-i</span> option was used).</p>
+
+<p class="a">
+I have added the optional self-contained math functions code needed
+for the <span class="m">RIES_USE_SA_M64</span> flag to be useful. It is<a href="src/msal_math64.c.txt">here</a>.
+</p>
+<p class="i">
+  This math functions library includes a Lambert W function
+implementation, which is not yet used by RIES.
+</p>
+
+<p class="a"><span class="b">2013 Jan</span>:
+</p>
+
+<p class="a">
+Add <span class="m">--symbol-weights</span> option, and <span class="m">-S</span> to display a list of allsymbols and their current weights. Adjusting the weights lets you
+fine-tune how often (or seldom) RIES uses the various functions,
+operators, digits and constants.
+</p>
+
+<p class="a"><span class="b">2012 Dec</span>:
+</p>
+
+<p class="a">
+Add <span class="m">--explicit-multiply</span> option. This makes it always use the '*'symbol when printing results: For example, "ries 6.3 -s
+--explicit-multiply" will give "x=2*pi" as an answer rather than
+"x=2 pi".
+</p>
+
+<p class="a">
+Improvements to <span class="m">--canon-reduction</span>: it now simplifies a few commonforms such as "exprA/2 = exprB/2" before printing.
+</p>
+
+<p class="a">
+Several changes to debug flags; make some degug info more useful.
+(For details, see the <span class="m">-D</span> option in the manual, several versions ofwhich are linked from <a href="index.html">here</a> near the top of the page).
+</p>
+
+<p class="a">
+Add <span class="m">--try-solve-for-x</span> (or <span class="m">-s</span>) option. This makes it rebalance allsolutions to put a single '<span class="i">x</span>' on the left-hand-side before printing.
+RIES still makes no effort to solve equations that contain more than
+one '<span class="i">x</span>' (if this matters add the <span class="m">-Ox</span> option to prevent anysolutions involving more than one '<span class="i">x</span>').
+</p>
+<p class="i">
+  If you need to solve problems with a limited set of symbols, you'll
+still have more control with <span class="m">--one-sided</span>, because<span class="m">--try-solve-for-x</span> will use the quota of symbols on both sides of theequation, then when it solves for <span class="i">x</span> things change (like an <span class="i">x</span><sup>2</sup>
+will turn into a square root) which may not be what you want.
+</p>
+
+<p class="a">
+Several changes to the handling of large target values and the
+automatic defaults for the <span class="m">--derivative-margin</span> option. This mattersfor commands like "ries 12345678".
+</p>
+
+<p class="a">
+Add the <span class="m">--match-all-digits</span> option, which makes RIES only reportanswers that match all the digits you give. For example, "ries 2.5061
+--match-all-digits" gives the "<span class="i">x<sup>x</sup></span>=1+9" solution first,
+skipping less accurate solutions like "2<span class="i">x</span>=5".
+</p>
+
+<p class="a"><span class="b">2012 July</span>:
+</p>
+
+<p class="a">
+Add <span class="m">--one-sided</span> option; <span class="m">--numeric-anagram</span> now sets <span class="m">--one-sided</span>by default.
+</p>
+
+<p class="a">
+The <span class="m">--one-sided</span> option makes RIES only generate equations of theform "<span class="i">x</span>=expression", with no <span class="i">x</span>'s on the right side. This makes it
+a lot slower, but it's the best way to answer questions like
+"<span class="i">How can I make 17 from four 4's?</span>"
+</p>
+
+<p class="a"><span class="b">2012 May</span>:
+</p>
+
+<p class="a">
+Add <span class="m">--numeric-anagram</span> option. With this option, RIES finds solutionsusing at most a certain number of each of the digit and constant
+symbols. Compare "ries 27" to "ries 27 --numeric-anagram 123".
+</p>
+
+<p class="a">
+Implemented the <a href="index.html">Online RIES Server</a>, which allows people to
+do simple RIES searches in a web browser.
+</p>
+
+<h2>The Long List</h2>
+
+<p class="a">
+For a more detailed list, you can look at the
+<a href="src/ries.c.txt">source code</a>, starting at the words "REVISION HISTORY"
+which is about 15% of the way through the file.
+
+
+</p><hr>
+<span class="footer">
+<span class="s">Robert Munafo's home pages on <a href="http://www.hostmds.com">HostMDS</a> &#8195;
+&copy; 1996-2020 Robert P. Munafo.</span>
+<br />
+ &#8195; <a href="../../pub/personal.html">about</a> &#8195; <a href="../../main-contact.html">contact</a>
+<br />
+<span class="s">This work is licensed under a Creative Commons
+Attribution-NonCommercial 4.0 International License.
+Details <a href="../../cc-license.html">here</a>.</span>
+</span>
+<br />
+<span class="s">This page was written in the "embarrassingly readable" markup language <a href="../../pub/rhtf/index.html">RHTF</a>, and was last updated on 2020 Mar 26.</span> <img src="../../images/symbols/rbot-16.png" alt=""  ><span style="font-size: small">s.11</span><br /></div>
+</body></html>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1"> <meta name="GENERATOR" content="Rilybot AROS" />
+ <meta name="Author" content="Robert Munafo" />
+ <meta name="format-detection" content="telephone=no">
+ <link rel="search" type="application/opensearchdescription+xml" title="mrob" href="/opensearch.xml" />
+ <meta name="keywords" content="RIES, Find, Algebraic, Equations, Given, Their, Solution, number, puzzles, codes, approximation, formula, math, fun" />
+ <meta name="description" content="RIES - Find Algebraic Equations, Given Their Solution -- Explore a wide variety of topics from large numbers to sociology at mrob.com" />
+ <meta name="x-rhtf-glname" content="ries" />
+<link rel="shortcut icon" href="http://mrob.com/favicon.ico" />
+<title> RIES - Find Algebraic Equations, Given Their Solution at MROB </title>
+<link rel="stylesheet" href="../../style.css" />
+</head>
+
+<body >
+<div id="banner">
+<div id="topnav">
+<a href="../../pub/index.html">mrob</a>
+&#8195;
+<a href="index.html">RIES</a> <a href="../../pub/math/numbers.html">Numbers</a> <a href="../../pub/math/largenum.html">Largenum</a> <a href="../../pub/math/nu-sequences.html">Sequences</a> <a href="../../pub/muency.html">Mandelbrot</a>
+&#8195;
+<a href="../../pub/comp/xmorphia/index.html">Xmorphia</a>
+</div>
+<div id="search">
+  <form action="http://www.google.com/search" style="margin:0; padding:0;">
+  <label for="q">Search:</label>
+  <input name="query" type="hidden" value="site:mrob.com" />
+  <input style="font-family:Palatino" name="q" id="q" size="15" value="" />
+  <input name="btnG" type="submit" value="Go" />
+  </form>
+</div>
+</div>
+<div style="clear:both;"></div>
+<div id="content">
+<h1>RIES - Find Algebraic Equations, Given Their Solution&#8195;&#8195;</h1>
+
+<p class="a"><a name="manual">
+</a><span class="b">Quick Links</span>
+<br />
+ &#8195; <a href="changes.html">Recent Changes</a>
+<br />
+ &#8195; <a href="src/ries.c.txt">RIES Source Code</a> (build instructions in header comment),
+&#8195; <a href="src/msal_math64.c.txt">MSAL (optional Maths functions Stand-alone Library)</a>,
+&#8195; <a href="src/ries-for-windows.c.txt">Windows Wrapper (with instructions)</a>;
+&#8195; &#8195; and <span class="b">License</span>: <a href="COPYING.txt">RIES License (GPL v3)</a>.
+<br />
+ &#8195; <span class="b">RIES profiles (settings files)</span>:
+&#8195; &#8195; <a href="src/latin.ries.txt">Latin</a>,
+&#8195; &#8195; <a href="src/Mathematica.ries.txt">Mathematica</a>
+<br />
+ &#8195; <span class="b">Manual</span>:
+&#8195; &#8195; <a href="doc/ries-manual.pdf">PDF</a>,
+&#8195; &#8195; <a href="doc/ries-manual.ps">PostScript</a>,
+&#8195; &#8195; <a href="doc/ries-manual.txt">Plain ASCII</a>,
+&#8195; &#8195; <a href="doc/ries.1.txt">Source (nroff)</a>,
+&#8195; &#8195; and License: <a href="FDL-1.3.txt">FDL 1.3</a>
+</p>
+
+<p class="a"><br />
+
+</p>
+
+
+<p class="a"> </p>
+<p align="center"> <span class="i"><span class="k"><a href="http://xkcd.com/1047/">RIES was featured on xkcd</a></span> on Wed <span class="b">2012.0425...</span></span></p>
+
+<p class="a"> </p>
+<p align="center">       ... which is <span class="b">((<sup>7</sup>&#8730;<span style="text-decoration: overline">&#960;+1/2</span> &times; &#960;)<sup>2</sup> &times; &#960;)<sup>2</sup></span></p>
+<p class="a"><br />
+
+</p>
+
+
+<p class="a"> </p>
+<p align="center">  <span class="b">To use RIES, you must download the source code (links above) and compile it on your own computer.</span></p>
+<p class="a"><br />
+
+</p>
+
+<p class="a"><span class="b">Contents</span>
+<br />
+ &#8195; <a href="#overview">Overview</a>
+<br />
+ &#8195; &#8195; <a href="#profile">RIES Profiles</a>
+<br />
+ &#8195; &#8195; <a href="index-2.html#bench">Benchmarks</a>
+<br />
+ &#8195; &#8195; <a href="#classes">Searching for Solutions of a Restricted Class</a>
+<br />
+ &#8195; <a href="index-2.html#background">RIES Background and Philosophy</a>
+<br />
+ &#8195; &#8195; <a href="index-2.html#history">Motivation and History</a>
+<br />
+ &#8195; &#8195; <a href="index-2.html#algorithm">Algorithm</a>
+<br />
+ &#8195; &#8195; <a href="index-2.html#exact_unlikely">An Exact Answer is Unlikely</a>
+<br />
+ &#8195; &#8195; <a href="index-2.html#optims">Optimising the Bidirectional Search</a>
+<br />
+ &#8195; &#8195; <a href="index-2.html#source">Source Code</a>
+<br />
+ &#8195; &#8195; <a href="index-2.html#multivar">Approximating Multiple Unknowns</a>
+<br />
+ &#8195; <a href="index-2.html#restr_details">Detailed Examples of Restricted-Class Searches</a>
+<br />
+ &#8195; &#8195; <a href="index-2.html#integer">Searching for Integer Solutions</a>
+<br />
+ &#8195; &#8195; <a href="index-2.html#rational">Searching for Rational Solutions</a>
+<br />
+ &#8195; &#8195; <a href="index-2.html#constructible">Searching for "Constructible" Solutions</a>
+<br />
+ &#8195; &#8195; <a href="index-2.html#algebraic">Searching for Algebraic Solutions</a>
+<br />
+ &#8195; &#8195; <a href="index-2.html#alg_var">Variations of the <span class="b">-a</span> Option</a>
+<br />
+ &#8195; &#8195; <a href="index-2.html#chow_closed">Chow's "Closed-Form" or "Exponential-Logarithmic" Numbers</a>
+<br />
+ &#8195; &#8195; <a href="index-2.html#liouville">Liouvillian Numbers</a>
+<br />
+ &#8195; &#8195; <a href="index-2.html#elementary">Elementary Numbers</a>
+<br />
+ &#8195; <a href="index-3.html#tricks">Nerdy Math Tricks</a>
+<br />
+ &#8195; &#8195; <a href="index-3.html#classical">"Classical" Approximations</a>
+<br />
+ &#8195; &#8195; <a href="index-3.html#pre_destiny">Mystical Pre-Destiny</a>
+<br />
+ &#8195; &#8195; <a href="index-3.html#four">Four Fours</a>
+<br />
+ &#8195; &#8195; <a href="index-3.html#code">Secret Code</a>
+<br />
+ &#8195; &#8195; <a href="index-3.html#area_51">Area 51</a>
+<br />
+ &#8195; &#8195; <a href="index-3.html#dr_matrix">A Visit by Dr. Matrix</a>
+<br />
+ &#8195; <a href="index-4.html#serious">Semiserious Math Tricks</a>
+<br />
+ &#8195; &#8195; <a href="index-4.html#hypotheses">Formal Hypothesis</a>
+<br />
+ &#8195; &#8195; <a href="index-4.html#wild_guess">Wild Guessing</a>
+<br />
+ &#8195; &#8195; <a href="index-4.html#newton">Successive Refinement</a>
+<br />
+ &#8195; &#8195; <a href="index-4.html#identity">Forgotten Identities</a>
+<br />
+ &#8195; &#8195; <a href="index-5.html#brok_calc">The Broken Calculator</a>
+<br />
+ &#8195; &#8195; <a href="index-5.html#discovery">Enlightened Discovery</a>
+<br />
+ &#8195; &#8195; <a href="index-5.html#debug">Debugging</a>
+<br />
+ &#8195; &#8195; <a href="index-5.html#complexity">Kolmogorov Complexity</a>
+<br />
+ &#8195; &#8195; <a href="index-5.html#pi_day_2013">Some Examples for Pi Day 2013</a>
+<br />
+ &#8195; &#8195; <a href="index-5.html#pi_day">Some Examples for Pi Day 2015</a>
+<br />
+ &#8195; <a href="index-6.html#details">Details and Surprises</a>
+<br />
+ &#8195; &#8195; <a href="index-6.html#alg_example">A Detailed Example of the RIES Algorithm</a>
+<br />
+ &#8195; &#8195; <a href="index-6.html#symbolset">Effects of Changing the Symbol Set</a>
+<br />
+ &#8195; <a href="index-6.html#links">Links</a>
+<br />
+ &#8195; <a href="index-6.html#see_also">See Also</a>
+</p>
+
+<p class="a"><hr />
+</p>
+
+<p class="a"><h2 id="overview">Overview</h2></p>
+
+<p class="a"><span class="k">ries</span> (or RIES, an acronym for <span class="i"><a href="../../pub/lego/rilybot3.html">RILYBOT</a> Inverse
+Equation Solver</span>) takes any number and produces a list of equations
+that approximately solve to that number, like the following example:
+</p>
+
+  <span class="p">
+  bash# ries 2.5063
+&#8195;
+   Your target value: T = 2.5063                            mrob.com/ries
+&#8195;
+                    2 x = 5                     for x = T - 0.0063      {49}
+                    8 x = e^3                   for x = T + 0.00439212  {66}
+                    x^2 = 2 pi                  for x = T + 0.000328275 {55}
+                    x^x = 1+9                   for x = T - 0.000115854 {69}
+                (x-1)^2 = tanpi(1/e)            for x = T + 0.000108368 {75}
+                  x^2+e = 9                     for x = T + 3.56063e-05 {63}
+                ln(6) x = sqrt(pi)+e            for x = T + 2.73037e-05 {93}
+                  x/4+1 = 4"/7                  for x = T + 6.24679e-06 {91}
+          ln(sqrt(x)-1) = -(phi/3)              for x = T + 1.4647e-06  {97}
+            1/(1-ln(x)) = (1/e+pi)^2            for x = T - 3.89197e-07 {106}
+                 x+e"/4 = 7-sqrt(8)             for x = T - 3.26098e-07 {109}
+                 x+pi/8 = 8 cospi(phi)          for x = T + 3.89451e-08 {111}
+              1/(2-x)+1 = cospi(7"/phi)         for x = T + 6.16902e-09 {116}
+            x+1/e^(1/x) = 5^(e-2)               for x = T - 2.25977e-09 {118}
+          x sqrt(phi x) = 2(pi-1/phi)           for x = T - 1.71971e-09 {126}
+                  (for more results, use the option '-l3')
+&#8195;
+  e = base of natural logarithms, 2.71828...  cospi(X) = cos(pi * x)
+  ln(x) = natural logarithm or log base e  tanpi(X) = tan(pi * x)
+  phi = the golden ratio, (1+sqrt(5))/2  sqrt(x) = square root
+  A"/B = Ath root of B  pi = 3.14159...
+&#8195;
+                         --LHS--      --RHS--      -Total-
+     max complexity:          67           61          128
+          dead-ends:     2848836      4250702      7099538  CPU time: 0.296
+        expressions:      228357       318227       546584
+           distinct:      111700        89860       201560  Memory: 12608KiB
+&#8195;
+        Total equations tested:             10037362000 (1.004e+10)
+  </span>
+<p class="a">
+Notice the answers are ordered by increasing closeness to the given number.
+It should also be apparent that the simplest equations tend to come first and
+the more complex ones later on. <span class="k">ries</span> follows the example of
+continued fractions &#8212; as you go to longer equations, you get a closer
+approximaion to your number, and each approximation is the closest
+approximation that is available with an equation of that "complexity".
+</p>
+
+<p class="a"><span class="k">ries</span> is highly customisable. You can have it omit functions and
+symbols (like the sine and cosine functions, or the symbol for
+<a href="../../pub/math/numbers-2.html#phi"><span class="i">phi</span></a>, the Golden Ratio) if you don't want it to use
+them in solutions. You can give it an integer and specify that it
+limit its search to calculations that come out to be exact integers,
+and it will figure out the shortest way to construct your number from
+the digits 1 through 9. If you want easily inverted solutions you can
+specify that there be only one <span class="i">x</span> on the left-hand side, omitting
+things like "<span class="i">x</span>-sin(<span class="i">x</span>)". <span class="k">ries</span> can find the simplest way to (for
+example) express the value <a href="../../pub/math/numbers-5.html#la27">27</a> using only the digit 4
+and the four basic operators plus, minus, times and divide.
+</p>
+
+<p class="a"><h3 id="profile"><span class="k">ries</span> Profiles</h3></p>
+
+<p class="a">
+It is common to want to use several <span class="k">ries</span> options together, and to
+use the same options in many different commands. To facilitate this,
+<span class="k">ries</span> supports the use of "profiles" specified by the <span class="b">-p</span> option.
+A profile is a text file containing one or more <span class="k">ries</span> command-line
+options, with whatever spacing you desire and optional comments
+delimited by the '#' character. Here is an example:
+</p>
+
+  <span class="p">
+  # old.ries       Profile for all the old RIES behaviour
+  --trig-argument-scale 1  # Radians
+  -NT    # old RIES had no tangent function
+  -l1    # The default searchlevel was -l1
+  --significance-loss-margin 15   # There were no sig-loss checks
+  </span>
+<p class="a">
+If this file is in the current directory, adding the option
+<span class="b">-pold.ries</span> (or <span class="b">--include old.ries</span>) will give nearly the same
+results as a pre-2012 version of <span class="k">ries</span>.
+</p>
+
+<p class="a">
+Note that you can override options in a profile: the command
+<span class="b">ries 1.2345 -pold.ries -l2</span> overrides the <span class="b">-l1</span> option in
+<span class="b">old.ries</span> by giving the option <span class="b">-l2</span>.
+</p>
+
+<p class="a"><h3 id="classes">Searching for Solutions of a Restricted Class</h3></p>
+
+<p class="a"><span class="k">ries</span> makes it easy to limit your search to certain well-defined
+types of numbers, expressions, and equations. Two popular examples are
+<a href="index-2.html#rational">rational numbers</a> and <a href="index-2.html#algebraic">algebraic numbers</a>.
+This table summarises the options; at the top of each column is a link
+to a section with details on how <span class="k">ries</span> handles that specific type of
+number; a <span class="b">Y</span> indicates that numbers in this row are found by <span class="k">ries</span>
+using the option at the top of the column:
+</p>
+
+<p class="q">
+  
+  <table><tr><td width="20px"></td><td><table border="1" cellspacing="0" cellpadding="2" hspace="30px">
+<tr><td>
+  <span class="k">ries</span> option          </td><td> <span style="font-family: Courier, monospace; white-space: pre">-i</span> </td><td> <span style="font-family: Courier, monospace; white-space: pre">-r</span></td><td> <span style="font-family: Courier, monospace; white-space: pre">-c</span></td><td> <span style="font-family: Courier, monospace; white-space: pre">-a</span></td><td><span style="font-family: Courier, monospace; white-space: pre">-Ox</span></td><td><span style="font-family: Courier, monospace; white-space: pre">-l</span></td><td>  <span style="font-family: Courier, monospace; white-space: pre">-</span></td><td> <span class="i">n/a</span>
+</td></tr><tr><td >
+  type of number        </td><td> <a href="index-2.html#integer">integral</a>
+                               </td><td> <a href="index-2.html#rational">rational</a>
+                                      </td><td> <a href="index-2.html#constructible">constructible</a>
+                                           </td><td> <a href="index-2.html#algebraic">algebraic</a>
+                                        </td><td> <a href="index-2.html#chow_closed">Chow's<br />
+"closed-form"</a>
+                                                       </td><td> <a href="index-2.html#liouville">Liouville</a>
+                                         </td><td> <a href="index-2.html#elementary">elementary</a></td><td>real
+</td></tr><tr><td >
+  <span class="i">target</span>
+</td></tr><tr><td >
+  integer, e.g. <br />
+
+  1729                   </td><td>   Y  </td><td>  Y  </td><td> Y   </td><td> Y   </td><td> Y   </td><td> Y   </td><td> Y  </td><td>  -
+</td></tr><tr><td >
+  rational, e.g. <br />
+
+  7/27 &asymp; 0.259259...  </td><td>   -  </td><td>  Y  </td><td> Y   </td><td> Y   </td><td> Y   </td><td> Y   </td><td> Y  </td><td>  -
+</td></tr><tr><td >
+  closed-form quadratic, e.g. <br />
+
+  &#8730;(2+&#8730;<span style="text-decoration: overline">3</span>) &asymp; 1.93185165257814
+                         </td><td>   -  </td><td>  -  </td><td> Y   </td><td> Y   </td><td> Y   </td><td> Y   </td><td> Y  </td><td>  -
+</td></tr><tr><td >
+  closed-form algebraic, e.g. <br />
+
+  (2+&#8730;<span style="text-decoration: overline">3</span>)<sup>(1/3)</sup> &asymp; 1.55113351807125 <br />
+
+  root of <span class="i">x</span><sup>3</sup>+<span class="i">x</span>-3=0 &asymp; 1.21341166276223 <br />
+
+  root of <span class="i">x</span><sup>4</sup>+<span class="i">x</span>-3=0 &asymp; 1.16403514028977 <br />
+
+                         </td><td>   -  </td><td>  -  </td><td> -   </td><td> Y   </td><td> Y   </td><td> Y   </td><td> Y  </td><td>  -
+</td></tr><tr><td >
+  implicit algebraic, e.g. <br />
+
+  root of <span class="i">x</span><sup>5</sup>-<span class="i">x</span>+1=0 &asymp; -1.16730397826142
+                         </td><td>   -  </td><td>  -  </td><td> -   </td><td> Y   </td><td> -   </td><td> Y   </td><td> Y  </td><td>  -
+</td></tr><tr><td >
+  closed-form algebraic, exponent and/or logarithm, e.g. <br />
+
+  &#8730;<span style="text-decoration: overline">2</span><sup>&#8730;<span style="text-decoration: overline">2</span></sup> &asymp; 1.63252691943815 <br />
+
+  <span class="i">e</span><sup>2<sup>(1/&#934;)</sup></sup> &asymp; 4.64031500910231
+                         </td><td>   -  </td><td>  -  </td><td> -   </td><td> -   </td><td> Y   </td><td> Y   </td><td> Y  </td><td>  -
+</td></tr><tr><td >
+  implicitly-defined algebraic, exponential, and/or logarithm, e.g. <br />
+
+  root of <span class="i">x<sup>x</sup></span>-7=0 &asymp; 2.31645495878561 <br />
+
+  root of <span class="i">x</span>+<span class="i">e<sup>x</sup></span>=0 &asymp; -0.567143290409784 <br />
+
+  root of <span class="i">x</span>-cos(&#960;<span class="i">x</span>)=1 &asymp; 0.623032990606725
+                         </td><td>   -  </td><td>  -  </td><td> -   </td><td> -   </td><td> -   </td><td> -   </td><td> Y  </td><td>  -
+</td></tr><tr><td >
+  transcendental, e.g. <br />
+
+  Gamma[1/3] &asymp; 2.67893853470774
+                         </td><td>   -  </td><td>  -  </td><td> -   </td><td> -   </td><td> -   </td><td> -   </td><td> -  </td><td>  -
+  </td></tr></table></td></tr></table>
+</p>
+<p class="a">
+
+For more on how to use <span class="k">ries</span> for each of these types of problems,
+select the links: <a href="index-2.html#integer">integral</a>, &#8195; <a href="index-2.html#rational">rational</a>, &#8195;
+<a href="index-2.html#constructible">constructible</a>, &#8195; <a href="index-2.html#algebraic">algebraic</a>, &#8195;
+<a href="index-2.html#chow_closed">Chow's<br />
+"closed-form"</a>, &#8195; <a href="index-2.html#liouville">Liouville</a>, &#8195; and
+&#8195; <a href="index-2.html#elementary">elementary</a>.
+</p>
+
+<p class="a">
+&#8195;
+</p>
+
+<br /><p align="center"> . . . <a href="index-2.html">Forward to page 2</a> . . . <a href="index-6.html">Last page (page 6)</a></p><br />
+
+
+<hr />
+Contents: <a href="#overview"><span class="k">ries</span> overview</a> <a href="index-2.html#bench">Benchmarks</a>
+<a href="index-2.html#history">History</a> &#8195; <a href="index-3.html#tricks">Nerdy Math Tricks</a> &#8195;
+<a href="index-4.html#serious">Semiserious Math Tricks</a> &#8195;
+<a href="index-6.html#links">Links and miscellaneous</a>
+
+<br />
+<br />
+<hr>
+<span class="footer">
+<span class="s">Robert Munafo's home pages on <a href="http://www.hostmds.com">HostMDS</a> &#8195;
+&copy; 1996-2020 Robert P. Munafo.</span>
+<br />
+ &#8195; <a href="../../pub/personal.html">about</a> &#8195; <a href="../../main-contact.html">contact</a>
+<br />
+<span class="s">This work is licensed under a Creative Commons
+Attribution-NonCommercial 4.0 International License.
+Details <a href="../../cc-license.html">here</a>.</span>
+</span>
+<br />
+<span class="s">This page was written in the "embarrassingly readable" markup language <a href="../../pub/rhtf/index.html">RHTF</a>, and some sections were last updated on 2020 Mar 26.</span> <img src="../../images/symbols/rbot-16.png" alt=""  ><span style="font-size: small">s.11</span><br /></div>
+</body></html>

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1"> <meta name="GENERATOR" content="Rilybot AROS" />
+ <meta name="Author" content="Robert Munafo" />
+ <meta name="format-detection" content="telephone=no">
+ <link rel="search" type="application/opensearchdescription+xml" title="mrob" href="/opensearch.xml" />
+ <meta name="keywords" content="RIES, Find, Algebraic, Equations, Given, Their, Solution" />
+ <meta name="description" content="RIES - Find Algebraic Equations, Given Their Solution -- Explore a wide variety of topics from large numbers to sociology at mrob.com" />
+ <meta name="x-rhtf-glname" content="ries" />
+<link rel="shortcut icon" href="http://mrob.com/favicon.ico" />
+<title> RIES - Find Algebraic Equations, Given Their Solution (page 3) at MROB </title>
+<link rel="stylesheet" href="../../style.css" />
+</head>
+
+<body >
+<div id="banner">
+<div id="topnav">
+<a href="../../pub/index.html">mrob</a>
+&#8195;
+<a href="index.html">RIES</a> <a href="../../pub/math/numbers.html">Numbers</a> <a href="../../pub/math/largenum.html">Largenum</a> <a href="../../pub/math/nu-sequences.html">Sequences</a> <a href="../../pub/muency.html">Mandelbrot</a>
+&#8195;
+<a href="../../pub/comp/xmorphia/index.html">Xmorphia</a>
+</div>
+
+
+<div id="search">
+  <form action="http://www.google.com/search" style="margin:0; padding:0;">
+  <label for="q">Search:</label>
+  <input name="query" type="hidden" value="site:mrob.com" />
+  <input style="font-family:Palatino" name="q" id="q" size="15" value="" />
+  <input name="btnG" type="submit" value="Go" />
+  </form>
+</div>
+</div>
+<div style="clear:both;"></div>
+<div id="content">
+<h1>RIES - Find Algebraic Equations, Given Their Solution&#8195;&#8195;</h1><br /><p align="center"><a href="index.html">First page</a> . . . <a href="index-2.html">Back to page 2</a> . . . <a href="index-4.html">Forward to page 4</a> . . . <a href="index-6.html">Last page (page 6)</a></p><br />
+<p class="a"><h2 id="tricks">Nerdy Math Tricks</h2></p>
+
+<p class="a">
+Here are a few cute and/or fun things you can do with <span class="k">ries</span>:
+</p>
+
+<p class="a"><h3 id="classical">Classical Approximations</h3></p>
+
+<p class="a">
+The <span class="b">--min-match-distance</span> option tells <span class="k">ries</span> to not report any match
+unless it is <span class="i">at least</span> a certain distance from the target. This can
+be used to find approximations to known values without hitting on the
+exact formula &#8212; like an approximation to &#960;.
+</p>
+<p class="i">
+  Combine this with the <span class="b">-N</span> option to avoid using modern functions
+like sine and logarithm, and you get "classical" approximations. For
+example, try this command from <a href="doc/ries-manual.txt">the ries manual</a>:
+</p>
+
+  <span class="p">
+  ries 3.141592653589 -NpSCTlLeEv^ --min-match-distance 1e-10
+&#8195;
+  Using minimum match distance: 1e-10
+&#8195;
+     Your target value: T = 3.141592653589                    mrob.com/ries
+&#8195;
+                     x-3 = 1/6                    for x = T + 0.025074    {60}
+                     x-3 = 1/7                    for x = T + 0.00126449  {60}
+               sqrt(x-3) = 3/8                    for x = T - 0.000967654 {83}
+             x+sqrt(phi) = sqrt(2)+3              for x = T + 0.000601259 {87}
+                 1/(x-3) = 5 sqrt(2)              for x = T - 0.000171297 {85}
+                 x/phi^2 = 1/5+1                  for x = T + 4.81329e-05 {85}
+           (x+1) sqrt(2) = 6-1/7                  for x = T + 3.27791e-05 {103}
+                   x^2-x = 8-sqrt(phi)            for x = T - 5.94282e-06 {95}
+               1/(x-3)+1 = sqrt(8^2+1)            for x = T + 5.12373e-06 {107}
+               (x^2-8)^2 = sqrt(sqrt(5))+2        for x = T - 3.0576e-06  {109}
+               1/(x-3)-1 = 1/4^2+6                for x = T + 2.66765e-07 {111}
+         (sqrt(x)-1/3)^2 = 5/(sqrt(2)+1)          for x = T - 6.4329e-08  {118}
+             x-sqrt(3*7) = sqrt(5)/4-2            for x = T + 3.57418e-08 {131}
+  </span>
+<p class="a">
+The output starts with <span class="i">x</span>=19/6 and <span class="i">x</span>=22/7, the two most common
+simple fraction approximations for &#960;.
+</p>
+
+<p class="a">
+A little bit further is <span class="m">1/(x-3) = 5 sqrt(2)</span>, which turns into thenifty approximation 3+&#8730;<span style="text-decoration: overline">1/50</span> = 3+&#8730;<span style="text-decoration: overline">2</span>/10 = 3.14142135... You can
+also spot two others that contain "<span class="m">(x-3)</span>" on the left-hand-side:<span class="m">1/(x-3)+1 = sqrt(8^2+1)</span> and <span class="m">1/(x-3)-1 = 1/4^2+6</span>, both of whichwill solve to <span class="i">x</span> = 3 + <span class="i">something...</span>. The second of these is
+also equivalent to 355/113=3.14159292..., an excellent simple
+fraction approximant to &#960;.
+</p>
+
+<p class="a">
+Fans of the <a href="http://en.wikipedia.org/wiki/Golden_ratio">Golden ratio</a> will like <span class="m">x/phi^2 = 1/5+1</span> which gives6&#934;<sup>2</sup>/5 = 3.1416407... We also get
+(<span class="i">x</span><sup>2</sup>-8)<sup>2</sup>=sqrt(&#8730;<span style="text-decoration: overline">5</span>)+2, which if you solve for <span class="i">x</span> turns into
+the nested radical approximation:
+</p>
+
+<p class="q">
+  
+  <img src="radicals-3.14159.gif" alt=""  > = 3.14158959... = &#960; - 3.057&times;10<sup>-6</sup>
+</p>
+<p class="a">
+
+for related (and more devious) tricks <a href="#dr_matrix">see below</a>...
+</p>
+
+<p class="a"><h3 id="pre_destiny">Mystical Pre-Destiny</h3></p>
+
+<p class="a">
+Take your phone number and a friend's phone number and insert a
+decimal point: 123-4567 becomes 123.4567 and 555-1212 becomes
+555.1212. Then take the ratio: 555.1212/123.4567 = 4.496485. Put
+this into <span class="k">ries</span> and pick a formula that can be solved for <span class="i">x</span> (for
+example, I used <span class="i">x</span>+<sup>9</sup>&#8730;<span style="text-decoration: overline">&#960;</span>=6-1/<span class="i">e</span>). Solve it for <span class="i">x</span> (in this
+case getting <span class="i">x</span>=6-1/<span class="i">e</span>-<sup>9</sup>&#8730;<span style="text-decoration: overline">&#960;</span>), and then multiply the whole
+thing by the phone number that you originally put in the denominator
+and you get the other phone number:
+</p>
+
+<p class="q">
+  (6 - 1/<span class="i">e</span> - <sup>9</sup>&#8730;<span style="text-decoration: overline">&#960;</span>) &times; 123.4567 = 555.121234525
+</p>
+<p class="a">
+
+If the answer doesn't have all 7 digits, try another of the formulas
+that <span class="k">ries</span> gave. If you don't find a nice formula, start with
+something else, like 5.551212+1.234567 or 5.551212-1.234567, and
+transform the result in the appropriate way.
+</p>
+
+<p class="a">
+Now go to your friend and announce that you have found the mystic
+formula that links their phone number to yours. For extra credit,
+write the formula in an old school notebook and claim it was given as
+a problem in class long before you met.
+</p>
+
+<p class="a"><h3 id="four">Four Fours</h3></p>
+
+<p class="a">
+At one time this type of problem was popular: How do you reach various
+values using four 4's and any number of symbols (for example:
+44/44&#8195;=&#8195;1, 4/4+4/4&#8195;=&#8195;2, (4+4+4)/4&#8195;=&#8195;3, etc.). Solutions of
+a similar type of problem can be found with the --numeric-anagram
+option:
+</p>
+
+<p class="q">
+   <span class="m"> ries '-S+-*/' --numeric-anagram 4444 -Ox 17 </span> <br />
+ | x = 4*4+4/4 &#8195;&#8195;&#8195;&#8195;&#8195;&#8195;&#8195; ('exact' match) |
+</p>
+<p class="a">
+
+giving the solution 4&times;4+4/4&#8195;=&#8195;17. The <span class="m">-S+-*/</span>option specifies the "symbols" that can be used in solutions, and the
+quotes around it prevent the shell from performing filename globbing.
+<span class="m">--numeric-anagram 4444</span> specifies that up to four 4's can be used insolutions (however fewer is allowed). <span class="m">-Ox</span> tells <span class="b">ries</span> that <span class="m">x</span>should only appear once in each equation. Although the 17 example and
+some others happen to have four 4's, solutions with fewer might be
+found:
+</p>
+
+<p class="q">
+   <span class="m"> ries '-S+-*/' --numeric-anagram 4444 -Ox 5 </span> <br />
+ | x = 4/4+4 &#8195;&#8195;&#8195;&#8195;&#8195;&#8195;&#8195; ('exact' match) |
+</p>
+<p class="a">
+
+</p>
+
+<p class="a"><h3 id="code">Secret Code</h3></p>
+
+<p class="a">
+Convert letters to numbers, generate an equation with <span class="b">ries</span>, convert
+to an expression, then transmit to your friends. They use a calculator
+as the "secret decoder ring". Not very efficient, but pretty darn
+obscure.
+</p>
+
+<p class="a">
+Example: Convert "D A V E" to numbers (D=04, A=01, V=22, E=05). Make
+this to a single number (4.012205). Since we want to match <span class="i">all</span> the
+digits and we don't care what digits come after that, use the option
+<span class="b">--mad</span> which is short for <span class="b">--match-all-digits</span>. We'll also use
+<span class="b">-NSCT</span> to avoid trigonometric functions. Typing
+<span class="m">ries 4.012205 --mad -NSCT</span> gives a few answers including theequation <span class="m">sqrt(x^2-5) = 4&#8730;<span style="text-decoration: overline">&#960;</span>+2</span> Solving for <span class="i">x</span> gives<span class="i">x</span>=<span class="b">sqrt(5+(sqrt(sqrt(&#960;))+2)^2)</span>. The value is
+<span class="b">4.01 22 05</span> 79... which has the needed encoding of "DAVE".
+</p>
+
+<p class="a">
+If your friend's calculator does not have a &#960; key or other
+scientific functions, exclude more things with the <span class="m">-N</span> option, forexample, <span class="m">ries 4.012205 --mad -NSCTplLfveE^</span>.</p>
+
+<p class="a"><h3 id="area_51">Area 51</h3></p>
+
+<p class="a">
+Sadly, as I mentioned in the <a href="index-2.html#history">history of RIES</a>, a lot of
+the reason for <span class="k">ries</span>'s existence is to answer the frequent emails I
+get from... let's call them "dreamers". These are the folks who are
+obsessed with finding the mathematical equivalent of the mythical
+<a href="http://en.wikipedia.org/wiki/Fountain_of_Youth">Fountain of Youth</a>, a <a href="http://en.wikipedia.org/wiki/Closed-form_expression">closed-form expression</a> (using elementary
+functions) for some mysterious thing in the universe. The
+quintessential example is the
+<a href="../../pub/num/n-b137_035.html#cult_137">Sommerfeld fine-structure constant</a>. In an
+earlier age the biggest problem was claims of <a href="http://en.wikipedia.org/wiki/Squaring_the_circle">squaring the circle</a>,
+akin to a claim that &#960; is <a href="http://en.wikipedia.org/wiki/Constructible_number">constructible</a>.
+</p>
+<p class="i">
+  When I get an email from one of these folks I usually invoke a <span class="k">ries</span>
+command like this:
+</p>
+
+<p class="q">
+  <span class="m">ries -l5 --try-solve-for-x --mad 137.03599907</span></p>
+<p class="a">
+
+which happily reports "<span class="m">x = (1/ln((sqrt(4-sqrt(e))+2)/3))^e</span>". If wewish to keep the aliens away, we could broadcast this formula into
+space, and they'd think we're
+<a href="http://en.wikipedia.org/wiki/Prime_Directive">not advanced enough to be ready for interstellar contact</a>.
+</p>
+
+<p class="a"><h3 id="dr_matrix">A Visit by Dr. Matrix</h3></p>
+
+<p class="a"><span class="i">Scientific American</span> maths columnist <a href="http://en.wikipedia.org/wiki/Martin_Gardner">Martin Gardner</a> often
+referred to novel ideas and fringe theories attributed to a
+<a href="http://en.wikipedia.org/wiki/Irving_Joshua_Matrix">Dr. Matrix</a>, usually with humorous intent.
+Perhaps the best known example was
+<a href="../../pub/math/numbers-17.html#ram_constant">Ramanujan's constant</a>, which "Doctor Matrix"
+claimed to be an integer. We can use <span class="k">ries</span> (perhaps in an
+<a href="http://en.wikipedia.org/wiki/April_Fools%27_Day">April Fool's</a> stunt) to put forth similar claims.
+</p>
+<p class="i">
+  For example, try the command
+</p>
+
+<p class="q">
+  <span class="m">ries 3.141592653589 -NpSCT -l5</span></p>
+<p class="a">
+
+which simply tells <span class="k">ries</span> to find approximations for &#960; without
+using &#960; itself or the trigonometric functions. Look at the results
+and pick one you like, then turn it around into something you can type
+on a calculator. I like <span class="m">1/(x-3)-1/2 = e sqrt(2)+e</span> because itcontains "<span class="m">x-3</span>" which means that when you solve for <span class="i">x</span> the formulawill start with "<span class="i">x</span> = 3 + ...". Then blog or text to your friends:
+</p>
+
+<p class="q">
+  <span class="i"><span class="m">My friend Irving said to try this on my TI-89:
+  3+2/(1+e&times;(2+&#8730;<span style="text-decoration: overline">8</span>)). What do you get?</span></span>
+</p>
+<p class="a">
+
+</p><h3>The Return of Dr. Matrix</h3>
+
+<p class="a">
+For a little more sophistication, try the command:
+</p>
+
+<p class="q">
+  <span class="m">ries 3.141592653589 --min-match-distance 1e-8 -NSCT</span></p>
+<p class="a">
+
+This tells <span class="k">ries</span> to find formulas for &#960; so long as the solution
+isn't within 10<sup>-8</sup> of your given value, and excluding the trig
+functions but allowing &#960; itself. Since &#960; is not excluded as a
+symbol, this gives us formulas for &#960; that use &#960; as part of the
+formula, but a direct approach like <span class="i">x</span>=&#960; is not allowed because we
+gave the <span class="b">--min-match-distance</span> option.
+</p>
+<p class="i">
+  Among the output of this example are the equations <span class="i">x</span>&#8730;<span style="text-decoration: overline">&#960;+1</span> =
+<span class="i">e</span><sup>3</sup>/&#960; and <span class="i">x</span><sup>2</sup>/<span class="i">e</span><sup>3</sup> = 1/&#8730;<span style="text-decoration: overline">1+pi</span>. By substituting <span class="i">x</span>
+for any &#960;'s in the formula and rearranging to get just one <span class="i">x</span> on
+the left-hand side, both of these can be made into:
+</p>
+
+<p class="q">
+   <span class="i">x</span>=(<span class="i">e</span><sup>6</sup>/(<span class="i">x</span>+1))<sup>(1/4)</sup>
+</p>
+<p class="a">
+
+If iterated with any starting value for <span class="i">x</span>, this happens to converge
+(but it does <span class="i">not</span> converge on &#960;). Use it in a joke blog article:
+</p>
+
+<p class="q">
+  <span class="i">Dr. Matrix visited me early last April. He claimed to have found
+  an interesting converging iterative formula. Start with any value for
+  <span class="i">x</span>, such as 17 (the doctor's favourite number). Then calculate the
+  value of the formula</span>
+</p>
+<p class="a">
+
+</p>
+<p class="q">
+                       </p><br /><p align="center"><img src="Dr-Matrix-e6-formula.gif" alt="" title="" ><br /><i></i></p><br />
+<p class="a">
+
+</p>
+<p class="q">
+  <span class="i">Use the result as a new value for <span class="i">x</span>, and repeat. Dr. Matrix
+  told me that if I continue this process several more times, I would
+  get a recognisable result. He plans to publish a proof of this
+  remarkable formula in the <a href="http://en.wikipedia.org/wiki/Annals_of_Improbable_Research">Annals of Improbable Research</a>
+  later this year.
+</span></p>
+<p class="a"><span class="i">
+
+</span></p>
+<p class="q"><span class="i">
+  I tried this out, using my trusty <a href="http://en.wikipedia.org/wiki/TI_SR-50">SR-50</a> scientific calculator.
+  Starting with <span class="m">17</span> in the place of <span class="i">x</span> in the formula, add 1,  hit the = sign (18: so far, so good), then use the 1/<span class="i">x</span> key to get
+  the reciprocal, and multiply this by <span class="i">e</span><sup>6</sup> (using the <span class="i">e<sup>x</sup></span> key).
+  Then press the &#8730;<span style="text-decoration: overline">x</span> (square root) key twice. I get:
+</span></p>
+<p class="a"><span class="i">
+
+</span></p>
+<p class="q"><span class="i">
+  &#8195; &#8195; &#8195; <span class="m">5.603177687</span></span></p>
+<p class="a"><span class="i">
+
+</span></p>
+<p class="q"><span class="i">
+  Using this new value in the place of <span class="i">x</span>, repeat the formula
+  again, and so on:
+</span></p>
+<p class="a"><span class="i">
+
+</span></p>
+<p class="q"><span class="i">
+  &#8195; &#8195; &#8195; <span class="m">2.175823167</span></span></p>
+<p class="a"><span class="i">
+
+</span></p>
+<p class="q"><span class="i">
+  &#8195; &#8195; &#8195; <span class="m">3.357203326</span></span></p>
+<p class="a"><span class="i">
+
+</span></p>
+<p class="q"><span class="i">
+  &#8195; &#8195; &#8195; <span class="m">3.101985520</span></span></p>
+<p class="a"><span class="i">
+
+</span></p>
+<p class="q"><span class="i">
+  &#8195; &#8195; &#8195; <span class="m">3.149148874</span></span></p>
+<p class="a"><span class="i">
+
+</span></p>
+<p class="q"><span class="i">
+  You might want to try this yourself. The digits eventually
+  settle down and should be familiar to most veteran readers. What is
+  going on here?
+  </span>
+</p>
+<p class="a">
+
+The same equations are also equivalent to
+</p>
+
+<p class="q">
+  <span class="i">x</span><sup>4</sup> + <span class="i">x</span><sup>5</sup> = <span class="i">e</span><sup>6</sup>
+</p>
+<p class="a">
+
+which hints at the near-equality
+&#960;<sup>4</sup> + &#960;<sup>5</sup> &asymp; <span class="i">e</span><sup>6</sup> (see <a href="../../pub/math/numbers-12.html#lb403_428">403.428775...</a>
+on my numbers pages).
+</p>
+
+<br /><p align="center"><a href="index.html">First page</a> . . . <a href="index-2.html">Back to page 2</a> . . . <a href="index-4.html">Forward to page 4</a> . . . <a href="index-6.html">Last page (page 6)</a></p><br />
+
+
+<hr />
+Contents: <a href="index.html#overview"><span class="k">ries</span> overview</a> <a href="index-2.html#bench">Benchmarks</a>
+<a href="index-2.html#history">History</a> &#8195; <a href="#tricks">Nerdy Math Tricks</a> &#8195;
+<a href="index-4.html#serious">Semiserious Math Tricks</a> &#8195;
+<a href="index-6.html#links">Links and miscellaneous</a>
+
+<br />
+<br />
+<hr>
+<span class="footer">
+<span class="s">Robert Munafo's home pages on <a href="http://www.hostmds.com">HostMDS</a> &#8195;
+&copy; 1996-2020 Robert P. Munafo.</span>
+<br />
+ &#8195; <a href="../../pub/personal.html">about</a> &#8195; <a href="../../main-contact.html">contact</a>
+<br />
+<span class="s">This work is licensed under a Creative Commons
+Attribution-NonCommercial 4.0 International License.
+Details <a href="../../cc-license.html">here</a>.</span>
+</span>
+<img src="../../images/symbols/rbot-16.png" alt=""  ><span style="font-size: small">s.11</span><br /></div>
+</body></html>

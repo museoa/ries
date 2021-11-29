@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1"> <meta name="GENERATOR" content="Rilybot AROS" />
+ <meta name="Author" content="Robert Munafo" />
+ <meta name="format-detection" content="telephone=no">
+ <link rel="search" type="application/opensearchdescription+xml" title="mrob" href="/opensearch.xml" />
+ <meta name="keywords" content="RIES, Find, Algebraic, Equations, Given, Their, Solution, number, puzzles, codes, approximation, formula, math, fun" />
+ <meta name="description" content="RIES - Find Algebraic Equations, Given Their Solution -- Explore a wide variety of topics from large numbers to sociology at mrob.com" />
+ <meta name="x-rhtf-glname" content="ries" />
+<link rel="shortcut icon" href="http://mrob.com/favicon.ico" />
+<title> RIES - Find Algebraic Equations, Given Their Solution (page 2) at MROB </title>
+<link rel="stylesheet" href="../../style.css" />
+</head>
+
+<body >
+<div id="banner">
+<div id="topnav">
+<a href="../../pub/index.html">mrob</a>
+&#8195;
+<a href="index.html">RIES</a> <a href="../../pub/math/numbers.html">Numbers</a> <a href="../../pub/math/largenum.html">Largenum</a> <a href="../../pub/math/nu-sequences.html">Sequences</a> <a href="../../pub/muency.html">Mandelbrot</a>
+&#8195;
+<a href="../../pub/comp/xmorphia/index.html">Xmorphia</a>
+</div>
+
+
+<div id="search">
+  <form action="http://www.google.com/search" style="margin:0; padding:0;">
+  <label for="q">Search:</label>
+  <input name="query" type="hidden" value="site:mrob.com" />
+  <input style="font-family:Palatino" name="q" id="q" size="15" value="" />
+  <input name="btnG" type="submit" value="Go" />
+  </form>
+</div>
+</div>
+<div style="clear:both;"></div>
+<div id="content">
+<h1>RIES - Find Algebraic Equations, Given Their Solution&#8195;&#8195;</h1><br /><p align="center"><a href="index.html">First page</a> . . . <a href="index-3.html">Forward to page 3</a> . . . <a href="index-6.html">Last page (page 6)</a></p><br />
+<p class="a"><h3 id="bench">Benchmarks</h3></p>
+
+<p class="a"><span class="k">ries</span> is very fast. When it was created, results like those
+shown above took less than 2 seconds on a 180-MHz machine. Such a
+machine could easily test over 10<sup>10</sup> equations in less than a
+minute. On a 733-MHz Pentium-III, <span class="m">ries -l4</span> tested over1.4&times;10<sup>12</sup> equations in 62 seconds; on a 2.33-GHz Intel Core 2, the
+same thing finishes in only 13.5 seconds.
+</p>
+
+<p class="a">
+This first table shows the increase in time and memory requirements as
+the search level is increased, using the command
+<span class="m">ries -l<span class="i">N</span> 2.50631415926535897932</span> for various values of <span class="i">N</span>.<span class="k">ries</span> accepts a fractional value for the <span class="b">-l</span> (search level)
+parameter. These tests were performed on an Intel Core i7 running at
+2.26 GHz.
+</p>
+
+<p class="q">
+  <span class="i">Time and Memory by Search Level</span>
+  <table><tr><td width="20px"></td><td><table border="1" cellspacing="0" cellpadding="2" hspace="30px">
+<tr><td>
+   <span class="i">level</span></td><td>      <span class="i">equations</span> </td><td> <span class="i">memory</span>   </td><td> <span class="i">time</span>
+</td></tr><tr><td >
+    -l0.0 </td><td>         79487660 </td><td>  1.125 MiB </td><td> 0.03s
+</td></tr><tr><td >
+    -l0.5 </td><td>        251038899 </td><td>  2.000 MiB </td><td> 0.05s
+</td></tr><tr><td >
+    -l1.0 </td><td>        829353000 </td><td>  3.562 MiB </td><td> 0.10s
+</td></tr><tr><td >
+    -l1.5 </td><td>       2901779280 </td><td>  6.625 MiB </td><td> 0.21s
+</td></tr><tr><td >
+    -l2.0 </td><td>       9950377520 </td><td>  12.25 MiB </td><td> 0.45s
+</td></tr><tr><td >
+    -l2.5 </td><td>      33038198379 </td><td>  22.25 MiB </td><td> 1.03s
+</td></tr><tr><td >
+    -l3.0 </td><td>     111380226936 </td><td>  41.06 MiB </td><td> 2.21s
+</td></tr><tr><td >
+    -l3.5 </td><td>     378637262754 </td><td>  75.12 MiB </td><td> 5.04s
+</td></tr><tr><td >
+    -l4.0 </td><td>    1278241441568 </td><td>  138.8 MiB </td><td> 11.3s
+</td></tr><tr><td >
+    -l4.5 </td><td>    3413645169984 </td><td>  226.4 MiB </td><td> 21.5s
+</td></tr><tr><td >
+    -l5.0 </td><td>   14873617111876 </td><td>  471.9 MiB </td><td> 56.0s
+</td></tr><tr><td >
+    -l5.5 </td><td>   39982521358250 </td><td>  773.3 MiB </td><td> 1m 46.0s
+</td></tr><tr><td >
+    -l6.0 </td><td>  178259475271954 </td><td>  1.593 GiB </td><td> 4m 31.6s
+</td></tr><tr><td >
+    -l6.5 </td><td>  480694547629890 </td><td>  2.615 GiB </td><td> 8m 26.2s
+</td></tr><tr><td >
+    -l7.0 </td><td> 1664959882602016 </td><td>  4.891 GiB </td><td> 18m 16s
+</td></tr><tr><td >
+    -l7.5 </td><td> 5740777527022706 </td><td>  9.033 GiB </td><td> 41m 43s
+</td></tr><tr><td >
+    -l8.0 </td><td>12149489523059625 </td><td>  14.08 GiB </td><td> 1h 10.8m
+  </td></tr></table></td></tr></table>
+</p>
+<p class="a">
+
+The next table shows the time needed by the command
+<span class="m">ries -l3 2.5063141592653589</span> on a variety of machines dating backto 2000.
+</p>
+
+<p class="q">
+  <span class="i">Time by PCMS (Processor/Cache/Memory System)</span>
+  <table><tr><td width="20px"></td><td><table border="1" cellspacing="0" cellpadding="2" hspace="30px">
+<tr><td>
+  <span class="i">machine</span>                                        </td><td> <span class="i">time</span>
+</td></tr><tr><td >
+  333 MHz Intel Celeron                            </td><td> 24.4 s
+</td></tr><tr><td >
+  800-MHz PowerPC G4 (PC133 DRAM)                  </td><td> 14.3 s
+</td></tr><tr><td >
+  800-MHz PowerPC G4 (PC2100 DDR SRAM)             </td><td> 12.8 s
+</td></tr><tr><td >
+  2 GHz PowerPC G5 (PC3200 DDR SRAM)               </td><td> 6.6 s
+</td></tr><tr><td >
+  1.83-GHz Core 2 Duo (PC2-5300 DDR2 SDRAM)        </td><td> 3.59 s
+</td></tr><tr><td >
+  2.33-GHz Core 2 Duo (PC2-5300 DDR2 SDRAM)        </td><td> 2.72 s
+</td></tr><tr><td >
+  Xeon E5520 at 2.27 GHz (PC3-8500 DDR3 ECC SDRAM) </td><td> 2.19 s
+</td></tr><tr><td >
+  Core i7-2720QM at 3.3 GHz (PC3-10600 DDR3 SDRAM) </td><td> 1.60 s
+  </td></tr></table></td></tr></table>
+</p>
+<p class="a">
+
+<h2 id="background">RIES Background and Philosophy</h2></p>
+
+<p class="a"><h3 id="history">Motivation and History</h3></p>
+
+<p class="a">
+I wrote <span class="k">ries</span> after I was frustrated by services such as
+<a href="http://oldweb.cecm.sfu.ca/projects/ISC/ISCmain.html">Plouffe's Inverter</a>
+and the <a href="http://en.wikipedia.org/wiki/Inverse_Symbolic_Calculator">Inverse Symbolic Calculator</a>. In case you're wondering, the
+things that frustrated me are described <a href="quibbles.html">here</a>. I had
+also been getting occasional emails from members of the
+<a href="../../pub/num/n-b137_035.html#cult_137">Cult of 137</a>, and like-minded people claiming
+formulae for such things as the
+<a href="../../pub/muency/areaofthemandelbrotset.html">area of the Mandelbrot set</a>. I thought
+it would be nice to be able to demonstrate how easy it is to find a
+formula for any number.
+</p>
+
+<p class="a">
+After a particularly inspired email missive from a person who had
+a magic unproven formula for some number, I decided to write <span class="k">ries</span>
+and had a working equation-generator within about 2 weeks
+(Feb 7<sup>th</sup> through 21<sup>st</sup>, 2000).
+</p>
+
+<p class="a">
+The program had its own page at <span class="m">mrob.com/ries/index.html</span> at least asearly as Aug 18<sup>th</sup> 2000. Soon I moved it to Earthlink, at
+<span class="m">home.earthlink.net/~mrob/pub/ries/index.html</span>, where it remained forseveral years, before moving back to mrob.com at its present location,
+<span class="m">mrob.com/pub/ries/index.html</span>. (Old <span class="k">ries</span> pages at these URLs can beseen at <a href="http://archive.org/web/web.php">archive.org</a>).
+</p>
+
+<p class="a">
+The core functionality and implementation have remained the same,
+although various new features and options were added in late 2011 and
+early 2012, and more in 2013.
+</p>
+
+<p class="a">
+In April 2012, <span class="k">ries</span> was used by Randall Munroe for
+<a href="http://xkcd.com/1047">an xkcd strip</a>. In response to growing
+interest, I added the <a href="en-query.html">Online RIES server</a>.
+</p>
+
+<p class="a"><h3 id="algorithm">Algorithm</h3></p>
+
+<p class="a">
+Think of the <a href="http://en.wikipedia.org/wiki/Real_number">Real number</a>s as being points in space (not arranged
+along a straight line, as is more commonly taught). Instead of placing
+them close to each other based on their actual value, imagine the real
+numbers are close together if they have a simple algebraic
+relationship. Think of them as being connected by lines whenever two
+real numbers have a simple relationship. Two real numbers with a
+simple relationship are like cities on a map, connected by roads. For
+example, the numbers 2 and 3 would be connected because they differ by
+exactly 1, and the numbers &#960; and 1/&#960; would be connected because
+they are reciprocals. This abstract "map" of real numbers connected by
+lines is called a <a href="http://en.wikipedia.org/wiki/Graph_%28mathematics%29">graph</a> in the branch of
+mathematics called <a href="http://en.wikipedia.org/wiki/Graph_theory">graph theory</a>.
+</p>
+
+<p class="a">
+Somewhere on this infinite graph, which has a
+<a href="http://en.wikipedia.org/wiki/Vertex_%28graph_theory%29">vertex</a> for every real number, is the
+"mystery number" specified by the user of the <span class="k">ries</span> program. This
+number is called the <span class="b">Target</span>.
+</p>
+
+<p class="a">
+Perhaps we could explore the infinite graph by starting with the
+<a href="http://en.wikipedia.org/wiki/Integer">integer</a>s on the left and the Target on the right. As we explore the
+graph we start with very simple operations, like adding or subtracting
+1:
+</p>
+
+<p class="a">
+
+</p><br /><p align="center"><img src="../../pub/math/images/ries/ries-graph-1.png" width=512  alt="left: a few integers; right: the target T along with T&#177;1" title="left: a few integers; right: the target T along with T&#177;1" ><br /><i>left: a few integers; right: the target T along with T&#177;1</i></p><br />
+<p class="a">
+Next we try negating values, or taking the reciprocal:
+</p>
+
+<br /><p align="center"><img src="../../pub/math/images/ries/ries-graph-2.png" width=512  alt="Some negatives and reciprocals" title="Some negatives and reciprocals" ><br /><i>Some negatives and reciprocals</i></p><br />
+<p class="a">
+We can also use square root or more exotic functions, and two values
+on the graph can be combined (such as by adding or multiplying) to
+make new values:
+</p>
+
+<br /><p align="center"><img src="../../pub/math/images/ries/ries-graph-3.png" width=512  alt="More possibilities and combinations" title="More possibilities and combinations" ><br /><i>More possibilities and combinations</i></p><br />
+<p class="a">
+Continuing in this manner, we make more and more different values. It
+is clear that eventually we will find a value on the left that is very
+close (numerically) to some value on the right. Will we ever find an
+exact equality?
+</p>
+
+<br /><p align="center"><img src="../../pub/math/images/ries/ries-graph-4.png" width=512  alt="Search for an equality: Do any of the paths meet?" title="Search for an equality: Do any of the paths meet?" ><br /><i>Search for an equality: Do any of the paths meet?</i></p><br />
+<p class="a">
+If we could find such a path, we would have an <a href="http://en.wikipedia.org/wiki/Equation">equation</a>, whose
+solution or <a href="http://en.wikipedia.org/wiki/Zero_of_a_function">root</a> would give an exact
+representation (and perhaps a <a href="http://en.wikipedia.org/wiki/Closed-form_expression">closed-form expression</a>) for the target number
+<span class="i">T</span>. If we could find the <span class="i">shortest path</span> then we would have the
+<span class="i">simplest</span> exact representation of the target number.
+</p>
+
+<p class="a"><h3 id="exact_unlikely">An Exact Answer is Unlikely</h3></p>
+
+<p class="a">
+I suggested that all the real numbers are on a graph like this.
+However the graph is infinite and there are limits to what can be
+reached in a finite number of steps. It has been shown that not all
+real numbers are connected by the "algebraic" operations, like
+subtraction, division and square root. The <a href="http://en.wikipedia.org/wiki/Transcendental_number">transcendental number</a>s
+far outnumber the <a href="http://en.wikipedia.org/wiki/Algebraic_number">algebraic number</a>s. Furthermore, even if we add
+constants like &#960; and <span class="i">e</span>, plus more functions like natural
+logarithm and cosine, making some transcendental numbers reachable,
+there will always be an infinity of real numbers that we'll never
+reach. That is because we only have a finite number of options at each
+step, and we are only taking a finite number of steps, so the total
+number of combinations of operations, and thus reachable nodes, will
+always be the "countable infinity" <a href="http://en.wikipedia.org/wiki/Aleph_null">Aleph null</a> &#8212; the same as the
+number of integers. The real numbers are a
+<a href="http://en.wikipedia.org/wiki/Continuum_%28set_theory%29">continuum</a>, a set with more than Aleph<sub>0</sub>
+members.
+</p>
+
+<p class="a">
+Since there might be no finite path connecting the fundamental
+constants like the integers and &#960; to the target number (or
+equivalently, a path that converges on the target might be infinitely
+long), <span class="k">ries</span> cannot hope to always find an exact match. However,
+paths of finite length should be able to come arbitrarily close to the
+target value. (Numerical roundoff error will often cause an 'exact'
+match, and these might or might not correspond to actual mathematical
+equality.)
+</p>
+
+<p class="a">
+The central <span class="k">ries</span> algorithm is a <a href="http://en.wikipedia.org/wiki/Bidirectional_search">bidirectional search</a> (see also
+<a href="index-6.html#fn_poole2010">[5]</a>) of a graph similar to the search illustrated in the
+figures above. The graph is traversed in a "breadth-first" manner,
+starting with the shortest paths and gradually extending the
+boundaries of explored space (sometimes called "iterative deepening").
+Ideally <span class="k">ries</span> would generate all possible
+<a href="http://en.wikipedia.org/wiki/Expression_%28mathematics%29">expressions</a> in order of increasing
+<a href="http://en.wikipedia.org/wiki/Kolmogorov_complexity">Kolmogorov complexity</a>. The actual algorithm is a practical
+approximation to this.
+</p>
+
+<p class="a">
+A true bidirectional search requires that the two "search frontiers"
+eventually meet. <span class="k">ries</span> cannot guarantee that: as already mentioned,
+only a countable number of solutions could ever be reached by its
+search. So <span class="k">ries</span> reports close matches, and ensures that each
+reported result is "closer" than any reported so far.
+</p>
+
+<p class="a"><span class="k">ries</span> explores the graph for short paths that start at the target
+number, and simultaneously it looks at short paths starting from
+fundamental constants like 1 and &#960;. While it explores, it "marks"
+every spot it has visited by adding an entry into a database in
+memory. The database is kept sorted by value: in the example
+illustrated above, the entry for 2<sup>1</sup>/<sub>2</sub> will be close to the entry
+for the target value 2.5063. Whenever <span class="k">ries</span> finds two values that are
+closer than anything it has found so far, it reports an equation that
+expresses a newer, better approximation to the target.
+</p>
+
+<p class="a">
+Since <span class="k">ries</span> is exploring <span class="i">expressions</span>, and its bidirectional search
+finds two paths that meet somewhere in the middle, any approximation
+<span class="k">ries</span> finds is in effect an <a href="http://en.wikipedia.org/wiki/Equation">equation</a> whose
+<a href="http://en.wikipedia.org/wiki/Zero_of_a_function">root</a> constitutes an approximation to the
+target. For example, on the left we will eventually compute 2&#960; =
+6.2831... and on the right we'll compute <span class="i">T</span><sup>2</sup> = 6.2815... Combining
+these into an equation gives <span class="i">T</span><sup>2</sup> = 2&#960;, and the solution of that
+equation is <span class="i">T</span>=&#8730;<span style="text-decoration: overline">2&#960;</span> = 2.5066... which is not exactly the target
+value 2.5063, but it's a lot closer than 2<sup>1</sup>/<sub>2</sub>.
+</p>
+
+<p class="a">
+There is a staggering amount of calculation that might be needed to
+find a close match. If the matches were distributed randomly, then it
+might take a million failed attempts before finding a single example
+that matches to within 6 significant digits. The bidirectional search
+approach helps with this, and <span class="k">ries</span> incorporates extensive design for
+efficiency, with multiple levels of abstraction and
+<a href="http://en.wikipedia.org/wiki/Pruning_%28decision_trees%29">pruning</a> at each level. A match to within
+10 significant digits is usually attainable in just a few seconds.
+</p>
+
+<p class="a">
+A detailed example of the search for a formula for 2.5063, showing the
+actual values <span class="k">ries</span> calculates as it searches, is shown in detail
+below: <a href="index-6.html#alg_example">A Detailed Example of the RIES Algorithm</a>.
+</p>
+
+<p class="a"><h3 id="optims">Optimising the Bidirectional Search</h3></p>
+
+<p class="a"><span class="k">ries</span> does not generate full expressions and then evaluate each one;
+it evaluates each symbol as it goes along. This allows it to avoid
+repeating calculations when multiple expressions have common parts.
+For example it goes from &#8730;<span style="text-decoration: overline">7</span>+1 to &#8730;<span style="text-decoration: overline">7</span>-1 without repeating the
+calculation of &#8730;<span style="text-decoration: overline">7</span>.
+</p>
+
+<p class="a"><span class="k">ries</span> uses a stack-based execution design, but preserving function
+arguments when they are "popped" off the stack so they can be pushed
+back on for re-use. To accomplish this I use the "meta-stack"
+abstraction, so-called because it is used like a "stack of stacks".
+One can also think of it as a stack with an undo list, itself a sort
+of stack: whenever something is pushed or popped on the normal stack,
+the "undo instructions" are pushed onto the "undo stack"; and when you
+"un-push" or "un-pop" it pops instructions off the undo stack and
+alters the normal stack accordingly.
+</p>
+
+<p class="a">
+Millions of expressions need to be generated, and stored in memory so
+that <span class="k">ries</span> can display an answer in symbolic form when it finds a
+match. For memory efficiency the expressions are as strings of
+one-byte symbols, in postfix format so that no extra storage is needed
+for parentheses. For example, "&#8730;<span style="text-decoration: overline">7</span>+1" is represented in postfix as
+"7 &#8730; 1 +", which is encoded in ASCII as <span class="m">7q1+</span>.</p>
+
+<p class="a"><span class="k">ries</span> needs to give different "weights" to the various digits,
+constants and functions in order to produce output that makes sense.
+(For example, 4<sup>7</sup> should be thought of as "more complex" than 4&times;7,
+which itself is "more complex" than 4+7).
+</p>
+
+<p class="a">
+Since <span class="k">ries</span> wants to perform iterative deepening, and do so in such a
+way as to generate expressions approximately in order of increasing
+score (as measured by the sum of the "weights" of the symbols in each
+expression). This means that the iterative deepening cannot simply
+generate all 1-symbol expressions, then all 2-symbol expressions, and
+so on. Instead the deepening needs to look at the complexity score
+(sum of weights) of partial expressions and see if it's possible to
+lengthen each partial expression without exceeding the complexity
+score. This depends on the number of additional symbols that might be
+needed to complete the expression. That could be measured by looking at
+the number of items on the expression's stack, but I decided instead to
+generate expression "forms" that are used as "templates" to generate
+expressions whose <a href="http://en.wikipedia.org/wiki/Binary_expression_tree">binary expression tree</a> is identical.
+</p>
+
+<p class="a">
+In expression "forms", the letter "a" represents a scalar value (like
+7 or &#960;), a "b" represents a function of one argument (like sine or
+square root), and a "c" represents a function of two arguments. For
+example the form corresponding to the postfix expression <span class="m">7q1+</span> is"abac".
+</p>
+
+<p class="a">
+The forms are also generated by iterative deepening. Given a length
+<span class="i">n</span>, all forms of length <span class="i">n</span> are generated recursively, with pruning
+when an initial substring cannot be completed in length <span class="i">n</span>. (It
+is equivalent to generating the <a href="http://en.wikipedia.org/wiki/Motzkin_number">Motzkin number</a>s.)
+</p>
+
+<p class="a"><h3 id="source">Source Code</h3></p>
+
+<p class="a"><span class="k">ries</span> was first created for <a href="index-6.html#linux">Linux</a><sup>1</sup>, but it also compiles
+in Mac OS X, Windows with the MinGW compiler tools, or in Visual C++
+with fairly minimal effort. It uses only
+the standard C math and stdio libraries.
+<a href="src/ries.c.txt">The source code</a> is distributed under
+<a href="COPYING.txt">GPL 2.0</a>. You can also get the
+<a href="doc/ries.1.txt">manpage source</a>. If you don't already have a copy, you
+should also retrieve the GNU General Public License version 2.0, which
+defines the terms under which this source code is made available to
+you, <a href="COPYING.txt">here</a>.
+</p>
+
+<p class="q">
+  <span class="b">RIES Source Code Files</span>:
+  <br />
+ &#8195; &#8195; <a href="src/ries.c.txt">Main Program (C)</a> (build instructions are in a block
+                                            comment near the beginning)
+  <br />
+ &#8195; &#8195; <a href="src/msal_math64.c.txt">msal_math64.c</a>
+                                           (optional standalone math functions)
+  <br />
+ &#8195; &#8195; <a href="COPYING.txt">License</a> (GPL 2.0)
+  <br />
+ &#8195; <span class="b">Manual</span>:
+  <br />
+ &#8195; &#8195; <a href="doc/ries-manual.pdf">RIES manual, PDF format</a>
+  <br />
+ &#8195; &#8195; <a href="doc/ries-manual.ps">RIES manual, PostScript format</a>
+  <br />
+ &#8195; &#8195; <a href="doc/ries-manual.txt">RIES manual, in Plain ASCII</a>
+  <br />
+ &#8195; &#8195; <a href="doc/ries.1.txt">RIES manual, Source (nroff) format</a>
+</p>
+<p class="a">
+
+<hr />
+</p>
+
+<p class="a"><h3 id="multivar">Approximating Multiple Unknowns</h3></p>
+
+<p class="a">
+Several readers have suggested that <span class="k">ries</span> be enhanced to consider several
+unknowns simultaneously.
+</p>
+
+<p class="a"><span class="k">ries</span> is as fast as it is only because it uses a
+<a href="http://artint.info/html/ArtInt_65.html">bidirectional search</a>. It
+cannot count on the two searches ever "meeting" (there is unlikely to
+be an exact solution), so <span class="k">ries</span> has to use successive approximation,
+a technique femiliar to those who have done rational approximation by
+<a href="http://en.wikipedia.org/wiki/Continued_fraction">continued fraction</a>s. Anything it finds is given a "closeness
+rating", and each next answer must be better. It must use derivatives,
+so that the "closeness" is normalised to be expressed in terms of the
+"unknown" or "target" value.
+</p>
+
+<p class="a">
+For <span class="k">ries</span> to simultaneously consider multiple unknown or "target"
+values, each new match would embody formula(s) for one or more of the
+unknowns. The algorithm must consider the derivatives of each formula
+with respect to each unknown. If there are 2 unknowns, there will be 4
+derivatives; if 3 unknowns, there will be 9 derivatives, and so on.
+</p>
+
+<p class="a">
+There is a need to take these multiple pieces of information and
+combine them into a single "closeness" value that can be used to make
+the successive-refinement bidirectional search work. One technique
+that does something like this is <a href="http://en.wikipedia.org/wiki/Least_squares_adjustment">least squares adjustment</a> with
+more degrees of freedom than dependencies; an example application is
+the
+<a href="http://physics.nist.gov/cuu/Constants">CODATA physical constants</a>.
+<span class="k">ries</span> would need to be told how the unknowns are related to each
+other (for example, <span class="i">b</span>/<span class="i">a</span> is proportional to <span class="i">c</span><sup>2</sup>).
+</p>
+
+<p class="a">
+I cannot suggest an algorithm for such a task, but I doubt it would
+bear much resemblance to <span class="k">ries</span>.
+</p>
+
+<p class="a"><hr />
+</p>
+
+<p class="a"><h2 id="restr_details">Detailed Examples of Restricted-Class Searches</h2></p>
+
+<p class="a"><h3 id="integer">Searching for Integer Solutions</h3></p>
+
+<p class="a">
+Use the <span class="k">ries</span> option <span class="m">-i</span> to search for a solution that entirelyinvolves integers. For example:
+</p>
+
+  <span class="p">
+  ries -i 1729
+&#8195;
+     Your target value: T = 1729                        mrob.com/ries
+&#8195;
+                    9 x = 5^6              for x = T + 7.11111     {79}
+                (x-1)/3 = (4*6)^2          ('exact' match)         {97}
+                 9(x+1) = 5^6              for x = T + 6.11111     {93}
+                  x+6^2 = (6*7)^2          for x = T - 1           {95}
+                  3^3 x = 6^6+1            for x = T - 0.962963    {111}
+                 4(x-6) = (9^2+2)^2        for x = T - 0.75        {112}
+                 4(x-7) = (9^2+2)^2        for x = T + 0.25        {112}
+              3*(3 x)^2 = 2*7^9            for x = T - 0.0823981   {122}
+                                   . . .
+  </span>
+<p class="a">
+In an integer search, the equations that <span class="k">ries</span> gives, when treated as
+inequalities, evaluate to integers on both sides of the = sign. For
+example, in the first answer "9<span class="i">x</span>=5<sup>6</sup>", put in the target number
+(1729) for <span class="i">x</span> and the left side is 9&times;1729=15561, and the
+right-hand-side is 5<sup>6</sup>=15625. This is a near-equality; <span class="k">ries</span> also
+tells us that if <span class="i">x</span> is 7.11111... (7 <sup>1</sup>/<sub>9</sub>) higher, the equation
+works out: 9&times;(1729+7<sup>1</sup>/<sub>9</sub>) = 9&times;1729+9&times;7+1 = 15625.
+</p>
+<p class="i">
+  The second solution "(<span class="i">x</span>-1)/3 = (4*6)<sup>2</sup>" is an exact match,
+because (1729-1)/3 is 576, which is 24<sup>2</sup>. If you want <span class="k">ries</span> to give
+you <span class="i">only</span> the exact match for an integer problem, use the option
+<span class="m">--max-match-distance 0</span>, meaning that no match should be more than 0from equality:
+</p>
+
+  <span class="p">
+  ries -i 1729 --max-match-distance 0
+&#8195;
+  Only give an 'exact' match (if any) then exit.
+&#8195;
+     Your target value: T = 1729                        mrob.com/ries
+&#8195;
+                (x-1)/3 = (4*6)^2          ('exact' match)         {97}
+  (Stopping now because an exact match was found.)
+  </span>
+<p class="a"><h3 id="rational">Searching for Rational Solutions</h3></p>
+
+<p class="a">
+Use the <span class="k">ries</span> option <span class="m">-r</span> to search for <span class="i">rational approximations</span>,i.e. solutions that entirely involve ratios of integers. For example:
+</p>
+
+  <span class="p">
+  ries -r 2.50618414558877
+&#8195;
+     Your target value: T = 2.50618414558877            mrob.com/ries
+&#8195;
+                    2 x = 5                for x = T - 0.00618415  {49}
+                  2 x-5 = 1/(9*9)          for x = T - 1.13061e-05 {103}
+              1/(2 x-5) = 9*9-1/4          for x = T + 7.80488e-06 {131}
+          1/(1/(2-x)+2) = 8(1/9+5)         for x = T + 5.67559e-06 {140}
+              1/(2 x-5) = 9*9-1/8          for x = T - 1.76537e-06 {134}
+                  (for more results, use the option '-l3')
+  </span>
+<p class="a">
+The <span class="m">-r</span> option limits <span class="k">ries</span> to only using the digits 1 through 9 andthe operations +, -, *, /, negative, and reciprocal; and each
+solution will have only one <span class="i">x</span> on the left-hand-side; this means that
+when solved for <span class="i">x</span>, all answers will work out to a fraction. To get
+<span class="k">ries</span> to do the solving for you, add the <span class="m">-s</span> option:</p>
+
+  <span class="p">
+  ries -r 2.50618414558877 -s
+&#8195;
+     Your target value: T = 2.50618414558877            mrob.com/ries
+&#8195;
+     x = 5/2                               for x = T - 0.00618415  {50}
+     x = (1/(9*9)+5)/2                     for x = T - 1.13061e-05 {103}
+     x = (1/(9*9-1/4)+5)/2                 for x = T + 7.80488e-06 {131}
+     x = 2-1/(1/(8(1/9+5))-2)              for x = T + 5.67559e-06 {142}
+     x = (1/(9*9-1/8)+5)/2                 for x = T - 1.76537e-06 {134}
+                  (for more results, use the option '-l3')
+  </span>
+<p class="a">
+The answers aren't simplified, but you can see that they all work out
+to <a href="http://en.wikipedia.org/wiki/Rational_number">rational number</a>s.
+</p>
+
+<p class="a"><h3 id="constructible">Searching for "Constructible" Solutions</h3></p>
+
+<p class="a">
+Use the <span class="k">ries</span> option <span class="m">-c</span> to search for solutions that are<span class="i"><a href="http://en.wikipedia.org/wiki/Constructible_number">constructible_number</a>s</span>. These are numbers corresponding to
+distances that can be "constructed" with a straightedge and compass,
+using the methods of <a href="http://en.wikipedia.org/wiki/Euclid%27s_Elements">Euclid's Elements</a>. <span class="m">-c</span> allows everythingallowed by <span class="m">-r</span>, but also allows squares, square roots, and the goldenratio constant &#934;. For example:
+</p>
+
+  <span class="p">
+  ries -c 2.50618414558877
+&#8195;
+     Your target value: T = 2.50618414558877            mrob.com/ries
+&#8195;
+                2 x = 5                    for x = T - 0.00618415  {49}
+            (x/2)^2 = sqrt(sqrt(6))        for x = T - 0.00411734  {78}
+                4-x = sqrt(sqrt(5))        for x = T - 0.00153293  {77}
+          x-sqrt(2) = sqrt(sqrt(sqrt(2)))  for x = T - 0.00146285  {82}
+              x+1/9 = phi^2                for x = T + 0.000738732 {72}
+          x-sqrt(5) = phi/6                for x = T - 0.000443837 {87}
+                             . . .
+  </span>
+<p class="a">
+You can also add <span class="m">-s</span> to shift everything to the right-hand-side:</p>
+
+  <span class="p">
+  ries -c 2.50618414558877 -s
+&#8195;
+     Your target value: T = 2.50618414558877            mrob.com/ries
+&#8195;
+     x = 5/2                               for x = T - 0.00618415  {50}
+     x = 2 sqrt(sqrt(sqrt(6)))             for x = T - 0.00411734  {77}
+     x = 4-sqrt(sqrt(5))                   for x = T - 0.00153293  {78}
+     x = sqrt(sqrt(sqrt(2)))+sqrt(2)       for x = T - 0.00146285  {81}
+     x = phi^2-1/9                         for x = T + 0.000738732 {73}
+     x = phi/6+sqrt(5)                     for x = T - 0.000443837 {86}
+                             . . .
+  </span>
+<p class="a"><h3 id="algebraic">Searching for Algebraic Solutions</h3></p>
+
+<p class="a">
+Use the <span class="k">ries</span> option <span class="m">-a</span> to search for solutions that are<span class="i"><a href="http://en.wikipedia.org/wiki/Algebraic_number">algebraic_number</a>s</span>. These are real numbers that are roots of
+polynomial equations like <span class="i">x</span><sup>5</sup>+<span class="i">x</span>-7=0. <span class="m">-a</span> allows everythingallowed by <span class="m">-c</span>, but also allows <span class="i">N</span><sup>th</sup> powers, <span class="i">N</span><sup>th</sup> roots, thetrigonometric functions (but only with the argument is a rational
+multiple of &#960;). Significantly, it allows more than one <span class="i">x</span> on the
+left-hand-side of the equation, which the above options do not. Here
+is an example:
+</p>
+
+  <span class="p">
+  ries -a 2.50618414558877
+&#8195;
+     Your target value: T = 2.50618414558877            mrob.com/ries
+&#8195;
+                    2 x = 5                for x = T - 0.00618415  {49}
+              x+sqrt(3) = phi^3            for x = T - 0.00216698  {82}
+              x-sqrt(2) = 8"/2             for x = T - 0.00146285  {81}
+              x-sqrt(x) = cospi(1/8)       for x = T + 0.0011526   {83}
+                  x+1/9 = phi^2            for x = T + 0.000738732 {72}
+                             . . .
+                  x^4-x = 8(3+phi)         for x = T + 1.68687e-07 {117}
+                             . . .
+  </span>
+<p class="a">
+With <span class="m">-a</span> there may sometimes be more than one <span class="i">x</span> in each equation,which the <span class="m">-s</span> option cannot "solve". However, <span class="i">most</span> of theanswers will have just one <span class="i">x</span> so <span class="m">-s</span> is still useful:</p>
+
+  <span class="p">
+  ries -a 2.50618414558877 -s
+&#8195;
+   Your target value: T = 2.50618414558877            mrob.com/ries
+&#8195;
+     x = 5/2                               for x = T - 0.00618415  {50}
+     x = phi^3-sqrt(3)                     for x = T - 0.00216698  {83}
+     x = 8"/2+sqrt(2)                      for x = T - 0.00146285  {80}
+     x = cospi(1/8)+sqrt(x)                for x = T + 0.0011526   {82}
+     x = phi^2-1/9                         for x = T + 0.000738732 {73}
+                             . . .
+     x = 4"/(8(3+phi)+x)                   for x = T + 1.68687e-07 {117}
+                             . . .
+  </span>
+<p class="a"><h3 id="alg_var">Variations of the <span class="m">-a</span> Option</h3></p>
+
+<p class="a">
+Using <span class="m">-a</span> with <span class="m">-Ox</span> tells <span class="k">ries</span> to limit its answers toalgebraic numbers that are expressible in
+<a href="http://en.wikipedia.org/wiki/Closed-form_expression">closed form</a>. This prevents <span class="k">ries</span> from
+finding an exact answer for 1.132997565885066 (which is a solution to
+<span class="i">x</span><sup>5</sup>+<span class="i">x</span>-3=0); but it still finds an answer for 1.551133518071245...
+(which is (2+&#8730;<span style="text-decoration: overline">3</span>)<sup>(1/3)</sup> ).
+</p>
+
+<p class="a">
+Using <span class="m">-a</span> with <span class="m">-Ox</span> and <span class="m">--any-exponent</span> gives solutions expressiblein closed form, but allows many transcendental numbers that are <span class="i">not</span>
+the roots of any polynomial by relaxing the restrictions on exponents.
+With these options <span class="k">ries</span> finds an answer for 1.632526919438153...
+(which is &#8730;<span style="text-decoration: overline">2</span><sup>&#8730;<span style="text-decoration: overline">2</span></sup>).
+</p>
+
+<p class="a"><h3 id="chow_closed">Chow's "Closed-Form" or "Exponential-Logarithmic" Numbers</h3></p>
+
+<p class="a">
+In his 1998 paper <span class="i">What is a closed-form number?</span> <a href="index-6.html#fn_chow1998">[4]</a>,
+Timothy Chow describes several definitions of classes of numbers. He
+starts by describing the difference between "closed-form function" and
+"closed-form number":
+</p>
+
+<p class="q">
+  <span class="s">
+  Recall that a function is <span class="i">elementary</span> if it can be constructed using
+  only a finite combination of constant functions, field operations,
+  and algebraic, exponential, and logarithmic functions. [...]
+</span></p>
+<p class="a"><span class="s">
+
+</span></p>
+<p class="q"><span class="s">
+  what we need [...] is a notion of a closed-form <span class="i">number</span> rather than a
+  closed-form <span class="i">function</span>. The distinction is important; we cannot, for
+  example, simply define an "elementary number" to be any number
+  obtainable by evaluating an elementary function at a point, because
+  all constant functions are elementary, and this definition would make
+  all numbers elementary. [...]
+</span></p>
+<p class="a"><span class="s">
+
+</span></p>
+<p class="q"><span class="s">
+  Intuitively, "closed-form" implies "explicit", and most algebraic
+  functions have no simple explicit expression. So the set of purely
+  transcendental elementary functions is a better prototype for our
+  purposes than the set of elementary functions. ("Purely
+  transcendental" simply means that the word "algebraic" is dropped
+  from the definition.)
+  </span> <br />
+ &#8195; &#8195; - Chow 1998 <a href="index-6.html#fn_chow1998">[4]</a>
+</p>
+<p class="a">
+
+In this description, the term <span class="i">algebraic functions</span> is being used
+as in the Wikipedia article <a href="http://en.wikipedia.org/wiki/Algebraic_function">Algebraic function</a>. It is not a
+"function" in the ordinary way, where you put in a number and get a
+single number out. Rather, it is a <a href="http://en.wikipedia.org/wiki/Binary_relation">binary relation</a> between <span class="i">x</span> and <span class="i">y</span>
+such that all valid pairs of <span class="i">x</span> and <span class="i">y</span> satisfy an equation like:
+</p>
+
+<p class="q">
+  <span class="i">P</span><sub><span class="i">n</span></sub>(<span class="i">y</span>)<span class="i">x<sup>n</sup></span> + ...
+     + <span class="i">P</span><sub>2</sub>(<span class="i">y</span>)<span class="i">x</span><sup>2</sup> + <span class="i">P</span><sub>1</sub>(<span class="i">y</span>)<span class="i">x</span> + <span class="i">P</span><sub>0</sub>(<span class="i">y</span>) = 0
+</p>
+<p class="a">
+
+where each of the <span class="i">P</span><sub><span class="i">i</span></sub>(<span class="i">y</span>) is a normal <a href="http://en.wikipedia.org/wiki/Polynomial">polynomial</a>. This
+includes a lot of things, like
+<a href="http://en.wikipedia.org/wiki/Quintic_function">quintic polynomials</a> in <span class="i">x</span>, that cannot usually
+be solved for <span class="i">x</span> in closed form. This is what Chow is referring to
+when he says, "most algebraic functions have no simple explicit
+expression", and it is the reason he drops the word "algebraic" and
+goes to a definition based on "purely transcendental".
+</p>
+
+<p class="a">
+He goes on to define his class of
+<span class="i">Exponential-Logarithmic numbers</span>, abbreviated EL or <span class="k">E</span>, as a
+<a href="http://en.wikipedia.org/wiki/Field_%28mathematics%29#Subfields_and_field_extensions">subfield</a> of the
+<a href="http://en.wikipedia.org/wiki/Complex_number">complex numbers</a> <span class="k">C</span> as follows:
+</p>
+
+<p class="q">
+  <span class="s">
+  A subfield <span class="k">F</span> of <span class="k">C</span> is closed under exp and log if
+  (1) exp(<span class="i">x</span>) &#8712; <span class="b">F</span> for all <span class="i">x</span> &#8712; <span class="k">F</span> and
+  (2) log(<span class="i">x</span>) &#8712; <span class="b">F</span> for all nonzero <span class="i">x</span> &#8712; <span class="k">F</span>,
+  where log is the branch of the natural logarithm function such that
+  -&#960; < Im(log <span class="i">x</span>) &le; &#960; for all <span class="i">x</span>. The field <span class="k">E</span> of EL numbers
+  is the intersection of all subfields of <span class="k">C</span> that are closed under
+  exp and log. [...]
+</span></p>
+<p class="a"><span class="s">
+
+</span></p>
+<p class="q"><span class="s">
+  Set <span class="k">E</span><sub>0</sub> = { 0 }, and for each <span class="i">n</span> > 0 let <span class="k">E</span><sub><span class="i">n</span></sub> be the set
+  of all complex numbers obtained either by applying a field operation
+  to any pair of (not necessarily distinct) elements of <span class="k">E</span><sub>(<span class="i">n</span>-1)</sub>
+  or by applying exp or log to any element of <span class="k">E</span><sub>(<span class="i">n</span>-1)</sub> [...]
+  <span class="k">E</span> is the union of all <span class="k">E</span><sub><span class="i">n</span></sub>. [...] <span class="k">E</span> is countable, and [every]
+  element of <span class="k">E</span> [has] an explicit finite expression in terms of
+  rational numbers, field operations, exp, and log.
+  </span> <br />
+ &#8195; &#8195; - Chow 1998 <a href="index-6.html#fn_chow1998">[4]</a>
+</p>
+<p class="a">
+
+Chow then gives several examples of numbers that qualify as members of
+<span class="k">E</span>:
+</p>
+
+<p class="q">
+   <span class="i">e</span> = exp(exp(0))
+ <br />
+ <span class="i">i</span> = exp(log(-1)/2)
+ <br />
+ &#960; = -<span class="i">i</span> log(-1)
+ <br />
+ and for any value <span class="i">v</span> &#8712; <span class="k">E</span>, the following are all in <span class="k">E</span>:
+ <br />
+ &#8195;&#8195; <span class="i">v</span><sup>2/3</sup> = exp((2 log <span class="i">v</span>)/3)
+ <br />
+ &#8195;&#8195; sin <span class="i">v</span> = (exp(<span class="i">i v</span>) - exp(-<span class="i">i v</span>)) / 2<span class="i">i</span>
+ <br />
+ &#8195;&#8195; tanh <span class="i">v</span> = (exp(<span class="i">v</span>) - exp(-<span class="i">v</span>)) / (exp(<span class="i">v</span>) + exp(-<span class="i">v</span>))
+ <br />
+ &#8195;&#8195; arccos <span class="i">v</span> = -<span class="i">i</span> log(<span class="i">v</span> + exp(log(<span class="i">v</span><sup>2</sup>-1)/2) )
+</p>
+<p class="a">
+
+</p><h3>Using RIES to Search for Chow Closed-Form Solutions</h3>
+
+<p class="a">
+Once Chow's definitions and examples are understood, it is easy to see
+that <span class="k">ries</span> with the option <span class="m">-Ox</span>, which allows only one <span class="i">x</span> in anyreported result, finds only solutions that are
+"Exponential-Logarithmic numbers" by Chow's definitions, and does not
+report any solutions that are not of this type.
+</p>
+
+  <span class="p">
+  ries -Ox 2.50618414558877
+&#8195;
+     Your target value: T = 2.50618414558877            mrob.com/ries
+&#8195;
+                    2 x = 5                for x = T - 0.00618415  {49}
+                    8 x = e^3              for x = T + 0.00450797  {66}
+                    x^2 = 2 pi             for x = T + 0.000444129 {55}
+               (x-pi)^2 = cospi(1/e)       for x = T + 0.000386421 {79}
+                  x^2+e = 9                for x = T + 0.000151461 {63}
+                 x^2+pi = 4^phi            for x = T - 6.4912e-05  {82}
+        sqrt(log_pi(x)) = ln(sqrt(6))      for x = T - 1.39889e-06 {87}
+             tanpi(x-3) = pi-e^4           for x = T + 1.06848e-06 {99}
+                             . . .
+  </span>
+<p class="a">
+Since there is only one <span class="i">x</span> in each equation, the <span class="m">-s</span> option resolvesall results into a closed-form solution:
+</p>
+
+  <span class="p">
+  ries -Ox 2.50618414558877 -s
+&#8195;
+     Your target value: T = 2.50618414558877            mrob.com/ries
+&#8195;
+         x = 5/2                           for x = T - 0.00618415  {50}
+         x = e^3/8                         for x = T + 0.00450797  {67}
+         x = sqrt(2 pi)                    for x = T + 0.000444129 {55}
+         x = pi-sqrt(cospi(1/e))           for x = T + 0.000386421 {85}
+         x = sqrt(9-e)                     for x = T + 0.000151461 {64}
+         x = sqrt(4^phi-pi)                for x = T - 6.4912e-05  {83}
+         x = pi^(ln(sqrt(6))^2)            for x = T - 1.39889e-06 {84}
+     tanpi(x-3) = pi-e^4                   for x = T + 1.06848e-06 {99}
+                             . . .
+  </span>
+<p class="a"><h3 id="liouville">Liouvillian Numbers</h3></p>
+
+<p class="a">
+In his 1998 paper <a href="index-6.html#fn_chow1998">[4]</a>, Timothy Chow describes the
+"Liouvillian numbers" <span class="k">L</span>. As with <span class="k">E</span> described above, they are a
+<a href="http://en.wikipedia.org/wiki/Field_%28mathematics%29#Subfields_and_field_extensions">subfield</a> of the
+<a href="http://en.wikipedia.org/wiki/Complex_number">complex numbers</a> <span class="k">C</span>. Referring
+to the work of J. F. Ritt (see <a href="index-6.html#fn_ritt1923">[1]</a>, <a href="index-6.html#fn_ritt1948">[2]</a>), Chow wrote:
+</p>
+
+<p class="q">
+  <span class="s">
+  Ritt thought of elementary numbers as the smallest <span class="i">algebraically</span>
+  <span class="i">closed</span> subfield <span class="k">L</span> of <span class="k">C</span> that is closed under exp and log. It so
+  happens that terminology has evolved since Ritt, so that <span class="k">L</span> is now
+  known as the field of <span class="i">Liouvillian</span> <span class="i">numbers</span>, and "elementary numbers"
+  are now numbers that can be specified <span class="i">implicitly</span> as well as
+  explicitly by exponential, logarithmic, and algebraic operations.
+  </span> <br />
+ &#8195; &#8195; - Chow 1998 <a href="index-6.html#fn_chow1998">[4]</a>
+</p>
+<p class="a">
+
+By "algebraically closed", Chow means that all roots of polynomials
+are in <span class="k">L</span>. So, for example, this included the roots of x<sup>4</sup>+x-3=0
+(which can be solved for <span class="i">x</span>), and also the roots of x<sup>5</sup>-x+1=0
+(which <span class="i">cannot</span> be solved for <span class="i">x</span>).
+</p>
+<p class="i">
+  By "closed under exp and log", Chow means that if <span class="i">v</span> is any number
+in <span class="k">L</span>, exp(<span class="i">v</span>) and log(<span class="i">v</span>) are also in <span class="k">L</span>. Thus <span class="k">L</span> includes
+&#8730;<span style="text-decoration: overline">2</span><sup>&#8730;<span style="text-decoration: overline">2</span></sup>; however it does not include the roots of <span class="i">x<sup>x</sup></span>=7 or
+of cos(<span class="i">x</span>)-<span class="i">x</span>=0 because those equations are not "algebraic" and
+cannot be solved for <span class="i">x</span> using the elementary functions.
+</p>
+<p class="i">
+  Ritt's <span class="k">L</span> and Chow's <span class="k">E</span> differ only in that <span class="k">L</span> includes
+implicitly defined algebraic numbers (like the roots of all
+<a href="http://en.wikipedia.org/wiki/Quintic_function">quintic polynomials</a>) while <span class="k">E</span> includes only
+those that can be expressed in closed form.
+</p>
+
+<p class="a">
+Use the <span class="k">ries</span> option <span class="m">-l</span> to search for solutions that areLiouvillian numbers. This option is like <span class="m">-a</span>, but permits the naturallogarithm and exponential functions, with any argument that does not
+contain an <span class="i">x</span>. For example:
+</p>
+
+  <span class="p">
+  ries -l 2.50618414558877
+&#8195;
+     Your target value: T = 2.50618414558877                mrob.com/ries
+&#8195;
+                    2 x = 5                      for x = T - 0.00618415  {49}
+                    8 x = e^3                    for x = T + 0.00450797  {66}
+                    x^2 = 2 pi                   for x = T + 0.000444129 {55}
+               (x-pi)^2 = cospi(1/e)             for x = T + 0.000386421 {79}
+                  x^2+e = 9                      for x = T + 0.000151461 {63}
+                 x^2+pi = 4^phi                  for x = T - 6.4912e-05  {82}
+          1/(x-sqrt(3)) = 7"/6                   for x = T + 3.52319e-05 {94}
+                x (x-2) = sqrt(ln(5))            for x = T + 1.51245e-05 {91}
+               x (x+pi) = e^e-1                  for x = T - 1.30526e-05 {96}
+                             . . .
+  </span>
+<p class="a">
+Add the <span class="m">-s</span> option to get answers with only one <span class="i">x</span> on the left sideof the equation. Since there may sometimes be more than one <span class="i">x</span> in
+each equation, this cannot "solve" all results, but it works on most
+of them:
+</p>
+
+  <span class="p">
+  ries -l 2.50618414558877 -s
+&#8195;
+     Your target value: T = 2.50618414558877                mrob.com/ries
+&#8195;
+     x = 5/2                                     for x = T - 0.00618415  {50}
+     x = e^3/8                                   for x = T + 0.00450797  {67}
+     x = sqrt(2 pi)                              for x = T + 0.000444129 {55}
+     x = pi-sqrt(cospi(1/e))                     for x = T + 0.000386421 {85}
+     x = sqrt(9-e)                               for x = T + 0.000151461 {64}
+     x = sqrt(4^phi-pi)                          for x = T - 6.4912e-05  {83}
+     x = 1/7"/6+sqrt(3)                          for x = T + 3.52319e-05 {93}
+     x = sqrt(ln(5))/(x-2)                       for x = T + 1.51245e-05 {92}
+     x = (e^e-1)/(x+pi)                          for x = T - 1.30526e-05 {97}
+                             . . .
+  </span>
+<p class="a"><h3 id="elementary">Elementary Numbers</h3></p>
+
+<p class="a">
+Repeating part of the previous quote from Chow:
+</p>
+
+<p class="q">
+  <span class="s">
+  [...] [by current usage, the term] "elementary numbers"
+  [refers to all] numbers that can be specified <span class="i">implicitly</span> as well as
+  explicitly by exponential, logarithmic, and algebraic operations.
+  </span> <br />
+ &#8195; &#8195; - Chow 1998 <a href="index-6.html#fn_chow1998">[4]</a>
+</p>
+<p class="a">
+
+"Implicitly" refers to numbers that are defined in terms of an
+equation that may or may not be solvable into a closed-form number.
+This includes such things as the roots of <span class="i">x<sup>x</sup></span>=7 and <span class="i">x</span>+<span class="i">e<sup>x</sup></span>=0.
+This corresponds exactly to what you get from <span class="k">ries</span> with no options
+at all:
+</p>
+
+  <span class="p">
+  ries 2.50618414558877
+&#8195;
+     Your target value: T = 2.50618414558877                mrob.com/ries
+&#8195;
+                    2 x = 5                      for x = T - 0.00618415  {49}
+                    8 x = e^3                    for x = T + 0.00450797  {66}
+                    x^2 = 2 pi                   for x = T + 0.000444129 {55}
+                    x^x = 1+9                    for x = T - 8.88178e-16 {69}
+  (Stopping now because best match is within 2.23e-15 of target value.)
+  </span>
+<p class="a">
+Since there may sometimes be more than one <span class="i">x</span> in each equation, the
+<span class="m">-s</span> option cannot "solve" all results, but it works on most of them:</p>
+
+  <span class="p">
+  ries 2.50618414558877 -s
+&#8195;
+     Your target value: T = 2.50618414558877                mrob.com/ries
+&#8195;
+     x = 5/2                                     for x = T - 0.00618415  {50}
+     x = e^3/8                                   for x = T + 0.00450797  {67}
+     x = sqrt(2 pi)                              for x = T + 0.000444129 {55}
+     x = x"/(1+9)                                for x = T - 8.88178e-16 {70}
+  (Stopping now because best match is within 2.23e-15 of target value.)
+  </span>
+<br /><p align="center"><a href="index.html">First page</a> . . . <a href="index-3.html">Forward to page 3</a> . . . <a href="index-6.html">Last page (page 6)</a></p><br />
+
+
+<hr />
+Contents: <a href="index.html#overview"><span class="k">ries</span> overview</a> <a href="#bench">Benchmarks</a>
+<a href="#history">History</a> &#8195; <a href="index-3.html#tricks">Nerdy Math Tricks</a> &#8195;
+<a href="index-4.html#serious">Semiserious Math Tricks</a> &#8195;
+<a href="index-6.html#links">Links and miscellaneous</a>
+
+<br />
+<br />
+<hr>
+<span class="footer">
+<span class="s">Robert Munafo's home pages on <a href="http://www.hostmds.com">HostMDS</a> &#8195;
+&copy; 1996-2020 Robert P. Munafo.</span>
+<br />
+ &#8195; <a href="../../pub/personal.html">about</a> &#8195; <a href="../../main-contact.html">contact</a>
+<br />
+<span class="s">This work is licensed under a Creative Commons
+Attribution-NonCommercial 4.0 International License.
+Details <a href="../../cc-license.html">here</a>.</span>
+</span>
+<img src="../../images/symbols/rbot-16.png" alt=""  ><span style="font-size: small">s.11</span><br /></div>
+</body></html>

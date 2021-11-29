@@ -1,0 +1,1926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1"> <meta name="GENERATOR" content="Rilybot AROS" />
+ <meta name="Author" content="Robert Munafo" />
+ <meta name="format-detection" content="telephone=no">
+ <link rel="search" type="application/opensearchdescription+xml" title="mrob" href="/opensearch.xml" />
+ <meta name="keywords" content="RIES, Find, Algebraic, Equations, Given, Their, Solution" />
+ <meta name="description" content="RIES - Find Algebraic Equations, Given Their Solution -- Explore a wide variety of topics from large numbers to sociology at mrob.com" />
+ <meta name="x-rhtf-glname" content="ries" />
+<link rel="shortcut icon" href="http://mrob.com/favicon.ico" />
+<title> RIES - Find Algebraic Equations, Given Their Solution (page 5) at MROB </title>
+<link rel="stylesheet" href="../../style.css" />
+</head>
+
+<body >
+<div id="banner">
+<div id="topnav">
+<a href="../../pub/index.html">mrob</a>
+&#8195;
+<a href="index.html">RIES</a> <a href="../../pub/math/numbers.html">Numbers</a> <a href="../../pub/math/largenum.html">Largenum</a> <a href="../../pub/math/nu-sequences.html">Sequences</a> <a href="../../pub/muency.html">Mandelbrot</a>
+&#8195;
+<a href="../../pub/comp/xmorphia/index.html">Xmorphia</a>
+</div>
+
+
+<div id="search">
+  <form action="http://www.google.com/search" style="margin:0; padding:0;">
+  <label for="q">Search:</label>
+  <input name="query" type="hidden" value="site:mrob.com" />
+  <input style="font-family:Palatino" name="q" id="q" size="15" value="" />
+  <input name="btnG" type="submit" value="Go" />
+  </form>
+</div>
+</div>
+<div style="clear:both;"></div>
+<div id="content">
+<h1>RIES - Find Algebraic Equations, Given Their Solution&#8195;&#8195;</h1><br /><p align="center"><a href="index.html">First page</a> . . . <a href="index-4.html">Back to page 4</a> . . . <a href="index-6.html">Forward to page 6</a></p><br />
+<p class="a"><h3 id="brok_calc">The Broken Calculator</h3></p>
+
+<p class="a">
+This one is a bit like the "<a href="index-4.html#identity">forgotten identities</a>"
+example above, and is based on a problem commonly attributed to
+Donald J. Newman <a href="index-6.html#fn_newman1982">[3]</a>:
+</p>
+
+<p class="q">
+  <span class="i">Derive the operations +, -, x, and / from - and reciprocal.</span>
+</p>
+<p class="a">
+
+It's like we have a calculator with broken +, x and / keys but we'd
+still like to use it to add, multiply and divide. How?
+</p>
+<p class="i">
+  Solving this is conceptually similar to building up a complete LISP
+function library from 0, successor, and comparison functions (see my
+<a href="../../pub/math/functional-computation.html">functional computation</a> article), but we can
+use <a href="index.html">RIES</a> to help us discover some of the functions.
+</p>
+
+<p class="a">
+We start with the "reciprocal function" *f<span class="i">(</span>x) = 1/<span class="i">x</span> and the
+subtraction function <span class="i">f</span>(<span class="i">a</span>,<span class="i">b</span>) = <span class="i">a</span>-<span class="i">b</span>. The first (fairly
+obvious) step is to find a way to do addition. There are only a few
+simple steps. We can get the constant 0 by subtracting anything from
+itself:
+</p>
+
+<p class="q">
+  0 = <span class="i">x</span>-<span class="i">x</span>
+</p>
+<p class="a">
+
+Then we get the <span class="i">negation function</span> by subtracting any value from 0:
+</p>
+
+<p class="q">
+  -<span class="i">a</span> = 0-<span class="i">a</span>
+</p>
+<p class="a">
+
+Now we have 0, negation, and subtraction. With these we can add any
+two values:
+</p>
+
+<p class="q">
+  <span class="i">a</span>+<span class="i">b</span> = <span class="i">a</span>-(-<span class="i">b</span>)
+</p>
+<p class="a">
+
+Substituting the 0 and negation functions, we have:
+</p>
+
+<p class="q">
+  <span class="i">a</span>+<span class="i">b</span> = <span class="i">a</span>-((<span class="i">x</span>-<span class="i">x</span>)-<span class="i">b</span>)
+</p>
+<p class="a">
+
+where <span class="i">x</span> can be anything.
+</p>
+<p class="i">
+  To show how this can be derived with <span class="k">ries</span>, consider the task of trying
+to compute <span class="i">e</span>+&#960; using just <span class="i">e</span>, &#960;, and the subtraction
+function. We just showed that the sum <span class="i">a</span>+<span class="i">b</span> is equivalent to
+<span class="i">a</span>-((<span class="i">x</span>-<span class="i">x</span>)-<span class="i">b</span>) where <span class="i">x</span> can be anything, including either <span class="i">a</span> or
+<span class="i">b</span>. So the sum <span class="i">e</span>+&#960; can be expressed as any of the following:
+</p>
+
+<p class="q">
+   <span class="i">e</span>+&#960; = <span class="i">e</span>-((<span class="i">e</span>-<span class="i">e</span>)-&#960;)
+ <br />
+ <span class="i">e</span>+&#960; = <span class="i">e</span>-((&#960;-&#960;)-&#960;)
+ <br />
+ &#960;+<span class="i">e</span> = &#960;-((<span class="i">e</span>-<span class="i">e</span>)-<span class="i">e</span>)
+ <br />
+ &#960;+<span class="i">e</span> = &#960;-((&#960;-&#960;)-<span class="i">e</span>)
+</p>
+<p class="a">
+
+Let's use <span class="k">ries</span> to discover an answer. Here we need to use the
+<span class="m">--one-sided</span> option to force everything over to the right side of theequation, and the <span class="m">-S</span> option to specify the permitted "symbol set".The <span class="k">ries</span> symbols we need are <span class="m">e</span> for <span class="i">e</span>, <span class="m">p</span> for &#960;,<span class="m">-</span> for subtraction, and <span class="m">r</span> for reciprocal. Using a normal calculatorwe find that <span class="i">e</span>+&#960; is 5.8598744820488, then we ask <span class="k">ries</span> to
+express this in terms of the four symbols:
+</p>
+
+  <span class="p">
+  ries --one-sided --max-match-distance 1e-9 -x -l5 5.8598744820488 -Sep-r
+&#8195;
+                   x = pi-((pi-e)-pi)       for x = 5.85987448204884      {88}
+       x = e-1/((pi-1/(pi-(pi-1/pi)))-1/pi) for x = 5.85987448204882      {154}
+  </span>
+<p class="a">
+The first answer is what we were looking for, and we can easily plug
+in other numbers for &#960; and <span class="i">e</span> and see that, in general,
+<span class="i">a</span>+<span class="i">b</span> = <span class="i">a</span>-((<span class="i">a</span>-<span class="i">b</span>)-<span class="i">a</span>) which turns out to be a little different
+from the solution we derived ourselves above.
+</p>
+
+<p class="a">
+The second <span class="k">ries</span> answer involving reciprocals works too, but is
+needlessly complex (for example, note that &#960;-(&#960;-1/&#960;)
+simplifies to just 1/&#960;) and happens because <span class="k">ries</span> sometimes
+encounters numerical round-off error and treats two results as being
+equivalent only if they produce exactly the same calculated result.
+</p>
+
+<p class="a">
+Multiplication and division are more elusive, but the key is to not
+try to go to them directly. Let's try to find some other functions
+that a calculator might provide. Here are some simple functions:
+</p>
+
+<p class="q">
+   <span class="i">f</span>(<span class="i">x</span>) = <span class="i">x</span>+1
+ <br />
+ <span class="i">f</span>(<span class="i">x</span>) = 2<span class="i">x</span>
+ <br />
+ <span class="i">f</span>(<span class="i">x</span>) = <span class="i">x</span>/2
+ <br />
+ <span class="i">f</span>(<span class="i">x</span>) = <span class="i">x</span><sup>2</sup>
+</p>
+<p class="a">
+
+One of these, <span class="i">f</span>(<span class="i">x</span>)=2<span class="i">x</span>, is trivial given that we already have
+addition. The <span class="i">x</span>/2 function turns out to be pretty easy too. Here is
+an example telling <span class="k">ries</span> to compute &#960;/2, using the <span class="m">-S</span> option tospecify that the only allowed symbols are &#960; and the functions
+we've already derived above (reciprocal, + and -):
+</p>
+
+  <span class="p">
+  ries 1.5707963267949 --one-sided --max-match-distance 1e-9 -x -l5 -Spr+-
+&#8195;
+                   x = 1/(1/pi+1/pi)        for x = 1.5707963267949       {68}
+  </span>
+<p class="a">
+So we have a way to do <span class="i">x</span>/2, namely 1/(1/<span class="i">x</span>+1/<span class="i">x</span>).
+</p>
+
+<p class="a">
+The seemingly simple <span class="i">x</span>+1 is elusive. <span class="k">ries</span> finds nothing unless we
+allow it to use the constant 1:
+</p>
+
+  <span class="p">
+  ries --one-sided --max-match-distance 1e-9 -x -l5 4.1415926535898 -Spr+-
+    {searches forever...}
+&#8195;
+  ries --one-sided --max-match-distance 1e-9 -x -l5 4.1415926535898 -S1pr+-
+                   x = 1+pi                 for x = 4.14159265358979      {43}
+  </span>
+<p class="a">
+A big break comes when we use <span class="k">ries</span> to look at <span class="i">f</span>(<span class="i">x</span>) = <span class="i">x</span><sup>2</sup>. Here
+are examples using (phi)<sup>2</sup>, <span class="i">e</span><sup>2</sup> and &#960;<sup>2</sup>:
+</p>
+
+  <span class="p">
+  ries --one-sided --max-match-distance 1e-9 -x -l5 2.6180339887499 -S1f+-r
+&#8195;
+                   x = 1+phi                for x = 2.61803398874989      {47}
+                x = 1/(1/(1/(1-phi)+1)+1+1) for x = 2.6180339887499       {111}
+&#8195;
+  ries --one-sided --max-match-distance 1e-9 -x -l5 7.3890560989306 -S1e+-r
+&#8195;
+                   x = e-1/(1/(1-e)+1/e)    for x = 7.38905609893065      {108}
+&#8195;
+  ries --one-sided --max-match-distance 1e-9 -x -l5 9.8696044010894 -S1p+-r
+&#8195;
+                   x = pi-1/(1/(1-pi)+1/pi) for x = 9.86960440108936      {102}
+  </span>
+<p class="a">
+In the &#934;<sup>2</sup> case we got &#934;=1+&#934;, which is one of the
+well-known special identity formulas for &#934;. The other &#934;<sup>2</sup>
+answer is related to some less obvious &#934; identities. So &#934;
+doesn't help us &#8212; however, for <span class="i">e</span><sup>2</sup> and &#960;<sup>2</sup>, <span class="k">ries</span> gave us two
+similar answers. This suggests that we should look at the function:
+</p>
+
+<p class="q">
+  <span class="i">f</span>(<span class="i">x</span>) = <span class="i">x</span>-1/(1/(1-<span class="i">x</span>)+1/<span class="i">x</span>)
+</p>
+<p class="a">
+
+Part of this can be simplified:
+</p>
+
+<p class="q">
+  1/(1-<span class="i">x</span>) + 1/<span class="i">x</span> = <span class="i">x</span>/<span class="i">x</span>(1-<span class="i">x</span>) + (1-<span class="i">x</span>)/<span class="i">x</span>(1-<span class="i">x</span>)
+  <br />
+ = 1/<span class="i">x</span>(1-<span class="i">x</span>)
+</p>
+<p class="a">
+
+then we substitute this back in and simplify:
+</p>
+
+<p class="q">
+  <span class="i">f</span>(<span class="i">x</span>) = <span class="i">x</span>-1/(1/(1-<span class="i">x</span>)+1/<span class="i">x</span>)
+  <br />
+ = <span class="i">x</span> - 1/(1/<span class="i">x</span>(1-<span class="i">x</span>))
+  <br />
+ = <span class="i">x</span> - <span class="i">x</span>(1-<span class="i">x</span>)
+  <br />
+ = <span class="i">x</span> - (<span class="i">x</span>-<span class="i">x</span><sup>2</sup>)
+  <br />
+ = <span class="i">x</span><sup>2</sup>
+</p>
+<p class="a">
+
+So we now have the "squaring function" <span class="i">f</span>(<span class="i">x</span>) = <span class="i">x</span><sup>2</sup>, which in
+<span class="k">ries</span> is the symbol '<span class="m">s</span>'.</p>
+
+<p class="a">
+With add, subtract, reciprocal, and the squaring function, can we
+multiply? Sadly, these searches for <span class="i">pi</span> * <span class="i">e</span> (Mmmm, pie!) and
+<span class="i">pi</span>/<span class="i">e</span> do not work:
+</p>
+
+  <span class="p">
+  ries 8.5397342226736 --one-sided --max-match-distance 1e-9 -x -l6 -Ssepr+-
+    {searches forever...}
+&#8195;
+  ries 1.1557273497909 --one-sided --max-match-distance 1e-9 -x -l6 -Ssepr+-
+    {searches forever...}
+  </span>
+<p class="a">
+But we know we can do 2<span class="i">x</span> and <span class="i">x</span>/2 pretty easily, so let's try to
+get 2&#960;/<span class="i">e</span>:
+</p>
+
+  <span class="p">
+  ries 2.3114546995818 --one-sided --max-match-distance 1e-9 -x -l6 -Ssepr+-
+&#8195;
+      x = (1/e+pi)^2-(pi^2+1/e^2)            for x = 2.31145469958184      {129}
+  </span>
+<p class="a">
+Now we're getting somewhere. Similar <span class="k">ries</span> searches for 2&#934;/<span class="i">e</span>
+quickly show that it is (1/<span class="i">e</span>+&#934;)<sup>2</sup>-(&#934;^2+1/<span class="i">e</span>^2) leading to
+the general solution:
+</p>
+
+<p class="q">
+  2<span class="i">a</span>/<span class="i">b</span> = (1/<span class="i">b</span>+<span class="i">a</span>)<sup>2</sup>-(<span class="i">a</span>^2+1/<span class="i">b</span>^2)
+</p>
+<p class="a">
+
+which is easily verified by algebra. We can combine this formula for
+2<span class="i">a</span>/<span class="i">b</span> with the previously derived formula for <span class="i">x</span>/2 to get an
+<span class="i">a</span>/<span class="i">b</span> formula.
+</p>
+
+<p class="a">
+Once we have division, we're home free. If your brain burned out from
+all of the above, <span class="k">ries</span> will readily show that the product <span class="i">ab</span> is
+<span class="i">a</span>/(1/<span class="i">b</span>).
+</p>
+
+<p class="a"><h3 id="discovery">Enlightened Discovery</h3></p>
+
+<p class="a">
+I wrote a simple routine to compute the <a href="http://en.wikipedia.org/wiki/Lanczos_approximation">Lanczos approximation</a> for
+the <a href="http://en.wikipedia.org/wiki/Gamma_function">Gamma function</a> using the simplest set of
+<a href="lanczos-gamma.html">Lanczos coefficients</a> I could find. It gave me
+the following approximate values:
+</p>
+
+<p class="q">
+   Gamma(0.5) &asymp; 1.772453850902053
+ <br />
+ Gamma(1.0) &asymp; 1.000000000000000
+ <br />
+ Gamma(1.5) &asymp; 0.886226925452798
+ <br />
+ Gamma(2.0) &asymp; 1.000000000000000
+ <br />
+ Gamma(2.5) &asymp; 1.329340388179131
+ <br />
+ Gamma(3.0) &asymp; 2.000000000000000
+ <br />
+ Gamma(3.5) &asymp; 3.323350970447838
+ <br />
+ Gamma(4.0) &asymp; 5.999999999999997
+ <br />
+ Gamma(4.5) &asymp; 11.631728396567436
+ <br />
+ Gamma(5.0) &asymp; 23.999999999999993
+ <br />
+ Gamma(5.5) &asymp; 52.342777784553668
+ <br />
+ Gamma(6.0) &asymp; 119.999999999999872
+ <br />
+ Gamma(6.5) &asymp; 287.885277815044162
+ <br />
+ Gamma(7.0) &asymp; 719.999999999998863
+</p>
+<p class="a">
+
+The crudeness of the Lanczos approximation can be seen in the integer
+arguments: Gamma(4.0) should be exactly 3! which is 6. Similar errors
+are seen in Gamma(5.0) and higher.
+</p>
+
+<p class="a">
+I already knew each of the following things about the Gamma function:
+</p>
+
+<ul><li>Gamma(<span class="i">x</span>) is equal to the <a href="http://en.wikipedia.org/wiki/Factorial">Factorial</a> of <span class="i">x</span>-1 &#8195; (for any positive
+    integer <span class="i">x</span>),
+</ul>
+<ul><li>Gamma(<span class="i">x</span>+1) is equal to <span class="i">x</span> times Gamma(<span class="i">x</span>) &#8195; (for all <span class="i">x</span>,
+    not just integers),
+</ul>
+<ul><li>Gamma(<span class="i">x</span>+1/2) has an exact formula that uses &#960;,
+</ul>
+<p class="a">
+and I wanted to figure out the exact formula involving &#960;, but just
+for fun, I wanted to do it without applying the induction formula
+Gamma(<span class="i">x</span>+1) = <span class="i">x</span> Gamma(<span class="i">x</span>).
+</p>
+
+<p class="a">
+Using <span class="k">ries</span> to look at the half-integer arguments:
+</p>
+
+  <span class="p">
+  ries 1.772453850902053
+              x^2 = pi               for x = T + 3.46301e-12 {38}
+&#8195;
+  ries 0.886226925452798
+              2 x = sqrt(pi)         for x = T - 4.00791e-14 {55}
+&#8195;
+  ries 1.329340388179131
+       x/sqrt(pi) = 3/4              for x = T + 5.77316e-15 {79}
+&#8195;
+  ries 3.323350970447838
+       x/sqrt(pi) = 2-1/8            for x = T + 3.9968e-15  {87}
+&#8195;
+  ries 11.631728396567436
+     x/sqrt(pi)+1 = (3-1/4)^2        for x = T + 1.24345e-14 {109}
+&#8195;
+  ries -l3 52.342777784553668
+      x/(1-1/8^2) = 5*6 sqrt(pi)     for x = T - 1.49214e-13 {136}
+  </span>
+<p class="a">
+In some cases <span class="k">ries</span> puts the &#8730;<span style="text-decoration: overline">&#960;</span> on the left side, in other
+cases on the right. One of the equations (the first) does not have
+&#8730;<span style="text-decoration: overline">&#960;</span> at all, but it's easy to see that it does once you solve for
+<span class="i">x</span>. Everything else in the formulas amounts to simple ratios of
+integers: for example, "x/sqrt(pi) = 2-1/8" is x/&#8730;<span style="text-decoration: overline">&#960;</span> = 15/8 or
+<span class="i">x</span> = 15&#8730;<span style="text-decoration: overline">&#960;</span>/8. Solving them all for <span class="i">x</span>, getting the fractions
+into reduced form, and factoring the numerator of each fraction, we
+get:
+</p>
+
+<p class="q">
+   Gamma(1/2) = &#8730;<span style="text-decoration: overline">&#960;</span>
+ <br />
+ Gamma(3/2) = &#8730;<span style="text-decoration: overline">&#960;</span> / 2
+ <br />
+ Gamma(5/2) = 3 &#8730;<span style="text-decoration: overline">&#960;</span> / 4
+ <br />
+ Gamma(7/2) = 5&times;3 &#8730;<span style="text-decoration: overline">&#960;</span> / 8
+ <br />
+ Gamma(9/2) = 7&times;5&times;3 &#8730;<span style="text-decoration: overline">&#960;</span> / 16
+ <br />
+ Gamma(11/2) = 9&times;7&times;5&times;3 &#8730;<span style="text-decoration: overline">&#960;</span> / 32
+</p>
+<p class="a">
+
+the pattern for Gamma(<span class="i">n</span>+1/2) is then easy to see. The general
+formula is:
+</p>
+
+<p class="q">
+  Gamma(<span class="i">n</span>+1/2) = (2<span class="i">n</span>-1)!! &#8730;<span style="text-decoration: overline">&#960;</span> / 2<sup><span class="i">n</span></sup>
+</p>
+<p class="a">
+
+using the <a href="http://en.wikipedia.org/wiki/Double_factorial">Double factorial</a> to get the products of odd numbers
+(Sloane's <a href="http://oeis.org/A001147">A001147</a>).
+</p>
+
+<h3>Exact Formula for Lucas Numbers</h3>
+
+<p class="a">
+Here's another example of "enlightened discovery". The Lucas numbers,
+(OEIS sequence <a href="http://oeis.org/A0032">A0032</a>, my <a href="../../pub/math/MCS-4.html#l13770842">MCS13770842</a>) are the
+numbers: 2, 1, 3, 4, 7, 11, 18, 29, 47, 76, 123, 199, 322, ... with
+the simple <a href="../../pub/seq/linrec2.html">recurrence relation</a> <span class="i">L</span><sub><span class="i">n</span></sub> = <span class="i">L</span><sub><span class="i">n</span>-1</sub> +
+<span class="i">L</span><sub><span class="i">n</span>-2</sub>.
+</p>
+
+<p class="a">
+I know that these numbers are close to powers of
+<a href="../../pub/math/numbers-2.html#phi">&#934; (the golden ratio)</a>, but that it's not exact.
+For example, &#934;<sup>7</sup> is 29.034441853..., a bit bigger than the Lucas
+number <span class="i">L</span><sub>7</sub>=29. I also know that there <span class="i">is</span> an exact formula for
+these numbers. Thus I want to find a precise formula like this:
+</p>
+
+<p class="q">
+  <span class="i">L</span><sub><span class="i">n</span></sub> = &#934;<sup><span class="i">n</span></sup> + <span class="i">something</span><sup><span class="i">else</span></sup>
+</p>
+<p class="a">
+
+First, I wrote this small computer program in the
+<a href="../../pub/perl/hypercalc.html">Hypercalc</a> dialect of BASIC:
+</p>
+
+  <span class="p">
+  1 ' Calculate powers of Phi (the golden ratio) and the Lucas numbers,
+  2 ' and display a table including the difference between the two
+  10 l0=2; l1=1;
+  20 for i=1 to 25;
+  30   print i, phi^i, l1, l1-phi^i
+  40   l2=l0+l1; l0=l1; l1=l2;
+  50 next i
+  999 end
+  </span>
+<p class="a">
+The program gives these values:
+</p>
+
+<p class="q">
+  <table><tr><td width="20px"></td><td><table border="1" cellspacing="0" cellpadding="2" hspace="30px">
+<tr><td>
+   <span class="i">n</span> </td><td> &#934;<sup><span class="i">n</span></sup>         </td><td> <span class="i">L<sub>n</sub></span> </td><td> <span class="i">L<sub>n</sub></span>-&#934;<sup><span class="i">n</span></sup>
+</td></tr><tr><td >
+   1   </td><td> 1.6180339887499     </td><td> 1       </td><td> -0.6180339887498
+</td></tr><tr><td >
+   2   </td><td> 2.6180339887499     </td><td> 3       </td><td> 0.3819660112501
+</td></tr><tr><td >
+   3   </td><td> 4.2360679774998     </td><td> 4       </td><td> -0.2360679774997
+</td></tr><tr><td >
+   4   </td><td> 6.8541019662497     </td><td> 7       </td><td> 0.1458980337503
+</td></tr><tr><td >
+   5   </td><td> 11.090169943749     </td><td> 11      </td><td> -0.0901699437494
+</td></tr><tr><td >
+   6   </td><td> 17.944271909999     </td><td> 18      </td><td> 0.0557280900008
+</td></tr><tr><td >
+   7   </td><td> 29.034441853748     </td><td> 29      </td><td> -0.0344418537486
+</td></tr><tr><td >
+   8   </td><td> 46.978713763748     </td><td> 47      </td><td> 0.0212862362522
+</td></tr><tr><td >
+   9   </td><td> 76.013155617496     </td><td> 76      </td><td> -0.0131556174964
+</td></tr><tr><td >
+  10   </td><td> 122.99186938124     </td><td> 123     </td><td> 0.0081306187557
+  </td></tr></table></td></tr></table>
+</p>
+<p class="a">
+
+The 4<sup>th</sup> column is the "adjustment" that must be added to
+&#934;<sup><span class="i">n</span></sup> to get an exact formula for <span class="i">L<sub>n</sub></span>. You may already be
+able to guess the formula for this adjustment, but let's use <span class="k">ries</span> to
+discover it:
+</p>
+
+  <span class="p">
+  ries -s -0.6180339887498
+    x = -(1/phi)
+  ries -s 0.3819660112501
+    x = (1/phi)^2
+  ries -s -0.2360679774997
+    x = 2-sqrt(5)
+  ries -s 0.1458980337503
+    x = (1/phi^2)^2
+  </span>
+<p class="a">
+Except for -0.2360679774997, the answers fit a pattern: all are
+-1<sup><span class="i">n</span></sup>/&#934;<sup><span class="i">n</span></sup> = -&#934;<sup>-<span class="i">n</span></sup>. We can quickly verify that 2-&#8730;<span style="text-decoration: overline">5</span>
+is also equal to -&#934;<sup>-3</sup>. This gives us an exact formula for the
+Lucas numbers:
+</p>
+
+<p class="q">
+  <span class="i">L<sub>n</sub></span> = &#934;<sup><span class="i">n</span></sup> + (-&#934;)<sup>-<span class="i">n</span></sup>
+</p>
+<p class="a">
+
+</p>
+
+<p class="a"><h3 id="debug">Debugging</h3></p>
+
+<p class="a"><span class="k">ries</span> is also sometimes of use in finding errors in formulas or
+in calculations using a given formula.
+</p>
+
+<p class="a">
+I was looking at a problem with <a href="../../pub/perl/hypercalc.html">Hypercalc</a>'s
+factorial function, which is based on the
+<a href="http://en.wikipedia.org/wiki/Stirling%27s_approximation">Stirling series</a>. For some values of <span class="i">N</span>,
+Hypercalc's answer for the factorial of <span class="i">N</span> was wrong. For example,
+when <span class="i">N</span> is a <a href="../../pub/math/numbers-19.html#googol">googol</a>, I was getting
+2.2051589684...&times;10<sup>995657055180967481723488710810833949177056029941963334338855462168341353507911292252707750506615682566</sup>
+instead of the correct answer
+1.6294043324...&times;10<sup>995657055180967481723488710810833949177056029941963334338855462168341353507911292252707750506615682567</sup>.
+The exponents differ in the last digit, and the initial digits (the
+"mantissa") are completely different. Hypercalc's answer was too
+small, by a ratio of about 16.294/2.205 = 7.389.
+</p>
+
+<p class="a"><span class="s"><span class="i">(I can hear some of you now... you're saying, hey what's the big
+deal? It's ten to the power of 99 googol, and you're worried about a
+factor of seven? I don't think anybody's going to notice. But I
+notice. I love big numbers...)</span></span>
+</p>
+
+<p class="a">
+Anyway, putting this ratio 7.389056099 into <span class="k">ries</span> shows that it is
+<span class="i">e</span><sup>2</sup>. This gave me a clue that helped me find the problem. Since
+Hypercalc performs most of the factorial calculation using natural
+logarithms, the intermediate result was off by almost exactly 2. I
+soon found a problem that was causing terms that should be nearly 0.0
+to be nearly 1.0 instead.
+</p>
+
+<p class="a">
+In a related investigation, a value was found to be off by a ratio of
+about 1.58323701466. Putting this into <span class="k">ries</span> revealed that it was the
+4<sup>th</sup> root of 2&#960;. There is a formula involving &#8730;<span style="text-decoration: overline">2&#960;</span>, but
+apparently the square root had been taken twice by mistake.
+</p>
+
+<p class="a"><h3 id="complexity">Kolmogorov Complexity</h3></p>
+
+<p class="a">
+As mentioned above, the <span class="k">ries</span> "complexity" score is a form of
+<a href="http://en.wikipedia.org/wiki/Kolmogorov_complexity">Kolmogorov complexity</a> so it can be used as a crude way of
+estimating the complexity of expressions or equations, provided that
+you already know the root of the equation. For example,
+<a href="../../pub/math/numbers-2.html#phi"><span class="i">phi</span></a> (the <a href="http://en.wikipedia.org/wiki/Golden_ratio">Golden ratio</a>) is sometimes considered a
+symbol in its own right, and would have a "complexity" of 1. We can
+use <span class="k">ries</span> to demonstrate this by using the <span class="m">-F0</span> (postfix outputformat) and <span class="m">-s</span> (solve for <span class="i">x</span>) options:</p>
+
+  <span class="p">
+  ries 1.61803398874989 -s -F0
+    ...
+  x = f                                       for x = T + 4.88498e-15 {33}
+  </span>
+<p class="a">
+The solution <span class="i">x</span>=&#934; has one symbol on the right-hand-side, so
+&#934; has a "Kolmogorov complexity" of 1. What if we're not allowed
+to use the builtin symbol <span class="m">f</span> representing &#934;?</p>
+
+  <span class="p">
+  ries 1.61803398874989 -Nf -s -F0
+    ...
+  x = 5qxr-                                   for x = T + 5.10703e-15 {68}
+  </span>
+<p class="a">
+The solution given is 5 symbols (<span class="m">5qxr-</span>) or <span class="i">x</span> = &#8730;<span style="text-decoration: overline">5</span>-1/<span class="i">x</span> inmore normal notation, reflecting one of the ways to define &#934; in
+terms of itself. To get the more standard definition of &#934; we need to
+use <span class="m">-Ox</span> (to allow only one <span class="i">x</span> per equation) and exclude the<span class="m">C</span> symbol (cosine) because &#934; is exactly twice the cosine of &#960;/5.Then we get:
+</p>
+
+  <span class="p">
+  ries 1.61803398874989 -NfC -Ox -s -F0
+    ...
+  x = 15q+2/                                  for x = T + 4.88498e-15 {73}
+  </span>
+<p class="a">
+which uses 6 symbols to express &#934; as (1+&#8730;<span style="text-decoration: overline">5</span>)/2.
+</p>
+
+<p class="a">
+If you care more about the number of times a particular symbol is
+used, you can combine <span class="k">ries</span> with some UNIX tools. In this example we
+use <span class="k">ries</span> to generate the terms of the sequence <a href="http://oeis.org/A5245">A5245</a>, which
+measures the "complexity" of the integers by counting how many 1's
+it takes to make the number using just addition and multiplication.
+For example, the "complexity" of 6 is 5, because you can make 6 from
+five 1's like so: 6=(1+1+1)&times;(1+1).
+</p>
+
+  <span class="p">
+  ries --one-sided -S1*+ 6 | sed 's/{.*}//' | grep exact | tr -cd 1 | wc -c
+      5
+  ries --one-sided -S1*+ 7 | sed 's/{.*}//' | grep exact | tr -cd 1 | wc -c
+      6
+  ries --one-sided -S1*+ 8 | sed 's/{.*}//' | grep exact | tr -cd 1 | wc -c
+      6
+  ries --one-sided -S1*+ 9 | sed 's/{.*}//' | grep exact | tr -cd 1 | wc -c
+      6
+  ries --one-sided -S1*+ 10 | sed 's/{.*}//' | grep exact | tr -cd 1 | wc -c
+      7
+  ries --one-sided -S1*+ 11 | sed 's/{.*}//' | grep exact | tr -cd 1 | wc -c
+      8
+  ries --one-sided -S1*+ 12 | sed 's/{.*}//' | grep exact | tr -cd 1 | wc -c
+      7
+  </span>
+<p class="a">
+Using --one-sided makes it very slow for larger target numbers, but
+<span class="k">ries</span> gets pretty close to the right answer if you replace the
+<span class="m">--one-sided</span> option with <span class="m">-ie</span> (integer subexpressions, stop on exactmatch) and allow division:
+</p>
+
+  <span class="p">
+  ries -ie -S1/*+ 14 | sed 's/{.*}//' | grep exact | tr -cd 1 | wc -c
+      8
+  </span>
+<p class="a"><hr />
+</p>
+
+<p class="a"><h2 id="pi_day_2013">Some Examples for Pi Day 2013</h2></p>
+
+<p class="a">
+In advance of <a href="http://en.wikipedia.org/wiki/Pi_Day">Pi Day</a> in 2013, I decided it would be fun to tweet a
+series of successive approximations to <a href="http://en.wikipedia.org/wiki/Pi">Pi</a>. Following is the full set.
+</p>
+
+<p class="a"><h2 id="pi_day">Some Examples for Pi Day 2015</h2><a name="pi_2015_1">
+</a></p>
+
+<p class="a">
+To celebrate "Pi Day of fhe Century" (on 3/14/15 at 9:26:53!) I was
+going to make a new set of approximation examples, but I soon realised
+I was mostly just re-inventing examples I had done in 2013. A few were
+revised for 2015, as noted in each section below.
+</p>
+
+<p class="a"><h3 id="pi_day_1">Pi Day: the First Approximation</h3></p>
+
+<p class="q">
+  
+  <span class="b">Robert Munafo</span> &#8195; &#8195; <span class="k"><a href="http://twitter.com/mrob_27">@mrob_27</a></span>
+  <br />
+<span style="background-color:#EEE; color: #00C; font-family: Helvetica; white-space: pre">  Celebrate #PiDay, use #RIES to make classical approximations. Pi is
+  about 3+sqrt(1/50) <a href="index-5.html#pi_day_1">mrob.com/pub/ries/index...</a> #maths #numbers</span>
+</p>
+<p class="a">
+
+The first example is <span class="i">a "Babylonian" approximation</span> (error: 1.17&times;10<sup>-4</sup>)
+</p>
+
+<p class="a"><span class="k">ries</span> is good at finding "classical" approximations, the type of
+formulas that were used in ancient times. In this <span class="k">ries</span> command, we
+ask it to "solve for <span class="i">x</span>" with the <span class="m">-s</span> option, and to limit itssearch to <a href="http://en.wikipedia.org/wiki/Constructible_number">constructible number</a>s with the <span class="m">-c</span> option (thisprevents <span class="k">ries</span> from using advanced functions like logarithms,
+exponents, etc. and also prevents it from using &#960; itself because
+&#960; <a href="http://en.wikipedia.org/wiki/Squaring_the_circle">is not constructible</a>). The <span class="k">ries</span>
+command is:
+</p>
+
+<p class="q">
+  <span class="m">ries 3.14159 -c -s</span></p>
+<p class="a">
+
+After a few crude approximations we get:
+</p>
+
+<p class="q">
+  x = 1/(5&#8730;<span style="text-decoration: overline">2</span>)+3 &#8195; &#8195; = 3.14142135623731...
+</p>
+<p class="a">
+
+This answer is equivalent to 3+&#8730;<span style="text-decoration: overline">2</span>/10, 3+&#8730;<span style="text-decoration: overline">1/50</span>, or 3+1/&#8730;<span style="text-decoration: overline">50</span>,
+any of which are easy to remember and may have been used in ancient
+times.
+</p>
+
+<p class="a"><hr />
+</p>
+
+<p class="a"><h3 id="pi_day_2">Pi Day: the Second Approximation</h3></p>
+
+<p class="q">
+  <span class="b">Robert Munafo</span> &#8195; &#8195; <span class="k"><a href="http://twitter.com/mrob_27">@mrob_27</a></span>
+  <br />
+<span style="background-color:#EEE; color: #00C; font-family: Helvetica; white-space: pre">  By excluding all digits, "ries 20 -N123456789" finds Gelfond's constant
+  e^pi-pi. <a href="index-5.html#pi_day_2">mrob.com/pub/ries/index...</a> Celebrate #PiDay #maths #numbers</span>
+</p>
+<p class="a">
+
+This example involves <span class="i">Gelfond's constant</span> (error: 4.1&times;10<sup>-5</sup>)
+</p>
+
+<p class="a">
+There is a quirky fact, highlighted in
+<a href="http://xkcd.com/217">xkcd 217</a>, that <span class="i">e</span><sup>&#960;</sup>-&#960; is almost exactly
+20. <span class="k">ries</span> discovers this fact easily just by telling it to not use
+any digits. Here is the <span class="k">ries</span> command:
+</p>
+
+  <span class="p">
+  ries 20 -N123456789
+&#8195;
+     Your target value: T = 20                           mrob.com/ries
+&#8195;
+            x+pi = e^pi                   for x = T - 0.000900021
+  </span>
+<p class="a">
+The <a href="http://en.wikipedia.org/wiki/Gelfond%27s_constant">Gelfond's constant</a> coincidence is often expressed as
+"<span class="i">e</span><sup>&#960;</sup>-&#960; &asymp; 20", and <span class="k">ries</span> will give us this if we tell it to
+solve for <span class="i">x</span>:
+</p>
+
+<p class="q">
+  <span class="m">ries 20 -N123456789 -s -x</span></p>
+<p class="a">
+
+which gives the magic formula:
+</p>
+
+<p class="q">
+  <span class="i">x</span> = <span class="i">e</span><sup>&#960;</sup>-&#960;   &#8195; &#8195; = 19.9990999791895...
+</p>
+<p class="a">
+
+Let's see how well this formula works for approximating &#960;. We turn
+the equation around by replacing &#960; with the variable <span class="i">x</span>, and
+making 20 an exact constant:
+</p>
+
+<p class="q">
+  20 = <span class="i">e<sup>x</sup></span>-<span class="i">x</span>
+</p>
+<p class="a">
+
+To solve this for <span class="i">x</span>, we need an equation solver. This is the
+opposite of <span class="k">ries</span> (which is is an "inverse" solver!). One
+option is to use <a href="http://www.wolframalpha.com/">WolframAlpha</a> and put
+in "<span class="m">&lt;a href="http://www.wolframalpha.com/input/?i=E%5Ex-x%3D20"&gt;E^x-x=20&lt;/a&gt;</span>";on the resulting page click the button saying "<span style="background-color:#EEE; color: #F80; font-family: Helvetica; font-size:smaller">Approximate form</span>",
+then <span style="background-color:#EEE; color: #F80; font-family: Helvetica; font-size:smaller">More digits</span>; WolframAlpha will tell you one solution is around
+3.1416333.
+</p>
+
+<p class="a">
+To complete the circle (&#960; reference intended), give this number
+back to <span class="k">ries</span> with the command:
+</p>
+
+<p class="q">
+  <span class="m">ries 3.1416333 -Np -x</span></p>
+<p class="a">
+
+(The "<span class="m">-Np</span>" part is important, that tells <span class="k">ries</span> not to use &#960;in its answer!). This gives the result:
+</p>
+
+<p class="q">
+  <span class="i">e<sup>x</sup></span>-<span class="i">x</span> = 4*5 &#8195; &#8195;  for <span class="i">x</span> = 3.14163330280104...
+</p>
+<p class="a">
+
+... and we're back to <span class="i">e<sup>x</sup></span>-<span class="i">x</span>=20.
+</p>
+
+<p class="a"><hr />
+</p>
+
+<p class="a"><h3 id="pi_day_3">Pi Day: the Third Approximation</h3></p>
+
+<p class="q">
+  
+  <span class="b">Robert Munafo</span> &#8195; &#8195; <span class="k"><a href="http://twitter.com/mrob_27">@mrob_27</a></span>
+  <br />
+<span style="background-color:#EEE; color: #00C; font-family: Helvetica; white-space: pre">  Using #RIES to approximate Pi by its own digits: -&#8730;(&#8730;((&#8730;<span style="text-decoration: overline">3</span>+1)4+1))+5 = 3.1415...
+  <a href="index-5.html#pi_day_3">mrob.com/pub/ries/index...</a> Celebrate #PiDay #maths #numbers </span>
+</p>
+<p class="a">
+
+This example is <span class="i">a self-descriptive formula</span> (error: 1.22&times;10<sup>-5</sup>)
+</p>
+
+<p class="a">
+We can use <span class="k">ries</span> to get a formula for &#960; that uses the digits
+3,1,4,1, and 5. We'll also specify that it can only use the simple
+operations (add, subtract, multiply, divide) plus square root. The
+<span class="k">ries</span> command is:
+</p>
+
+<p class="q">
+  <span class="m">ries 3.14159 -S+-*/q --numeric-anagram 31415 -Ox -s -x -l5</span></p>
+<p class="a">
+
+with the result:
+</p>
+
+<p class="q">
+  x = 5-&#8730;(&#8730;(4(&#8730;<span style="text-decoration: overline">3</span>+1)+1)) &#8195; &#8195; = 3.14158048413951...
+</p>
+<p class="a">
+
+We can rearrange this so that the digits appear in the proper order:
+</p>
+
+<p class="q">
+  &#960; &asymp; -&#8730;(&#8730;((&#8730;<span style="text-decoration: overline"><span class="b">3</span></span> + <span class="b">1</span>) * <span class="b">4</span> + <span class="b">1</span>)) + <span class="b">5</span>
+</p>
+<p class="a">
+
+&#8195;
+</p>
+
+<p class="a"><h3 id="pi_day_3b">An all-&#960; date (2013 version)</h3></p>
+
+<p class="q">
+  <span class="b">Robert Munafo</span> &#8195; &#8195; <span class="k"><a href="http://twitter.com/mrob_27">@mrob_27</a></span>
+  <br />
+<span style="background-color:#EEE; color: #00C; font-family: Helvetica; white-space: pre">  #PiDay will be 2013/03/14 = (π-π*(π^π+π))*(π-π*(π+π))+(π/((π-π/(π^π+π))+π))^π
+  = 2013.0314... using #RIES <a href="index-5.html#pi_day_3b">http://mrob.com/pub/ries/index...</a> #math #nerd</span>
+</p>
+<p class="a">
+
+We can also make any number out of various combinations of
+&#960;. Let's aim for 2013.0314, the year month and date of <a href="http://en.wikipedia.org/wiki/PI_Day">PI Day</a>
+2013. We'll tell <span class="k">ries</span> to only use the symbols p (for &#960;), +, -,
+*, /, and ^ (exponentiation). <span class="m">--one-sided</span> generates justexpressions rather than equations, and <span class="m">-l5</span> specifies a "level 5"search:
+</p>
+
+<p class="q">
+   <span class="m">ries 2013.0314 -Sp-+*/^ --one-sided -l5</span> <br />
+ &#8195;
+ <br />
+ Your target value: T = 2013.0314
+ <br />
+ ...
+ <br />
+ <span class="i">x</span> = (pi-pi (pi^pi+pi))(pi-pi (pi+pi)) &#8195; &#8195; for <span class="i">x</span> = T - 0.117916
+</p>
+<p class="a">
+
+This search took almost 20 seconds because <span class="k">ries</span> didn't have many
+symbols to work with, and because 2013 is a relatively large number.
+We're a bit off, so we'll make another formula to approximate the
+remaining part 0.117916:
+</p>
+
+<p class="q">
+   <span class="m">ries 0.117916 -Sp-+*/^ --one-sided -l5</span> <br />
+ ...
+ <br />
+ <span class="i">x</span> = (pi/((pi-pi/(pi^pi+pi))+pi))^pi         for <span class="i">x</span> = T + 1.32071e-05
+</p>
+<p class="a">
+
+Putting the two parts together:
+</p>
+
+<p class="q">
+  (π-π&times;(π<sup>π</sup>+π))&times;(π-π&times;(π+π)) + (π/((π-π/(π<sup>π</sup>+π))+π))<sup>π</sup>
+  = 2013.0314129874...
+</p>
+<p class="a">
+
+Another formula derived the same way is:
+(π<sup>(π/(π*π+π/π))</sup>+π*π)<sup>π</sup>+(π*π*π)<sup>(π/(π(π+π)-π))</sup>/π =
+2013.0314545206...
+</p>
+
+<p class="a">
+
+</p>
+
+<p class="a">
+Here is the first one in WolframAlpha:
+<a href="http://www.wolframalpha.com/input/?i=%28%CF%80-%CF%80%2A%28%CF%80%5E%CF%80%2B%CF%80%29%29%2A%28%CF%80-%CF%80%2A%28%CF%80%2B%CF%80%29%29%2B%28%CF%80%2F%28%28%CF%80-%CF%80%2F%28%CF%80%5E%CF%80%2B%CF%80%29%29%2B%CF%80%29%29%5E%CF%80">(π-π*(π^π+π))*(π-π*(π+π))+(π/((π-π/(π^π+π))+π))^π</a>
+</p>
+
+<p class="q">
+  <a href="http://www.wolframalpha.com/input/?i=%28%CF%80-%CF%80%2A%28%CF%80%5E%CF%80%2B%CF%80%29%29%2A%28%CF%80-%CF%80%2A%28%CF%80%2B%CF%80%29%29%2B%28%CF%80%2F%28%28%CF%80-%CF%80%2F%28%CF%80%5E%CF%80%2B%CF%80%29%29%2B%CF%80%29%29%5E%CF%80"><img src="../../pub/math/images/ries/piday-wolfram.png" alt=""  ></a>
+</p>
+<p class="a">
+
+Click the image to see the WolframAlpha page; there are several
+amusing "alternate forms" near the bottom.
+</p>
+
+<p class="a"><h3 id="pi_day_2015_3b">An all-&#960; date (2015 version)</h3></p>
+
+<p class="q">
+  <span class="b">Robert Munafo</span> &#8195; &#8195; <span class="k"><a href="http://twitter.com/mrob_27">@mrob_27</a></span>
+  <br />
+<span style="background-color:#EEE; color: #00C; font-family: Helvetica; white-space: pre">  Today, #PiDay, is 2015/03/14 = ((π+π)^π/(π^π+π)+π)^π-π/(π*π+π+π^π) = 2015.0314... using #RIES <a href="index-5.html#pi_day_2015_3b">http://mrob.com/pub/ries/index...</a></span>
+</p>
+<p class="a">
+
+Using the same method described above, I first derived
+</p>
+
+  <span class="p">
+  ries 2015.0314 '-Sp-+*/^' --one-sided -l5
+     Your target value: T = 2015.0314
+  ...
+  x = ((pi+pi)^pi/(pi^pi+pi)+pi)^pi           for x = T + 0.0635406
+  </span>
+<p class="a">
+and then
+</p>
+
+  <span class="p">
+  ries 0.0635406 '-Sp-+*/^' --one-sided -l5
+     Your target value: T = 0.0635406
+  ...
+  x = pi/(pi*pi+pi+pi^pi)                     for x = T - 3.99025e-05
+  </span>
+<p class="a">
+combining the two to get the formula
+</p>
+
+<p class="q">
+  ((pi+pi)^&#960;/(pi^&#960;+pi)+pi)^&#960;-pi/(pi*pi+pi+pi^&#960;) = 2015.03143990...
+</p>
+<p class="a">
+
+<hr />
+</p>
+
+<p class="a"><h3 id="pi_day_4">Pi Day: the 4<sup>th</sup> Approximation</h3></p>
+
+<p class="q">
+  <span class="b">Robert Munafo</span> &#8195; &#8195; <span class="k"><a href="http://twitter.com/mrob_27">@mrob_27</a></span>
+  <br />
+<span style="background-color:#EEE; color: #00C; font-family: Helvetica; white-space: pre">  Celebrate #PiDay with continued radicals √(√(√(√5)+2)+8) ~ 3.141589 using
+  #RIES <a href="index-5.html#pi_day_4">http://mrob.com/pub/ries/index...</a> #numbers #nerdout #mathematics</span>
+</p>
+<p class="a">
+
+For this example we'll do a <span class="i">continued radical approximation</span>
+(error: 3.06&times;10<sup>-6</sup>)
+</p>
+<p class="i">
+  We'll tell <span class="k">ries</span> to find 3.14159, using the rational approximation
+settings <span class="m">-r</span> but also enabling square and square root (<span class="m">-Esq</span>),"solve" the equation (<span class="m">-s</span>) and give the value of the root (<span class="m">-x</span>):</p>
+
+<p class="q">
+  <span class="m">ries 3.14159 -r -Esq -s -x</span></p>
+<p class="a">
+
+This command gives a mix of rational and irrational answers, but all
+of them <a href="http://en.wikipedia.org/wiki/Constructible_number">constructible</a>. Among them is this
+rather nifty result:
+</p>
+
+<p class="q">
+  x = &#8730;(&#8730;(&#8730;(&#8730;<span style="text-decoration: overline">5</span>)+2)+8)  &#8195; &#8195; = 3.14158959598692...
+</p>
+<p class="a">
+
+This is a "continued radical" approximation, like a continued fraction
+but using square roots in place of the
+<a href="http://en.wikipedia.org/wiki/Multiplicative_inverse">reciprocal</a>.
+</p>
+
+<p class="q">
+  
+  <img src="radicals-3.14159.gif" alt=""  >
+</p>
+<p class="a">
+
+&#8195;
+</p>
+
+<p class="a"><h3 id="pi_day_4b">Using Powers of <span class="i">e</span></h3></p>
+
+<p class="q">
+  <span class="b">Robert Munafo</span> &#8195; &#8195; <span class="k"><a href="http://twitter.com/mrob_27">@mrob_27</a></span>
+  <br />
+<span style="background-color:#EEE; color: #00C; font-family: Helvetica; white-space: pre">  e^(19/18)^(5/2) ; e^e^(3*4^√5) ; e^2-e/4+2^-6-2ln(6) are all 3.14159...
+  Celebrate #PiDay with #RIES, more at <a href="index-5.html#pi_day_4b">http://mrob.com/pub/ries/index...</a>  #numbers</span>
+</p>
+<p class="a">
+
+Here are several &#960; approximations involving <span class="i">powers or roots of
+<span class="b">e</span></span> (errors: 9.5&times;10<sup>-7</sup> to 2.33&times;10<sup>-6</sup>)
+</p>
+
+<p class="a">
+I gave <span class="k">ries</span> various "random target numbers" that were within
+&#960;/10<sup>6</sup> of the value of &#960; (that is to say, accurate to within
+one part in a million). For most of these, I asked <span class="k">ries</span> not to use
+the trigonmetric functions or &#960; itself in the answers, and used
+<span class="m">--max-match-distance</span> to ensure its answers were close enough to therandom target to also serve as an approximation to &#960;.
+</p>
+<p class="i">
+  Using this technique, countless unusual approximations can be found.
+Here are a few of my favourites:
+</p>
+
+<p class="q">
+  e<sup>(19/18)<sup>(5/2)</sup></sup> = 3.14159032160545... &asymp; &#960; - 2.33198&times;10<sup>-6</sup>
+</p>
+<p class="a">
+
+</p>
+<p class="q">
+  e<sup>e<sup>3&times;4<sup>-&#8730;<span style="text-decoration: overline">5</span></sup></sup></sup> = 3.14159046585759... &asymp; &#960; - 2.18773&times;10<sup>-6</sup>
+</p>
+<p class="a">
+
+</p>
+<p class="q">
+  (&#8730;<span style="text-decoration: overline">3<span class="i">e</span>+2</span>-&#8730;<span style="text-decoration: overline">2</span>)<sup>2</sup> = 3.1415905858962... &asymp; &#960; - 2.06769&times;10<sup>-6</sup>
+</p>
+<p class="a">
+
+</p>
+<p class="q">
+  sqrt((<span class="i">e</span>/2+2)<sup>2</sup>-&#8730;<span style="text-decoration: overline">2</span>) = 3.14159420028712... &asymp; &#960; + 1.5467&times;10<sup>-6</sup>
+</p>
+<p class="a">
+
+</p>
+<p class="q">
+  (<span class="i">e<sup>e</sup></span>-9)<sup>(1/4)<sup>(1/3)</sup></sup> = 3.1415915931007... &asymp; &#960; - 1.0605&times;10<sup>-6</sup>
+</p>
+<p class="a">
+
+</p>
+<p class="q">
+  <span class="i">e</span><sup>2</sup> - <span class="i">e</span>/4 + 2<sup>-6</sup> - 2ln(6) = 3.14159170335978... &asymp; &#960; - 9.50229&times;10<sup>-7</sup>
+</p>
+<p class="a">
+
+<hr />
+</p>
+
+<p class="a"><h3 id="pi_day_5">Pi Day: the 5<sup>th</sup> Approximation</h3></p>
+
+<p class="q">
+  <span class="b">Robert Munafo</span> &#8195; &#8195; <span class="k"><a href="http://twitter.com/mrob_27">@mrob_27</a></span>
+  <br />
+<span style="background-color:#EEE; color: #00C; font-family: Helvetica; white-space: pre">  Today we're finding rational approximations of π with #RIES
+  <a href="index-5.html#pi_day_5">http://mrob.com/pub/ries/index...</a> Celebrate #PiDay
+  #nerdout #numbers #mathematics #fun</span>
+</p>
+<p class="a">
+
+Now we'll explore ways to generate the popular favourite,
+<span class="i">rational fraction approximations</span> (error: 2.67&times;10<sup>-7</sup>)
+</p>
+
+<p class="a">
+Many &#960; fans know the fraction approximation 335/113. <span class="k">ries</span>
+has an option <span class="m">-r</span> (short for <span class="m">--rational-subexpressions</span>)that makes it easy to generate approximations expressible as a ratio
+of integers. Here's how we can get 335/113 with <span class="k">ries</span>:
+</p>
+
+<p class="q">
+  <span class="m">ries 3.1415926 -r -s -x</span></p>
+<p class="a">
+
+Among the results are:
+</p>
+<p class="i">
+  <span class="i">x</span> = 1/7+3                      &#8195; &#8195; = 3.14285714285714...
+</p>
+<p class="i">
+  ...
+</p>
+<p class="i">
+  <span class="i">x</span> = 9*1/(8-1/9)+2             &#8195; &#8195; = 3.14084507042254...
+</p>
+<p class="i">
+  ...
+</p>
+<p class="i">
+  <span class="i">x</span> = 1/(1/(4*4)+4+3)+3         &#8195; &#8195; = 3.14159292035398...
+</p>
+
+<p class="a">
+The first is the well known 3 1/7; the second is 3+10/71; Archimedes
+proved that &#960; is between these two. The third formula
+"1/(1/4*4+4+3)+3" is equivalent to 335/113.
+</p>
+<p class="i">
+  With a little more work, <span class="k">ries</span> can be told to search only expressions
+of <a href="http://en.wikipedia.org/wiki/Continued_fraction">continued fraction</a> form. This is done with the <span class="m">--one-sided</span>option, and using <span class="m">-S</span> to allow only the digits, addition, andreciprocal (1/<span class="i">x</span>) operations. We also need to do a longer search
+using <span class="m">-l4</span> ("level 4 search"):</p>
+
+<p class="a"><span class="k">ries</span> command:
+</p>
+
+<p class="q">
+  <span class="m">ries 3.1415926 -Sr+123456789 --one-sided -x -l4</span></p>
+<p class="a">
+
+results:
+</p>
+<p class="i">
+  <span class="i">x</span> = 1/6+3                     &#8195; &#8195; = 3.16666666666667...
+</p>
+<p class="i">
+  <span class="i">x</span> = 1/7+3                     &#8195; &#8195; = 3.14285714285714...
+</p>
+<p class="i">
+  <span class="i">x</span> = 1/(1/8+7)+3               &#8195; &#8195; = 3.14035087719298...
+</p>
+<p class="i">
+  ...
+</p>
+<p class="i">
+  <span class="i">x</span> = 1/(1/(7+9)+7)+3           &#8195; &#8195; = 3.14159292035398...
+</p>
+
+<p class="a">
+The answers shown are equivalent to 3+1/6, 3+1/7, 3+1/(7+1/8), and
+3+1/(7+1/16) respectively.
+</p>
+
+<p class="a">
+&#8195;
+</p>
+
+<p class="a"><h3 id="pie_day">Calculating PIE with π</h3>(error: 1.18&times;10<sup>-6</sup>)
+</p>
+
+<p class="q">
+  <span class="b">Robert Munafo</span> &#8195; &#8195; <span class="k"><a href="http://twitter.com/mrob_27">@mrob_27</a></span>
+  <br />
+<span style="background-color:#EEE; color: #00C; font-family: Helvetica; white-space: pre">  @numberphile calculated π with pies... and #RIES calculates PIE with π's:
+  (π-1/√√π)^π+1/π+1/π = 16.0905... = "P I E" <a href="index-5.html#pie_day">http://mrob.com/pub/ries/index...</a></span>
+</p>
+<p class="a">
+
+In the runup to Pi Day 2013,
+<a href="http://www.youtube.com/user/numberphile">@numberphile</a> put up a charming
+video called
+<a href="https://www.youtube.com/watch?v=ZNiRzZ66YN0">calculating pi with pies</a>.
+I'll turn it around and calculate "PIE" with π's!
+</p>
+<p class="i">
+  The letters in "PIE" are the 16<sup>th</sup>, 9<sup>th</sup> and 5<sup>th</sup> in the
+alphabet respectively. So we'll make the digits 16, 09 and 05:
+</p>
+
+<p class="q">
+   16.0905 = ???
+</p>
+<p class="a">
+
+I'll tell <span class="k"><a href="index.html">ries</a></span> it can use the basic operations plus square
+root and exponents, and ask it to "match all digits" with the <span class="m">--mad</span>option:
+</p>
+
+<p class="q">
+  <span class="m">ries 16.0905 -S+-*/^nqrp -Ox -s --mad</span></p>
+<p class="a">
+
+This readily gives the answers:
+</p>
+
+  <span class="p">
+  ries 16.0905 -S+-*/^nqrp -Ox -s --mad
+&#8195;
+   Your target value: T = 16.0905                           mrob.com/ries
+&#8195;
+   x = (pi-1/sqrt(sqrt(pi)))^pi+1/pi+1/pi    = 16.090541124440...
+   x = (pi^sqrt(sqrt(pi))+pi pi) pi 1/(pi-1/pi)   = 16.090558519588...
+   x = ((pi"/-(1/(pi/pi^pi-sqrt(sqrt(pi)))))^2+pi)^2   = 16.090548718255...
+  ...
+  </span>
+<p class="a">
+I chose the first one since it's the simplest:
+</p>
+
+<p class="q">
+  <img src="../../pub/math/images/ries/pie-with-pis.gif" alt=""  >
+</p>
+<p class="a">
+
+Putting it into
+<a href="http://www.wolframalpha.com/input/?i=%28pi-1%2Fsqrt%28sqrt%28pi%29%29%29%5Epi%2B1%2Fpi%2B1%2Fpi">WolframAlpha</a>
+we can see that the value is indeed 16.0905...
+</p>
+
+<p class="a">
+How good is π at approximating PIE? We'll turn the equation around
+by replacing <span class="i">x</span> with 16.0905, then change the π's to <span class="i">x</span>'s:
+</p>
+
+<p class="q">
+  (<span class="i">x</span>-1/sqrt(sqrt(<span class="i">x</span>)))<sup><span class="i">x</span></sup>+1/<span class="i">x</span>+1/<span class="i">x</span> = 16.0905
+</p>
+<p class="a">
+
+and
+<a href="http://www.wolframalpha.com/input/?i=%28x-1%2Fsqrt%28sqrt%28x%29%29%29%5Ex%2B1%2Fx%2B1%2Fx%3D%3D16.0905">ask WolframAlpha to solve it</a>.
+The answer is:
+</p>
+
+<p class="q">
+  <span class="i">x</span> &asymp; 3.14159147147955...
+</p>
+<p class="a">
+
+</p>
+<p class="q">
+  <img src="../../pub/math/images/ries/wolfram-pie-pi.png" alt=""  >
+</p>
+<p class="a">
+
+which differs from the real value of π by about 1.18&times;10<sup>-6</sup>.
+</p>
+
+<p class="a">
+Happy <a href="http://en.wikipedia.org/wiki/PiDay">Pi Day</a>!
+</p>
+
+<p class="a"><hr />
+</p>
+
+<p class="a"><h3 id="pi_day_6">Pi Day: the 6<sup>th</sup> Approximation</h3></p>
+
+<p class="q">
+  <span class="b">Robert Munafo</span> &#8195; &#8195; <span class="k"><a href="http://twitter.com/mrob_27">@mrob_27</a></span>
+  <br />
+<span style="background-color:#EEE; color: #00C; font-family: Helvetica; white-space: pre">  π is about (4/(4*4(4(4+4)-4)+4))*4*4-(4/4-4) = 3.1415929... using #RIES
+  to celebrate #PiDay <a href="index-5.html#pi_day_6">http://mrob.com/pub/ries/index...</a> #nerdy #maths #numbers</span>
+</p>
+<p class="a">
+
+An <span class="i">all-fours approximation</span> (error: 2.67&times;10<sup>-7</sup>)
+</p>
+
+<p class="a">
+In this example we'll tell <span class="k">ries</span> to only use the digit 4 (using <span class="m">-S4</span>),give rational (fraction) answers (<span class="m">-r</span>), and not usethe reciprocal operation (<span class="m">-Nr</span>). This gives approximationsusing only the digit 4 combined with various symbols:
+</p>
+
+<p class="q">
+  <span class="m">ries 3.14159265 -S4 -r -Nr -s -x -l5</span></p>
+<p class="a">
+
+some of the results:
+</p>
+
+<p class="q">
+   <span class="i">x</span> = 4-(4-4/(4+4))/4                      &#8195; &#8195; = 3.125
+ <br />
+ <span class="i">x</span> = 4/(4(4+4)-4)-(4/4-4)                 &#8195; &#8195; = 3.14285714285714...
+ <br />
+ ...
+ <br />
+ <span class="i">x</span> = (4/(4*4(4(4+4)-4)+4))*4*4-(4/4-4) &#8195; &#8195; = 3.14159292035398...
+</p>
+<p class="a">
+
+Astute readers will notice that two of these solutions are the same as
+the rational approximations <a href="#pi_day_5">above</a>. With patience (using a longer
+search like <span class="m">-l6</span> or <span class="m">-l7</span>) <span class="k">ries</span> can find the 335/113 approximationwith many other digits:
+</p>
+
+<p class="q">
+   
+   (3/((3*3(3+3)-3/(3+3))+3))(3-3/(3*3))+3 &#8195; <span style="font-style: italic; font-size: smaller">(1 1/2 minutes)</span>
+ <br />
+ (4/(4*4(4(4+4)-4)+4))*4*4-(4/4-4) &#8195; <span style="font-style: italic; font-size: smaller">(11 seconds)</span>
+ <br />
+ (6/((6(6+6+6)-6/6)+6))(6(6+6)+6)-6/6 &#8195; <span style="font-style: italic; font-size: smaller">(about 1 minute)</span>
+ <br />
+ (7(7*7*7+7+7)-(7+7))/((7*7+7)(7+7)+7) &#8195; <span style="font-style: italic; font-size: smaller">(about 1 minute)</span>
+ <br />
+ (8+8+8)/8-8/(8-(8/(8+8)+8*8)) &#8195; <span style="font-style: italic; font-size: smaller">(10 seconds)</span>
+</p>
+<p class="a">
+
+For the digits 1, 2, 5 and 9 <span class="k">ries</span> was still searching after several
+minutes, so I gave it a little help. Allowing the digit 1 as well as
+5, and removing the <span class="m">-Nr</span> restriction gives an answer very quickly:</p>
+
+<p class="q">
+   <span class="m">ries 3.14159265 -S15 -r -s -x -l5</span> <br />
+ ...
+ <br />
+ <span class="i">x</span> = 1/(1/(5(1/(1-5)-5))-1/(1+1))+5  &#8195; &#8195; = 3.14159292035398...
+</p>
+<p class="a">
+
+then I made various replacements like changing "<span class="i">a</span>/<span class="i">b</span>" to "5<span class="i">a</span>/5<span class="i">b</span>":
+</p>
+
+<p class="q">
+     1/(1/(5*(1/(1-5)-5))-1/(1+1))+5
+ <br />
+ = 5/(5/(5*(1/(1-5)-5))-5/(1+1))+5
+ <br />
+ = 5/(5/(5*(5/(5*(1-5))-5))-5/(1+1))+5
+ <br />
+ = 5/(5/(5*(5/(5*(1-5))-5))-5*5/(5+5))+5
+ <br />
+ = 5/(5/(5*(5/(5*(5/5-5))-5))-5*5/(5+5))+5
+</p>
+<p class="a">
+
+so we have answers for all digits:
+</p>
+
+<p class="q">
+   1/(1/((1+1+1+1)*(1+1+1+1))+1+1+1+1+1+1+1)+1+1+1
+ <br />
+ 2/(2/(2*2*2*2)+2*2*2*2-2)+2/2+2
+ <br />
+ 5/(5/(5*(5/(5*(5/5-5))-5))-5*5/(5+5))+5
+ <br />
+ 9(9/((9-(9(9+9+9)+9/9))+9)+9/(9+9))-9/9
+</p>
+<p class="a">
+
+The versions for 1 and 2 were both derived from the "1's and 2's"
+version, which was 1/(1/(2*2*2*2)+2+2+1+2)+1+2, and you can easily
+see this is equivalent to 1/(1/(7+9)+7)+3 from <a href="#pi_day_5">yesterday</a>.
+</p>
+<p class="i">
+  For the digit 0, you can apply the common definition
+<a href="http://en.wikipedia.org/wiki/Exponentiation#Zero_to_the_power_of_zero">0<sup>0</sup>=1</a> and change every
+1 in the "all 1's" expression to 0<sup>0</sup>.
+</p>
+
+<p class="a">
+&#8195;
+</p>
+
+<p class="a"><h3 id="pi_day_6a">Iterative Approximations</h3></p>
+
+<p class="q">
+  
+  <span class="b">Robert Munafo</span> &#8195; &#8195; <span class="k"><a href="http://twitter.com/mrob_27">@mrob_27</a></span>
+  <br />
+<span style="background-color:#EEE; color: #00C; font-family: Helvetica; white-space: pre">  Start with any number, hit + 1 = √ 1/<span class="i">x</span> * 3 <span class="i">e<sup>x</sup></span> = √; then repeat. What do you get?
+  Celebrate #PiDay with #RIES <a href="index-5.html#pi_day_6a">http://mrob.com/pub/ries/index...</a> #maths</span>
+</p>
+<p class="a">
+
+</p>
+
+<p class="a"><span class="i">The iterative <a href="http://en.wikipedia.org/wiki/Irving_Joshua_Matrix">Dr. Matrix</a> example</span>
+(error: 2.89&times;10<sup>-8</sup>)
+</p>
+
+<p class="a">
+This time we <span class="i">won't</span> exclude &#960; from the answer, but instead use the
+<span class="m">--min-match-distance</span> option to prohibit the simple answer"<span class="i">x</span>=&#960;". The <span class="k">ries</span> command is:
+</p>
+
+<p class="q">
+  <span class="m">ries 3.141592653589 --min-match-distance 1e-8 -NSCT -s</span></p>
+<p class="a">
+
+which gives the result:
+</p>
+
+<p class="q">
+  <span class="i">x</span> = &#8730;((1/&#8730;<span style="text-decoration: overline">1+&#960;</span>) <span class="i">e</span><sup>3</sup>)
+</p>
+<p class="a">
+
+Substituting <span class="i">x</span> for the &#960; on the right, we get:
+</p>
+
+<p class="q">
+  <span class="i">x</span> = &#8730;((1/&#8730;<span style="text-decoration: overline">1+<span class="i">x</span></span>) <span class="i">e</span><sup>3</sup>)
+</p>
+<p class="a">
+
+This can be used as an iterative formula, starting with any number.
+For example, start with <span class="i">x</span>=2 and then compute
+&#8730;((1/&#8730;(1+<span class="i">x</span>))<span class="i">e</span><sup>3</sup>), and you get 3.405347287. Now use that as
+the new value of <span class="i">x</span> and continue: 3.093475530, 3.150784303,
+3.139852027, ... Repeating many times <span class="i">x</span> converges on
+3.1415926825119..., which is not &#960; but probably good enough to fool
+your friends.
+</p>
+
+<p class="a">
+As it turns out, this "fake iterative approximation formula" is
+algebraically related to the near-identity &#960;<sup>4</sup>+&#960;<sup>5</sup> &asymp;
+<span class="i">e</span><sup>6</sup>, as we can see starting with the original formula:
+</p>
+
+<p class="q">
+  <span class="i">x</span> = &#8730;((1/&#8730;<span style="text-decoration: overline">1+&#960;</span>) <span class="i">e</span><sup>3</sup>)
+</p>
+<p class="a">
+
+then changing <span class="i">x</span> to &#960; and removing the square roots:
+</p>
+
+<p class="q">
+  &#960; &asymp; &#8730;((1/&#8730;<span style="text-decoration: overline">1+&#960;</span>) <span class="i">e</span><sup>3</sup>)
+</p>
+<p class="a">
+
+</p>
+<p class="q">
+  &#960;<sup>2</sup> &asymp; <span class="i">e</span><sup>3</sup>/&#8730;<span style="text-decoration: overline">1+&#960;</span>
+</p>
+<p class="a">
+
+</p>
+<p class="q">
+  &#960;<sup>2</sup>&#8730;<span style="text-decoration: overline">1+&#960;</span> &asymp; <span class="i">e</span><sup>3</sup>
+</p>
+<p class="a">
+
+</p>
+<p class="q">
+  &#960;<sup>4</sup>(1+&#960;) &asymp; <span class="i">e</span><sup>6</sup>
+</p>
+<p class="a">
+
+</p>
+<p class="q">
+  &#960;<sup>4</sup>+&#960;<sup>5</sup> &asymp; <span class="i">e</span><sup>6</sup>
+</p>
+<p class="a">
+
+&#960;<sup>4</sup>+&#960;<sup>5</sup> is 403.4287758..., and <span class="i">e</span><sup>6</sup> is 403.4287934...; a
+<a href="http://en.wikipedia.org/wiki/Mathematical_coincidence">very near coincidence</a> indeed!
+</p>
+
+<p class="a"><hr />
+</p>
+
+<p class="a"><h3 id="pi_day_7">Pi Day: the 7<sup>th</sup> Approximation</h3></p>
+
+<p class="q">
+  <span class="b">Robert Munafo</span> &#8195; &#8195; <span class="k"><a href="http://twitter.com/mrob_27">@mrob_27</a></span>
+  <br />
+<span style="background-color:#EEE; color: #00C; font-family: Helvetica; white-space: pre">  Calculate 3 + 1/(e + 1/2 + <span class="i">e</span>√2) = ? What do you get … and why? Celebrate #PiDay
+  with #RIES <a href="index-5.html#pi_day_7">http://mrob.com/pub/ries/index...</a> #mathematics #numbers #nerdout</span>
+</p>
+<p class="a">
+
+<span class="i">The "simple" <a href="http://en.wikipedia.org/wiki/Irving_Joshua_Matrix">Dr. Matrix</a> example</span> (error:
+9.01&times;10<sup>-9</sup>)
+</p>
+
+<p class="a">
+This example could be used to
+<a href="http://xkcd.com/1047">troll your classmates</a> (but please don't). We
+ask <span class="k">ries</span> for an approximation to &#960; with no restrictions except
+for &#960; itself and the trigonometric functions.
+</p>
+
+<p class="a"><span class="k">ries</span> command:
+</p>
+
+<p class="q">
+  <span class="m">ries 3.141592653589 -NpSCT -s -x</span></p>
+<p class="a">
+
+Near the bottom of the results is this:
+</p>
+
+<p class="q">
+  <span class="i">x</span> = 1/(<span class="i">e</span>&#8730;<span style="text-decoration: overline">2</span>+<span class="i">e</span>+1/2)+3    &#8195; &#8195; = 3.14159266259783...
+</p>
+<p class="a">
+
+Rearrange it like this, and you just might fool some of your friends
+into thinking it's real:
+</p>
+
+<p class="q">
+  
+  <img src="../../pub/math/images/ries/pi_matrix_simple.gif" alt="" width=120   >
+</p>
+<p class="a">
+
+It is perhaps even a bit more convincing to those who know that &#960;
+and <span class="i">e</span> are both transcendental.
+</p>
+
+<p class="a">
+&#8195;
+</p>
+
+<p class="a"><h3 id="pi_day_7b">The Broken Calculator</h3></p>
+
+<p class="q">
+  <span class="b">Robert Munafo</span> &#8195; &#8195; <span class="k"><a href="http://twitter.com/mrob_27">@mrob_27</a></span>
+  <br />
+<span style="background-color:#EEE; color: #00C; font-family: Helvetica; white-space: pre">  A calculator with only x^2, √, e^x and ln(x) can compute anything… including
+  &#960;, use #RIES to see how <a href="index-5.html#pi_day_7b">http://mrob.com/pub/ries/index...</a> Celebrate #PiDay </span>
+</p>
+<p class="a">
+
+The <span class="i">broken calculator</span> (error: 7.52&times;10<sup>-9</sup>)
+</p>
+
+<p class="a">
+If they're too smart to be fooled by 1/(<span class="i">e</span>&#8730;<span style="text-decoration: overline">2</span>+<span class="i">e</span>+1/2)+3, then try
+this trick:
+</p>
+
+<p class="q">
+  I have a calculator that has only five working keys: <span class="i">x</span><sup>2</sup>, &#8730;<span style="text-decoration: overline"> </span>,
+  ln(<span class="i">x</span>), <span class="i">e<sup>x</sup></span> and the power key. When I turn it on, it starts with
+  the number 0. No other keys work. Can I make it display &#960;?
+</p>
+<p class="a">
+
+This one's a piece of cake for <span class="k">ries</span>. You can use it on any number
+you want and it comes up with answers almost instantly. Better still,
+we'll reconfigure <span class="k">ries</span> output with the <span class="m">--symbol-names</span> and postfixformat options, so it tells us exactly what keys to hit and in what
+order. Here is a <span class="k">ries</span> profile for the broken calculator:
+</p>
+
+  <span class="p">
+  # RIES profile for my broken calculator: The only working keys are
+  # e^x, ln(x), x^2 and square root.
+  -SeElq  # No 's' because solving sometimes makes a negative
+  -Ox     # Can't use x more than once
+  -s -x   # Put all the operations on the RHS and show the value
+  -F      # Use Postfix format
+  --symbol-names
+    :.:.           # Use '.' to represent blank space in the rest of these
+                   # symbol names
+&#8195;
+    :x:0         # Calculator starts with 0
+    :=:.         # Make = invisible
+    :e:e^x.e^x   # The only way to get anywhere is with e^x twice
+&#8195;
+         # Now RIES output starting with "x = e sqrt sqrt..."
+         # will look like "0  e^x e^x sqrt sqrt..."
+&#8195;
+    :q:,/     # Looks kind of like a square root sign
+    :l:ln(x)
+    :s:x^2
+    :E:e^x
+  </span>
+<p class="a">
+Now we can approximate &#960; (or anything really) on our broken
+calculator using the <span class="k">ries</span> command:
+</p>
+
+<p class="q">
+  <span class="m">ries -pbroken-calculator 3.1415926535897932</span></p>
+<p class="a">
+
+Thanks to the special symbol names in the profile, <span class="k">ries</span> shows us
+exactly how to calculate a result (press the keys in this order):
+</p>
+
+<p class="q">
+  0 <span class="i">e<sup>x</sup></span> <span class="i">e<sup>x</sup></span> &#8730;<span style="text-decoration: overline"> </span> &#8730;<span style="text-decoration: overline"> </span> <span class="i">e<sup>x</sup></span> <span class="i">e<sup>x</sup></span> &#8730;<span style="text-decoration: overline"> </span>
+  &#8730;<span style="text-decoration: overline"> </span> <span class="i">e<sup>x</sup></span> <span class="i">e<sup>x</sup></span> &#8730;<span style="text-decoration: overline"> </span> &#8730;<span style="text-decoration: overline"> </span> &#8730;<span style="text-decoration: overline"> </span> ln(<span class="i">x</span>) &#8730;<span style="text-decoration: overline"> </span>
+  &#8730;<span style="text-decoration: overline"> </span> <span class="i">e<sup>x</sup></span> <span class="i">x</span><sup>2</sup> <span class="i">x</span><sup>2</sup> ln(<span class="i">x</span>) ln(<span class="i">x</span>) <span class="i">x</span><sup>2</sup> <span class="i">e<sup>x</sup></span>
+  <span class="i">e<sup>x</sup></span> <span class="i">x</span><sup>2</sup> ln(<span class="i">x</span>) <span class="i">x</span><sup>2</sup> <span class="i">x</span><sup>2</sup> <span class="i">x</span><sup>2</sup> ln(<span class="i">x</span>) ln(<span class="i">x</span>) &#8195;
+  <br />
+ &#8195;&#8195;&#8195; = 3.14159264606927...
+</p>
+<p class="a">
+
+Try it on any calculator that has <span class="i">x</span><sup>2</sup>, &#8730;<span style="text-decoration: overline"> </span>, ln(<span class="i">x</span>), and
+<span class="i">e<sup>x</sup></span> keys, starting with 0. Here's a shorter one if you're getting
+lost on that one:
+</p>
+
+<p class="q">
+  0 <span class="i">e<sup>x</sup></span> <span class="i">e<sup>x</sup></span> &#8730;<span style="text-decoration: overline"> </span> &#8730;<span style="text-decoration: overline"> </span> &#8730;<span style="text-decoration: overline"> </span> &#8730;<span style="text-decoration: overline"> </span> <span class="i">e<sup>x</sup></span>
+  <span class="i">e<sup>x</sup></span> &#8730;<span style="text-decoration: overline"> </span> <span class="i">e<sup>x</sup></span> &#8730;<span style="text-decoration: overline"> </span> ln(<span class="i">x</span>) ln(<span class="i">x</span>) <span class="i">x</span><sup>2</sup> <span class="i">e<sup>x</sup></span>
+  <span class="i">x</span><sup>2</sup>
+  <br />
+ &#8195;&#8195;&#8195; = 3.14150905114791...
+</p>
+<p class="a">
+
+<hr />
+</p>
+
+<p class="a"><h3 id="pi_day_8">Pi Day: Approximating &#960; to 14 Digits</h3></p>
+
+<p class="q">
+  <span class="b">Robert Munafo</span> &#8195; &#8195; <span class="k"><a href="http://twitter.com/mrob_27">@mrob_27</a></span>
+  <br />
+<span style="background-color:#EEE; color: #00C; font-family: Helvetica; white-space: pre">  Happy #PiDay! Today, several more iterative formulas that are almost true…
+  <a href="index-5.html#pi_day_8">http://mrob.com/pub/ries/index...</a> using #RIES for #maths and #number fun! </span>
+</p>
+<p class="a">
+
+In this example we'll be doing <span class="i">high-precision approximations</span> for
+&#960; (with errors ranging from 1.11&times;10<sup>-9</sup> down to
+9.97&times;10<sup>-15</sup>).
+</p>
+
+<p class="a">
+Let's find a few more of the "iterate <span class="i">x</span>=f(<span class="i">x</span>)" type approximations,
+like yesterday's <a href="#pi_day_6a">Dr. Matrix example</a>. This requires
+answers from <span class="k">ries</span> that involve more than one <span class="i">x</span>. I'll use the <span class="m">-a</span>option to limit it to <a href="http://en.wikipedia.org/wiki/Algebraic_number">algebraic number</a>s, but also exclude the
+trigonometric functions with <span class="m">-NSCT</span>. In order to get more <span class="i">x</span>'s I'lldecrease the "weight" (complexity) of the <span class="i">x</span> symbol with
+<span class="m">--symbol-weights 8:x</span>. I also use <span class="m">-s</span> to shift everything to theright-hand-side except for one <span class="i">x</span>. The <span class="m">-l5</span> option just makes itsearch longer.
+</p>
+
+<p class="a"><span class="b">Iteration A</span>. Using the <span class="k">ries</span> command:
+</p>
+
+<p class="q">
+  <span class="m">ries 3.1415926535897932 -a -NSCT --symbol-weights 8:x -s -l5</span></p>
+<p class="a">
+
+gives this result:
+</p>
+
+<p class="q">
+  <span class="i">x</span> = &#8730;<span style="text-decoration: overline">5/2</span> + 1/3 + &#8730;&#8730;&#8730;<span style="text-decoration: overline"><span class="i">x</span>+2</span>
+</p>
+<p class="a">
+
+The last part is three square roots, which is an 8<sup>th</sup> root, so it
+could be written "&#8730;<span style="text-decoration: overline">5/2</span> + 1/3 + <sup>8</sup>&#8730;<span style="text-decoration: overline"><span class="i">x</span>+2</span>". As an iteration,
+we would start with some <span class="i">x</span> (like 2), and use it to compute a new
+value <span class="i">x</span>':
+</p>
+
+<p class="q">
+  <span class="i">x</span>' = &#8730;<span style="text-decoration: overline">5/2</span> + 1/3 + <sup>8</sup>&#8730;<span style="text-decoration: overline"><span class="i">x</span>+2</span>
+</p>
+<p class="a">
+
+If <span class="i">x</span> is 2, <span class="i">x</span>' is about 3.103. Continuing, the next iteration <span class="i">x</span>''
+is about 3.1404; this converges rather quickly on 3.1415926546965...
+(error 1.11&times;10<sup>-9</sup>).
+</p>
+
+<p class="a"><span class="b">Iteration B</span>. Let's not use the <span class="m">-a</span> option, but exclude &#960;explicitly in the <span class="m">-N</span> option. The <span class="k">ries</span> command becomes:</p>
+
+<p class="q">
+  <span class="m">ries 3.1415926535897932 -NSCTp --symbol-weights 8:x -s -l5</span></p>
+<p class="a">
+
+From this we get the result:
+</p>
+
+<p class="q">
+  <span class="m">x = 1/e"/(phi/9)+sqrt(5/x)</span></p>
+<p class="a">
+
+The <span class="b"><span class="m">"/</span></span> represents <span class="i">n</span><sup>th</sup> root. There is no good symbol for this,and <span class="k">ries</span> prints it as <span class="b"><span class="m">"/</span></span>. I'll rewrite this as "[<sup>n</sup>&#8730;]" andadd parentheses to show that the root is taken first:
+</p>
+
+<p class="q">
+  <span class="i">x</span> = 1/(<span class="i">e</span>[<sup>n</sup>&#8730;](&#934;/9))+&#8730;<span style="text-decoration: overline">5/<span class="i">x</span></span>
+</p>
+<p class="a">
+
+Re-arranging slightly:
+</p>
+
+<p class="q">
+  <span class="i">x</span>' = &#8730;<span style="text-decoration: overline">5/<span class="i">x</span></span>+(&#934;/9)<sup>(-1/<span class="i">e</span>)</sup>
+</p>
+<p class="a">
+
+This iteration converges on 3.14159264889... (error 4.69&times;10<sup>-9</sup>)
+</p>
+
+<p class="a"><span class="b">Iteration C</span>. Another result from the same <span class="k">ries</span> command:
+</p>
+
+<p class="q">
+  <span class="i">x</span> = e^(((x-5)^2)[<sup>n</sup>&#8730;]sqrt(ln(9*sqrt(2))))
+</p>
+<p class="a">
+
+We can rewrite the formula to be a bit easier to read:
+</p>
+
+<p class="q">
+  <span class="i">x</span>' = e<sup>sqrt(ln(9&#8730;<span style="text-decoration: overline">2</span>))<sup>(1/((x-5)<sup>2</sup>))</sup></sup>
+</p>
+<p class="a">
+
+Iterating this, starting with an initial <span class="i">x</span> near 3, converges on
+3.14159265358403... (error 5.79&times;10<sup>-12</sup>)
+</p>
+
+<p class="a"><span class="b">Iteration D</span>. Here's another result:
+</p>
+
+<p class="q">
+  <span class="i">x</span> = ln(<span class="i">x</span>+<span class="i">x</span>/4)^(1/&#8730;<span style="text-decoration: overline"><span class="i">e</span></span>[<sup>n</sup>&#8730;](1/5)+1)
+</p>
+<p class="a">
+
+This does not converge if you iterate it as shown, it diverges. When
+that happens we can usually solve for another <span class="i">x</span>, in this case the
+ones inside the ln():
+</p>
+
+<p class="q">
+  <span class="i">x</span>' = 4/5*e<sup><span class="i">x</span><sup>(1/(1+5<sup>(1/&#8730;<span style="text-decoration: overline"><span class="i">e</span></span>)</sup>))</sup></sup>
+</p>
+<p class="a">
+
+Iterating this converges on 3.14159265358561... (error 4.18&times;10<sup>-12</sup>)
+</p>
+
+<p class="a"><span class="b">Iteration E</span>. Here's yet another:
+</p>
+
+<p class="q">
+  <span class="i">x</span> = <span class="i">x</span>[<sup>n</sup>&#8730;](log<sub>2</sub>(7[<sup>n</sup>&#8730;]2+5))-1/(<span class="i">x</span>[<sup>n</sup>&#8730;]<span class="i">x</span>-2)
+</p>
+<p class="a">
+
+This has three of the "<span class="i">n</span><sup>th</sup> root" symbols and a logarithm to base
+2, all of which I'll rewrite:
+</p>
+
+<p class="q">
+  <span class="i">x</span>' = (ln(5+2<sup>(1/7)</sup>)/ln(2))<sup>(1/<span class="i">x</span>)</sup> - 1/(<span class="i">x</span><sup>(1/<span class="i">x</span>)</sup>-2)
+</p>
+<p class="a">
+
+This converges on 3.14159265358738..., which is only 2.40&times;10<sup>-12</sup>
+from &#960;.
+</p>
+
+<p class="a"><span class="b">Formula F</span>. We also get:
+</p>
+
+<p class="q">
+  <span class="i">x</span> = (7[<sup>n</sup>&#8730;]2/8+&#934;-1/9)/(<span class="i">x</span>/6)
+</p>
+<p class="a">
+
+Though this has two <span class="i">x</span>'s, it can be directly solved for <span class="i">x</span>, yielding
+</p>
+
+<p class="q">
+  sqrt(6*(2<sup>(1/7)</sup>/8+&#934;-1/9)) = 3.1415926535895868...
+</p>
+<p class="a">
+
+so no iteration is needed. The value differs from &#960; by 2.06&times;10<sup>-13</sup>.
+</p>
+
+<p class="a">
+&#8195;
+</p>
+
+<p class="a">
+Later today I'll add several "closed-form" approximations for &#960;,
+going up to 14 digits of accuracy.
+</p>
+
+<p class="a"><h3 id="pi_day_8b">Accurate Closed-Form Expressions</h3></p>
+
+<p class="q">
+  <span class="b">Robert Munafo</span> &#8195; &#8195; <span class="k"><a href="http://twitter.com/mrob_27">@mrob_27</a></span>
+  <br />
+<span style="background-color:#EEE; color: #00C; font-family: Helvetica; white-space: pre">  The formula (6*(&#8730;(7/2)+5))^(-phi/7)+e gives &#960; to 14-digit accuracy. Many more at
+  <a href="index-5.html#pi_day_8b">http://mrob.com/pub/ries/index...</a> using #RIES to celebrate #PiDay ! </span>
+</p>
+<p class="a">
+
+To round out my <a href="http://en.wikipedia.org/wiki/PiDay">PiDay</a> examples, I'll do a time-intensive search for very
+<span class="i">high-accuracy</span> approximations. I start with the <span class="k">ries</span> command:
+</p>
+
+<p class="q">
+  <span class="m">ries -NSCTp -Ox 3.141592653589793238 -s -l6 -x</span></p>
+<p class="a">
+
+to get many closed-form approximations. After a while I'll increase
+the search level to <span class="m">-l8</span> and add the options<span class="m">--max-match-distance 7e-13</span> and <span class="m">--no-refinement</span> to get lots ofvery close, but more complicated answers.
+</p>
+<p class="i">
+  Here is a small selection of the results, listed in order of
+increasing accuracy:
+</p>
+
+<p class="q">
+  &#8730;(4*&#8730;<span style="text-decoration: overline">&#934;-1/3</span>*&#934;<sup>2</sup>-2) &#8195; &#8195; = 3.1415926534219... (error 1.68&times;10<sup>-10</sup>)
+</p>
+<p class="a">
+
+</p>
+<p class="q">
+  1/(1/&#8730;<span style="text-decoration: overline">2</span><sup>&#8730;<span style="text-decoration: overline">3*7</span></sup>-(&#934;-&#8730;<span style="text-decoration: overline">3</span>)) = 3.1415926535752... (error 1.45&times;10<sup>-11</sup>)
+</p>
+<p class="a">
+
+</p>
+<p class="q">
+  &#8730;((<span class="i">e</span><sup>&#8730;<span style="text-decoration: overline"><span class="i">e</span></span></sup>-2<sup>(1/5)</sup>)/2)+<span class="i">e</span>-1 = 3.1415926535764... (error 1.33&times;10<sup>-11</sup>)
+</p>
+<p class="a">
+
+</p>
+<p class="q">
+  (1/(<span class="i">e</span>^&#934;+2+&#8730;<span style="text-decoration: overline">6</span>))^2+7/&#8730;<span style="text-decoration: overline">5</span> = 3.1415926535908... (error 1.07&times;10<sup>-12</sup>)
+</p>
+<p class="a">
+
+</p>
+<p class="q">
+  &#8730;(&#934;^(1/&#8730;(6<sup>2</sup>-2))*(1/5+1))+2 = 3.1415926535904... (error 7.01&times;10<sup>-13</sup>)
+</p>
+<p class="a">
+
+</p>
+<p class="q">
+  1/(&#934;*(3-<span class="i">e</span><sup>3</sup>)-1)+&#8730;(&#934;<sup>5</sup>-1) = 3.141592653589232... (error 5.61&times;10<sup>-13</sup>)
+</p>
+<p class="a">
+
+</p>
+<p class="q">
+  1/(1/(2*&#8730;(&#8730;<span style="text-decoration: overline"><span class="i">e</span></span>-ln(4)))+ln(4))+<span class="i">e</span> = 3.1415926535902... (error 4.72&times;10<sup>-13</sup>)
+</p>
+<p class="a">
+
+</p>
+<p class="q">
+  (&#934;*9/7<sup><span class="i">e</span></sup>+7-<span class="i">e</span>)/ln(4) = 3.1415926535901... (error 3.59&times;10<sup>-13</sup>)
+</p>
+<p class="a">
+
+</p>
+<p class="q">
+  &#8730;(1/(1/(e*(&#8730;<span style="text-decoration: overline">&#934;</span>+1)<sup>2</sup>)<sup>2</sup>+ln(&#934;)/5)) = 3.141592653589559... (error 2.34&times;10<sup>-13</sup>)
+</p>
+<p class="a">
+
+</p>
+<p class="q">
+  <span class="i">e</span><sup>((ln(3 <span class="i">e</span>+1)/ln(6))<sup>2</sup>)</sup>-&#8730;<span style="text-decoration: overline">1/7+2</span> = 3.1415926535900... (error 2.21&times;10<sup>-13</sup>)
+</p>
+<p class="a">
+
+</p>
+<p class="q">
+  &#8730;(6*(&#934;+2<sup>(1/7)</sup>/8)-2/3) = 3.141592653589586... (error 2.06&times;10<sup>-13</sup>)
+</p>
+<p class="a">
+
+</p>
+<p class="q">
+  &#8730;(ln(8-ln(4)<sup>2</sup>)/&#8730;(<span class="i">e</span><sup>9</sup>))+3 = 3.141592653589874... (error 8.09&times;10<sup>-14</sup>)
+</p>
+<p class="a">
+
+</p>
+<p class="q">
+  ln((6<sup>(<span class="i">e</span>/2)<sup>2</sup></sup>-1/2)-(2-1/<span class="i">e</span><sup><span class="i">e</span></sup>)<sup>2</sup>) = 3.141592653589840... (error 4.76&times;10<sup>-14</sup>)
+</p>
+<p class="a">
+
+</p>
+<p class="q">
+  ln((<span class="i">e</span><sup>(5/(<span class="i">e</span><sup>(<span class="i">e</span>/3)<sup>2</sup></sup>))</sup>+&#8730;<span style="text-decoration: overline">3</span>)<sup>2</sup>/5) = 3.1415926535897698... (error 2.34&times;10<sup>-14</sup>)
+</p>
+<p class="a">
+
+</p>
+<p class="q">
+  (6*(&#8730;<span style="text-decoration: overline">7/2</span>+5))<sup>(-&#934;/7)</sup>+<span class="i">e</span> = 3.141592653589803... (error 9.97&times;10<sup>-15</sup>)
+</p>
+<p class="a">
+
+</p>
+
+<p class="a">
+&#8195;
+</p>
+
+<p class="a">
+That's it for my <a href="http://en.wikipedia.org/wiki/PiDay">PiDay</a> examples. Check the rest of this page for
+earlier items you may have missed, and try your own numbers in
+<a href="en-query.html">RIES online</a>!
+</p>
+
+<br /><p align="center"><a href="index.html">First page</a> . . . <a href="index-4.html">Back to page 4</a> . . . <a href="index-6.html">Forward to page 6</a></p><br />
+
+
+<hr />
+Contents: <a href="index.html#overview"><span class="k">ries</span> overview</a> <a href="index-2.html#bench">Benchmarks</a>
+<a href="index-2.html#history">History</a> &#8195; <a href="index-3.html#tricks">Nerdy Math Tricks</a> &#8195;
+<a href="index-4.html#serious">Semiserious Math Tricks</a> &#8195;
+<a href="index-6.html#links">Links and miscellaneous</a>
+
+<br />
+<br />
+<hr>
+<span class="footer">
+<span class="s">Robert Munafo's home pages on <a href="http://www.hostmds.com">HostMDS</a> &#8195;
+&copy; 1996-2020 Robert P. Munafo.</span>
+<br />
+ &#8195; <a href="../../pub/personal.html">about</a> &#8195; <a href="../../main-contact.html">contact</a>
+<br />
+<span class="s">This work is licensed under a Creative Commons
+Attribution-NonCommercial 4.0 International License.
+Details <a href="../../cc-license.html">here</a>.</span>
+</span>
+<img src="../../images/symbols/rbot-16.png" alt=""  ><span style="font-size: small">s.11</span><br /></div>
+</body></html>

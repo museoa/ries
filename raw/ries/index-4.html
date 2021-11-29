@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1"> <meta name="GENERATOR" content="Rilybot AROS" />
+ <meta name="Author" content="Robert Munafo" />
+ <meta name="format-detection" content="telephone=no">
+ <link rel="search" type="application/opensearchdescription+xml" title="mrob" href="/opensearch.xml" />
+ <meta name="keywords" content="RIES, Find, Algebraic, Equations, Given, Their, Solution" />
+ <meta name="description" content="RIES - Find Algebraic Equations, Given Their Solution -- Explore a wide variety of topics from large numbers to sociology at mrob.com" />
+ <meta name="x-rhtf-glname" content="ries" />
+<link rel="shortcut icon" href="http://mrob.com/favicon.ico" />
+<title> RIES - Find Algebraic Equations, Given Their Solution (page 4) at MROB </title>
+<link rel="stylesheet" href="../../style.css" />
+</head>
+
+<body >
+<div id="banner">
+<div id="topnav">
+<a href="../../pub/index.html">mrob</a>
+&#8195;
+<a href="index.html">RIES</a> <a href="../../pub/math/numbers.html">Numbers</a> <a href="../../pub/math/largenum.html">Largenum</a> <a href="../../pub/math/nu-sequences.html">Sequences</a> <a href="../../pub/muency.html">Mandelbrot</a>
+&#8195;
+<a href="../../pub/comp/xmorphia/index.html">Xmorphia</a>
+</div>
+
+
+<div id="search">
+  <form action="http://www.google.com/search" style="margin:0; padding:0;">
+  <label for="q">Search:</label>
+  <input name="query" type="hidden" value="site:mrob.com" />
+  <input style="font-family:Palatino" name="q" id="q" size="15" value="" />
+  <input name="btnG" type="submit" value="Go" />
+  </form>
+</div>
+</div>
+<div style="clear:both;"></div>
+<div id="content">
+<h1>RIES - Find Algebraic Equations, Given Their Solution&#8195;&#8195;</h1><br /><p align="center"><a href="index.html">First page</a> . . . <a href="index-3.html">Back to page 3</a> . . . <a href="index-5.html">Forward to page 5</a> . . . <a href="index-6.html">Last page (page 6)</a></p><br />
+<p class="a"><h2 id="serious">Semiserious Math Tricks</h2></p>
+
+<p class="a"><h3 id="hypotheses">Formal Hypothesis</h3></p>
+
+<p class="a">
+Some fairly serious maths has been done partly with the aid of RIES.
+For example, in 2014 December is was
+<a href="http://math.stackexchange.com/questions/1084897/can-i-get-a-closed-form-of-frac-zeta2-2-frac-zeta-423-frac-zet">asked</a>
+if there is a closed form for
+</p>
+
+<p class="q">
+  SIGMA<sub><span class="i">k</span>=1..inf</sub> [ -1<sup>(<span class="i">k</span>+1)</sup> &#950;(2<span class="i">k</span>) / 2<sup>(2<span class="i">k</span>-1)</sup>  ]
+    = &#950;(2)/2 - &#950;(4)/2<sup>3</sup> + &#950;(6)/2<sup>5</sup> - ...
+</p>
+<p class="a">
+
+where &#950;() is the Riemann Zeta function. The series converges
+quickly and <span class="k">ries</span> was used to find a guess for the answer:
+</p>
+
+  <span class="p">
+  $ ries 0.712688574959647755609169086586
+&#8195;
+   Your target value: T = 0.712688574959647756                   mrob.com/ries
+&#8195;
+     x = sqrt(1/2)                               for x = T - 0.00558179  {44}
+     x = e^-(1/3)                                for x = T + 0.00384274  {57}
+     x = sqrt(5)/pi                              for x = T - 0.000926032 {60}
+  [...]
+     x = pi/(e^pi-1)-(1-pi/2)                    ('exact' match)         {128}
+  [...]
+                         --LHS--      --RHS--      -Total-
+     max complexity:          67           62          129
+          dead-ends:     2785473      5271937      8057410  Time: 0.557
+        expressions:      187907       320749       508656
+           distinct:       95554        94028       189582  Memory: 14848KiB
+        Total equations tested:              8984751512 (8.985e+09)
+  </span>
+<p class="a">
+The answer is &#960;/2 coth(&#960;/2) - 1 = &#960;/(<span class="i">e</span>^&#960;-1) + &#960;/2 -
+1, and can be proven reasonably easily using the series sum definition
+of the Zeta function, an identity (based on the calculus of residues)
+for the cotangent, and the simple identity coth <span class="i">x</span> = <span class="i">i</span> cot(<span class="i">ix</span>).
+</p>
+
+<p class="a"><h3 id="wild_guess">Wild Guessing</h3></p>
+
+<p class="a">
+This is ostensibly the primary purpose of <span class="k">ries</span>: using some
+approximate measurement or calculation as the basis of a "wild guess"
+at an exact solution.
+</p>
+<p class="i">
+  Here is an example: <a href="http://xkcd.com/356/">xkcd 356</a> presents an
+"infinite grid of resistors" problem that looks like it should have a
+closed-form solution, but with no partucularly obvious way to find it.
+</p>
+<p class="i">
+  Matthew Beckler performed
+<a href="http://www.mbeckler.org/resistor_grid/">circuit simulations</a> of a
+number of grids ranging in size from the minimal set of 7 resistors up
+to 80 thousand. As the size of the simulated grid grows, the answer
+gets closer to what it should be for an infinite grid. His last 4
+answers were: ..., 0.7743, 0.7735, 0.7733, 0.7733. One might guess
+that the limit, and true answer to the resistor problem, is somewhere
+around 0.7732 or 0.7733. Let's tell <span class="k">ries</span> to search around 0.77325,
+with a maximum error of 0.0001:
+</p>
+
+  <span class="p">
+  ries 0.77325 --max-match-distance 0.0001 -x
+&#8195;
+  First match must be closer than 0.0001.
+&#8195;
+     Your target value: T = 0.77325                           mrob.com/ries
+&#8195;
+                x+1/2 = 4/pi                 for x = 0.773239544735163     {74}
+            (x+phi)^2 = 3+e                  for x = 0.773258931086369     {81}
+              1/x+1/3 = 4"/7                 for x = 0.773249747663235     {89}
+  ...
+  </span>
+<p class="a">
+Thus the simplest "wild guess" answer seems to be 4/&#960;-1/2 =
+0.773239... ohms. As
+<a href="http://sites.google.com/site/resistorgrid/">others</a>
+<a href="http://pds4.egloos.com/pds/200708/06/25/resist-zariski.pdf">eventually</a>
+<a href="http://forums.xkcd.com/viewtopic.php?f=7&t=16104&start=120#p434816">showed</a>,
+that is indeed the answer.
+</p>
+<p class="i">
+  However this was a pretty lucky guess. We could have guessed that the
+answer is within 0.001 of the final measurement 0.7733, and <span class="k">ries</span>
+would have told us the answer was &#8730;<span style="text-decoration: overline">&#960;</span>-1 = 0.772453... To someone
+making a wild guess, this appears at least as believable as
+4/&#960;-1/2, which illustrates why wild guessing with <span class="k">ries</span> isn't
+actually all that useful.
+</p>
+
+<p class="a"><h3 id="newton">Successive Refinement (Newton-Raphson Method)</h3></p>
+
+<p class="a">
+Because <span class="k">ries</span> uses derivatives to report how far an inequality
+deviates from an (exact) equality, you can use it to iterate Newton's
+Method. Suppose you know that the cube root of 3 starts with the
+digits 1.442, and want to find more digits. <span class="m">ries 1.442</span> yields theresult:
+</p>
+
+<p class="q">
+   <span class="m"> x^3 = 3 &#8195;&#8195;&#8195;&#8195;&#8195;&#8195;&#8195; for X = T + 0.000<span class="b">24957</span> {51} </span></p>
+<p class="a">
+
+To get a better approximation, add 1.442 and 0.00024957:
+</p>
+
+<p class="q">
+   <span class="m">ries 1.442<span class="b">24957</span></span> <br />
+ <span class="i">(other answers not shown)</span>
+ <br />
+ | x^3 = 3 &#8195;&#8195;&#8195;&#8195;&#8195;&#8195;&#8195; for x = T + <span class="b">3.07408</span>e-10 {51} |
+</p>
+<p class="a">
+
+Then add 3.07408&times;10<sup>-10</sup> (notice you have to add a zero):
+</p>
+
+<p class="q">
+   <span class="m">ries 1.44224957<span class="b">0307408</span></span> <br />
+ <span class="i">(other answers not shown)</span>
+ <br />
+ | x^3 = 3 &#8195;&#8195;&#8195;&#8195;&#8195;&#8195;&#8195; for x = T + 2.22045e-16 {51} |
+ <br />
+ &#8195;
+ <br />
+ <span class="i">(and so on...)</span>
+</p>
+<p class="a">
+
+<span class="k">ries</span> uses about 16 digits in its internal calculations, so this is
+about as precise as you can get. The actual value of the cube root of
+3 (to 25 digits) is 1.4422495703074083823216383... Although this
+specific example is a case of extreme computational overkill, the same
+method can be used for things that cannot be computed directly, such
+as the value of <a href="../../pub/math/numbers-2.html#l2_50618"><span class="i">x</span> for which <span class="i">x<sup>x</sup></span>=10</a>.
+</p>
+
+<p class="a"><h3 id="identity">Forgotten Identities</h3></p>
+
+<p class="a">
+If you're like most people who took <a href="http://en.wikipedia.org/wiki/Trigonometry">Trigonometry</a> in high school,
+you remember that there was something called
+"<a href="http://en.wikipedia.org/wiki/List_of_trigonometric_identities">trigonometric identities</a>", but
+nothing more. Maybe you remember that sine could be turned into cosine
+somehow, but that's about it.
+</p>
+<p class="i">
+  With <span class="k">ries</span> you can rediscover all the identities, and probably a few
+more you never knew existed. For this example we'll use a
+<a href="index.html#profile">profile</a> called "rad.ries":
+</p>
+
+  <span class="p">
+  # rad.ries:  Use trigonometry functions in radians
+  --trig-argument-scale 1    # radians
+  -NLleEv      # No log, ln, e, e^x or arbitrary roots
+  </span>
+<p class="a">
+Using a calculator (or a command like
+<span class="b">ries -prad.ries 1 --eval-expression 1S</span>) you can find out the
+sine of 1 radian, which is 0.841470984807897. Naturally, if you give
+<span class="k">ries</span> this number, it will tell you:
+</p>
+
+  <span class="p">
+  ries -prad.ries 0.841470984807897
+                x = sin(1)               for x = T - 4.44089e-16 {38}
+  </span>
+<p class="a">
+We want to discover other ways to get the same value without using the
+sine function. To do this we simply tell <span class="k">ries</span> that sin() is not
+allowed using the <span class="b">-NS</span> option:
+</p>
+
+  <span class="p">
+  ries -prad.ries 0.841470984807897 -NS
+         x/cos(1) = tan(1)               for x = T - 4.44089e-16 {66}
+  </span>
+<p class="a">
+So <span class="k">ries</span> has told us that our number <span class="i">x</span> (which we know to be the
+sine of 1) divided by the cosine of 1 is equal to the tangent of 1.
+Therefore sin(1)/cos(1) = tan(1). Going back to your calculator, you
+can verify that sin(<span class="i">x</span>)/cos(<span class="i">x</span>) = tan(<span class="i">x</span>) for lots of values of
+<span class="i">x</span>. This is our first trigonometric identity.
+</p>
+<p class="i">
+  Let's find another one: while still using the target value
+0.841470984807897, exclude the tangent function too:
+</p>
+
+  <span class="p">
+  ries -prad.ries 0.841470984807897 -NST
+            x^2-1 = -(cos(1)^2)          for x = T - 4.44089e-16 {78}
+  </span>
+<p class="a">
+Move things around a bit with a little algebra, and this tells us that
+sin(1)<sup>2</sup> + cos(1)<sup>2</sup> = 1, which generalises into another identity:
+sin<sup>2</sup><span class="i">x</span>+cos<sup>2</sup><span class="i">x</span>=1. (The square of a trig function is usually
+written "sin<sup>2</sup><span class="i">x</span>" rather than "sin(<span class="i">x</span>)<sup>2</sup>" or "(sin(<span class="i">x</span>))<sup>2</sup>"
+because the latter is a bit cluttered and the other might be confused
+with "sin(<span class="i">x</span><sup>2</sup>)").
+</p>
+
+<br /><p align="center"><a href="index.html">First page</a> . . . <a href="index-3.html">Back to page 3</a> . . . <a href="index-5.html">Forward to page 5</a> . . . <a href="index-6.html">Last page (page 6)</a></p><br />
+
+
+<hr />
+Contents: <a href="index.html#overview"><span class="k">ries</span> overview</a> <a href="index-2.html#bench">Benchmarks</a>
+<a href="index-2.html#history">History</a> &#8195; <a href="index-3.html#tricks">Nerdy Math Tricks</a> &#8195;
+<a href="#serious">Semiserious Math Tricks</a> &#8195;
+<a href="index-6.html#links">Links and miscellaneous</a>
+
+<br />
+<br />
+<hr>
+<span class="footer">
+<span class="s">Robert Munafo's home pages on <a href="http://www.hostmds.com">HostMDS</a> &#8195;
+&copy; 1996-2020 Robert P. Munafo.</span>
+<br />
+ &#8195; <a href="../../pub/personal.html">about</a> &#8195; <a href="../../main-contact.html">contact</a>
+<br />
+<span class="s">This work is licensed under a Creative Commons
+Attribution-NonCommercial 4.0 International License.
+Details <a href="../../cc-license.html">here</a>.</span>
+</span>
+<img src="../../images/symbols/rbot-16.png" alt=""  ><span style="font-size: small">s.11</span><br /></div>
+</body></html>

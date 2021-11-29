@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1"> <meta name="GENERATOR" content="Rilybot AROS" />
+ <meta name="Author" content="Robert Munafo" />
+ <meta name="format-detection" content="telephone=no">
+ <link rel="search" type="application/opensearchdescription+xml" title="mrob" href="/opensearch.xml" />
+ <meta name="keywords" content="Coefficients, Lanczos, Approximation, Gamma, Function" />
+ <meta name="description" content="Coefficients for the Lanczos Approximation to the Gamma Function -- Explore a wide variety of topics from large numbers to sociology at mrob.com" />
+ <meta name="x-rhtf-glname" content="lanczos-gamma" />
+<link rel="shortcut icon" href="http://mrob.com/favicon.ico" />
+<title> Coefficients for the Lanczos Approximation to the Gamma Function at MROB </title>
+<link rel="stylesheet" href="../../style.css" />
+</head>
+
+<body >
+<div id="banner">
+<div id="topnav">
+<a href="../../pub/index.html">mrob</a>
+&#8195;
+<a href="index.html">RIES</a> <a href="../../pub/math/numbers.html">Numbers</a> <a href="../../pub/math/largenum.html">Largenum</a> <a href="../../pub/math/nu-sequences.html">Sequences</a> <a href="../../pub/muency.html">Mandelbrot</a>
+&#8195;
+<a href="../../pub/comp/xmorphia/index.html">Xmorphia</a>
+</div>
+<div id="search">
+  <form action="http://www.google.com/search" style="margin:0; padding:0;">
+  <label for="q">Search:</label>
+  <input name="query" type="hidden" value="site:mrob.com" />
+  <input style="font-family:Palatino" name="q" id="q" size="15" value="" />
+  <input name="btnG" type="submit" value="Go" />
+  </form>
+</div>
+</div>
+<div style="clear:both;"></div>
+<div id="content">
+<h1>Coefficients for the Lanczos Approximation to the Gamma Function&#8195;&#8195;</h1>
+<p class="a">
+
+</p>
+
+<p class="a">
+This page gives several commonly-used sets of values for the
+coefficients used in the <a href="http://en.wikipedia.org/wiki/Lanczos_approximation">Lanczos approximation</a> of the
+<a href="http://en.wikipedia.org/wiki/Gamma_function">Gamma function</a>.
+</p>
+
+<p class="a"><span class="b">Contents</span>
+<br />
+ &#8195; <a href="#code">Sample Code</a>
+</p>
+
+<h3>Background</h3>
+
+<p class="a">
+The <a href="http://en.wikipedia.org/wiki/Gamma``function">Gamma function</a> is equivalent to the <a href="http://en.wikipedia.org/wiki/Factorial">factorial</a> for integer
+arguments, but is valid for most real arguments (negative integers
+and zero being the only exceptions). There are a number of ways to
+compute it, but each has flaws. Some methods don't converge quickly
+enough for reasonably small arguments, and some (such as
+<a href="http://en.wikipedia.org/wiki/Stirling%27s_approximation">Stirling's approximation</a> actually <span class="i">diverge</span> if you evaluate too
+many terms. The number of terms that you need to use varies with
+the value of the argument <span class="i">z</span> and depends on how much precision you need.
+</p>
+
+<p class="a">
+The Lanczos approximation has fewer of these problems, provided that
+the coefficients are computed accurately enough. The Boost
+documentation<sup><a href="#fn_14">14</a></sup> summarizes the situation thus:
+</p>
+
+<p class="q">
+  <span class="s">
+  [...] for the Gamma function over real numbers (as opposed to complex
+  ones) the Lanczos approximation [...] appears to offer no clear
+  advantage over more traditional methods such as Stirling's approximation.
+  Pugh<sup><a href="#fn_12">12</a></sup> [...] discovered that [Lanczos and Stirling] were very
+  similar in terms of complexity and relative error. However, the Lanczos
+  approximation does have a couple of properties that make it worthy
+  of further consideration:
+</span></p>
+<p class="a"><span class="s">
+
+<ul><li>The approximation has an easy to compute truncation error that holds
+    for all <span class="i">z</span> > 0. [...] no matter how large or small <span class="i">z</span> is, the
+    truncation error will at worst be bounded by some finite value.
+</ul>
+<ul><li>The approximation has a form that is particularly amenable to analytic
+    manipulation: [...] ratios of Gamma or Gamma-like functions
+    are [...] easy to compute without resorting to logarithms.
+</ul>
+</span></p>
+<p class="q"><span class="s">
+  It is the combination of these two properties that make the
+  approximation attractive: Stirling's approximation is highly accurate
+  for large <span class="i">z</span>, and has some of the same analytic properties as the
+  Lanczos approximation, but can't easily be used across the whole range
+  of <span class="i">z</span>.
+</span></p>
+<p class="a"><span class="s">
+
+</span></p>
+<p class="q"><span class="s">
+  &#8195;&#8195;&#8195; &#8212; John Maddock et al., online documentation for Boost<sup><a href="#fn_14">14</a></sup>
+  library implementation
+  </span>
+</p>
+<p class="a">
+
+The Lanczos coefficients are a bit tricky to compute, and the quality
+of the resulting calculations depends on your choice of two arbitrary
+parameters <span class="i">g</span> and <span class="i">n</span>. Fortunately, the coefficients only need to be
+computed once, using a <span class="i">g</span> and <span class="i">n</span> that have been determined (through
+a thorough search) to be optimal for a given desired precision. The
+different sets of coefficients given here provide different amounts of
+precision.
+</p>
+
+<p class="a"><hr />
+</p>
+
+<p class="a">
+Following are several tables of coefficients that have been published
+in different places on the internet.
+</p>
+
+<p class="a">
+This first set is shown in the sample <a href="#code">source code</a> below:
+</p>
+
+<p class="a"><span class="b"><span class="i">g</span>=5, <span class="i">n</span>=7</span> (also called "<span class="i">g</span>=5, <span class="i">n</span>=6")
+</p>
+
+<p class="q">
+  <table><tr><td width="20px"></td><td><table border="1" cellspacing="0" cellpadding="2" hspace="30px">
+<tr><td>
+    0 </td><td> 1.000000000190015
+</td></tr><tr><td >
+    1 </td><td> 76.18009172947146
+</td></tr><tr><td >
+    2 </td><td> -86.50532032941677
+</td></tr><tr><td >
+    3 </td><td> 24.01409824083091
+</td></tr><tr><td >
+    4 </td><td> -1.231739572450155
+</td></tr><tr><td >
+    5 </td><td>  0.1208650973866179e-2
+</td></tr><tr><td >
+    6 </td><td> -0.5395239384953e-5
+  </td></tr></table></td></tr></table>
+  Sources: Takusagawa<sup><a href="#fn_4">4</a></sup>,Press<sup><a href="#fn_5">5</a></sup>,Borgelt<sup><a href="#fn_7">7</a></sup>
+</p>
+<p class="a">
+
+<span class="b"><span class="i">g</span>=7, <span class="i">n</span>=9</span>
+</p>
+
+<p class="q">
+  <table><tr><td width="20px"></td><td><table border="1" cellspacing="0" cellpadding="2" hspace="30px">
+<tr><td>
+    0 </td><td>     0.99999999999980993227684700473478
+</td></tr><tr><td >
+    1 </td><td>   676.520368121885098567009190444019
+</td></tr><tr><td >
+    2 </td><td> -1259.13921672240287047156078755283
+</td></tr><tr><td >
+    3 </td><td>   771.3234287776530788486528258894
+</td></tr><tr><td >
+    4 </td><td>  -176.61502916214059906584551354
+</td></tr><tr><td >
+    5 </td><td>    12.507343278686904814458936853
+</td></tr><tr><td >
+    6 </td><td>    -0.13857109526572011689554707
+</td></tr><tr><td >
+    7 </td><td>     9.984369578019570859563e-6
+</td></tr><tr><td >
+    8 </td><td>     1.50563273514931155834e-7
+  </td></tr></table></td></tr></table>
+  Sources: Preda<sup><a href="#fn_1">1</a></sup>,GNU<sup><a href="#fn_2">2</a></sup>,Borgelt<sup><a href="#fn_7">7</a></sup>
+</p>
+<p class="a">
+
+<span class="b"><span class="i">g</span>=9, <span class="i">n</span>=10</span>
+</p>
+
+<p class="q">
+  <table><tr><td width="20px"></td><td><table border="1" cellspacing="0" cellpadding="2" hspace="30px">
+<tr><td>
+    0 </td><td>     1.000000000000000174663
+</td></tr><tr><td >
+    1 </td><td>  5716.400188274341379136
+</td></tr><tr><td >
+    2 </td><td>-14815.30426768413909044
+</td></tr><tr><td >
+    3 </td><td> 14291.49277657478554025
+</td></tr><tr><td >
+    4 </td><td> -6348.160217641458813289
+</td></tr><tr><td >
+    5 </td><td>  1301.608286058321874105
+</td></tr><tr><td >
+    6 </td><td>  -108.1767053514369634679
+</td></tr><tr><td >
+    7 </td><td>     2.605696505611755827729
+</td></tr><tr><td >
+    8 </td><td>    -0.7423452510201416151527e-2
+</td></tr><tr><td >
+    9 </td><td>     0.5384136432509564062961e-7
+</td></tr><tr><td >
+   10 </td><td>    -0.4023533141268236372067e-8
+  </td></tr></table></td></tr></table>
+  Source: Godfrey (earlier draft)<sup><a href="#fn_3">3</a></sup>
+</p>
+<p class="a">
+
+<span class="b"><span class="i">g</span>=4.7421875, <span class="i">n</span>=15</span>
+</p>
+
+<p class="q">
+  <table><tr><td width="20px"></td><td><table border="1" cellspacing="0" cellpadding="2" hspace="30px">
+<tr><td>
+    0 </td><td>  0.99999999999999709182
+</td></tr><tr><td >
+    1 </td><td> 57.156235665862923517
+</td></tr><tr><td >
+    2 </td><td>-59.597960355475491248
+</td></tr><tr><td >
+    3 </td><td> 14.136097974741747174
+</td></tr><tr><td >
+    4 </td><td> -0.49191381609762019978
+</td></tr><tr><td >
+    5 </td><td>   .33994649984811888699e-4
+</td></tr><tr><td >
+    6 </td><td>   .46523628927048575665e-4
+</td></tr><tr><td >
+    7 </td><td>  -.98374475304879564677e-4
+</td></tr><tr><td >
+    8 </td><td>   .15808870322491248884e-3
+</td></tr><tr><td >
+    9 </td><td>  -.21026444172410488319e-3
+</td></tr><tr><td >
+   10 </td><td>   .21743961811521264320e-3
+</td></tr><tr><td >
+   11 </td><td>  -.16431810653676389022e-3
+</td></tr><tr><td >
+   12 </td><td>   .84418223983852743293e-4
+</td></tr><tr><td >
+   13 </td><td>  -.26190838401581408670e-4
+</td></tr><tr><td >
+   14 </td><td>   .36899182659531622704e-5
+  </td></tr></table></td></tr></table>
+  Sources: Preda<sup><a href="#fn_1">1</a></sup>,Godfrey<sup><a href="#fn_3">3</a></sup>,Godfrey<sup><a href="#fn_6">6</a></sup>
+</p>
+<p class="a">
+
+<hr />
+<h3 id="max">Generating the Coefficients in Maxima</h3></p>
+
+<p class="a"><span class="b">Raymond Toy</span> provided the following <a href="../../pub/muency/maxima.html">Maxima</a> implementation
+of the formulas by Paul Godfrey<sup><a href="#fn_3">3</a></sup>:
+</p>
+
+  <span class="p">
+  load("diag");
+&#8195;
+  Dc(n) := diag(makelist(2*double_factorial(2*k-1),k,0,n));
+&#8195;
+  cmatrix_element[row,col]:=
+    if is(col&gt;row) then 0
+    elseif row=1 and col=1 then 1/2
+    else (-1)^(row+col)*4^(col-1)*(row-1)*(row+col-3)!/(row-col)!/(2*col-2)!;
+&#8195;
+  C(n) := genmatrix(cmatrix_element, n+1);
+&#8195;
+  f(g,n):=sqrt(2)*(%e/(2*(n+g)+1))^(n+1/2);
+&#8195;
+  Dr(k) := diag(append([1],makelist(-(2*n+2)!/(2*n!*(n+1)!),n,0,k-1)));
+&#8195;
+  bmatrix_element[row,col] :=
+    if row = 1 then 1
+    elseif is(row &gt; col) then 0
+    else (-1)^(col-row)*binomial(col+row-3,2*row-3);
+&#8195;
+  B(k) := genmatrix(bmatrix_element,k+1);
+&#8195;
+  lanczos_coeff(g, n) :=
+    block([M : (Dr(n) . B(n)) . (C(n) . Dc(n)),
+           f : transpose(matrix(makelist(f(g,k), k, 0, n)))],
+      (M . f));
+&#8195;
+  tlg1(g,n) := float(bfloat(lanczos_coeff(g,n-1)*exp(g)/sqrt(2*%pi)));
+  </span>
+<p class="a">
+This sample Maxima session shows the calculation of the coefficients
+in two of the tables above:
+</p>
+
+  <span class="p">
+  Maxima 5.26.0 http://maxima.sourceforge.net
+  using Lisp SBCL 1.0.57
+  Distributed under the GNU Public License. See the file COPYING.
+  Dedicated to the memory of William Schelter.
+  The function bug_report() provides bug reporting information.
+  (%i1) batchload("toy-lanczos.mac");
+  (%o1)        /home/sample/maxima-work/toy-lanczos.mac
+  (%i2) fpprec:40;
+  (%o2)                                 100
+&#8195;
+  (%i3) tlg1(5,7);
+                            [   1.000000000190015    ]
+                            [                        ]
+                            [   76.18009172947146    ]
+                            [                        ]
+                            [  - 86.50532032941676   ]
+                            [                        ]
+  (%o3)                     [   24.01409824083091    ]
+                            [                        ]
+                            [  - 1.231739572450155   ]
+                            [                        ]
+                            [  .001208650973866179   ]
+                            [                        ]
+                            [ - 5.395239384953129e-6 ]
+&#8195;
+  (%i4) tlg1(607/128,15);
+                            [   .9999999999999971    ]
+                            [                        ]
+                            [   57.15623566586292    ]
+                            [                        ]
+                            [  - 59.59796035547549   ]
+                            [                        ]
+                            [   14.13609797474175    ]
+                            [                        ]
+                            [  - .4919138160976202   ]
+                            [                        ]
+                            [ 3.3994649984811887e-5  ]
+                            [                        ]
+                            [ 4.6523628927048577e-5  ]
+                            [                        ]
+  (%o4)                     [ - 9.837447530487956e-5 ]
+                            [                        ]
+                            [ 1.5808870322491247e-4  ]
+                            [                        ]
+                            [ - 2.102644417241049e-4 ]
+                            [                        ]
+                            [ 2.1743961811521265e-4  ]
+                            [                        ]
+                            [ - 1.643181065367639e-4 ]
+                            [                        ]
+                            [  8.441822398385275e-5  ]
+                            [                        ]
+                            [ - 2.619083840158141e-5 ]
+                            [                        ]
+                            [ 3.6899182659531626e-6  ]
+  </span>
+<p class="a"><hr />
+<h3 id="code">Sample Code</h3></p>
+
+<p class="a">
+All of the Lanczos tables above are used with the following code (here
+shown as if written in C). It is shown with the <span class="b"><span class="i">g</span>=5, <span class="i">n</span>=6</span>
+coefficients, but you may instead substitute any of the other sets of
+coefficients listed above.
+</p>
+
+<p class="q">
+  <span class="s">
+  <span class="p">
+  // The following constants LG_g and LG_N are the "g" and "n" parameters
+  // for the table of coefficients that follows them; several alternative
+  // coefficients are available at mrob.com/pub/ries/lanczos-gamma.html
+  #define LG_g 5.0      // Lanczos parameter "g"
+  #define LG_N 6        // Range of coefficients i=[0..N]
+  const double lct[LG_N+1] = {
+     1.000000000190015,
+    76.18009172947146,
+   -86.50532032941677,
+    24.01409824083091,
+    -1.231739572450155,
+     0.1208650973866179e-2,
+    -0.5395239384953e-5
+  };
+&#8195;
+&#8195;
+  const double ln_sqrt_2_pi = 0.91893853320467274178;
+  const double         g_pi = 3.14159265358979323846;
+&#8195;
+  // Compute the logarithm of the Gamma function using the Lanczos method.
+  double lanczos_ln_gamma(double z)
+  {
+    double sum;
+    double base;
+    double rv;
+    int i;
+    if (z &lt; 0.5) {
+      // Use Euler's reflection formula:
+      // Gamma(z) = Pi / [Sin[Pi*z] * Gamma[1-z]];
+      return log(g_pi / sin(g_pi * z)) - lanczos_ln_gamma(1.0 - z);
+    }
+    z = z - 1.0;
+    base = z + LG_g + 0.5;  // Base of the Lanczos exponential
+    sum = 0;
+    // We start with the terms that have the smallest coefficients and largest
+    // denominator.
+    for(i=LG_N; i&gt;=1; i--) {
+      sum += lct[i] / (z + ((double) i));
+    }
+    sum += lct[0];
+    // This printf is just for debugging
+    printf("ls2p %7g  l(b^e) %7g   -b %7g  l(s) %7g\n", ln_sqrt_2_pi,
+              log(base)*(z+0.5), -base, log(sum));
+    // Gamma[z] = Sqrt(2*Pi) * sum * base^[z + 0.5] / E^base
+    return ((ln_sqrt_2_pi + log(sum)) - base) + log(base)*(z+0.5);
+  }
+&#8195;
+  // Compute the Gamma function, which is e to the power of ln_gamma.
+  double lanczos_gamma(double z)
+  {
+    return(exp(lanczos_ln_gamma(z)));
+  }
+  </span>
+  </span>
+</p>
+<p class="a">
+
+<hr />
+</p>
+
+<p class="a">
+Following are lower-precision versions of values in the above tables.
+</p>
+
+<p class="q">
+  <span class="b"><span class="i">g</span>=7, <span class="i">n</span>=9</span>
+  <table><tr><td width="20px"></td><td><table border="1" cellspacing="0" cellpadding="2" hspace="30px">
+<tr><td>
+    0 </td><td>     0.99999999999980993
+</td></tr><tr><td >
+    1 </td><td>   676.5203681218851
+</td></tr><tr><td >
+    2 </td><td> -1259.1392167224028
+</td></tr><tr><td >
+    3 </td><td>   771.32342877765313
+</td></tr><tr><td >
+    4 </td><td>  -176.61502916214059
+</td></tr><tr><td >
+    5 </td><td>    12.507343278686905
+</td></tr><tr><td >
+    6 </td><td>    -0.13857109526572012
+</td></tr><tr><td >
+    7 </td><td>     9.9843695780195716e-6
+</td></tr><tr><td >
+    8 </td><td>     1.5056327351493116e-7
+  </td></tr></table></td></tr></table>
+  From GNU<sup><a href="#fn_2">2</a></sup>, <sup><a href="#fn_13">13</a></sup>.
+</p>
+<p class="a">
+
+<hr />
+</p>
+
+<h3>Issues at Higher Precision</h3>
+
+<p class="a">
+The developers of the Boost libraries describe<sup><a href="#fn_14">14</a></sup> their efforts
+to implement a numerically useful Lanczos Gamma. They followed the
+methods of Pugh<sup><a href="#fn_13">13</a></sup> and discovered that it required "an excessive
+number of terms" to achieve the precision of IEEE 64-bit floating
+point or higher. For 128-bit precision (such as the IEEE binary128
+<a href="http://en.wikipedia.org/wiki/Quadruple-precision_floating-point_format">Quadruple-precision floating-point format</a>) they were unable to
+find any value of <span class="i">g</span> and <span class="i">n</span> that gave acceptable results.
+</p>
+
+<p class="a">
+To handle this problem they transformed the summation at the center of
+the Lanczos computation (a sum of "partial fractions") into a ratio of
+two polynomials. This doubles the number of needed coefficients, but
+also makes all the coefficients have the same sign. This has the great
+advantage of removing the problem of terms with opposite sign largely
+cancelling each other out during the summation. They found suitable
+coefficients with <span class="i">n</span>=13 for IEEE 64-bit, <span class="i">n</span>=17 for 80-bit extended
+("long double" on the Intel x86 architecture), and <span class="i">n</span>=24 for a
+quad-precision HP Alpha format similar to IEEE binary128.
+</p>
+
+<p class="a"><hr />
+</p>
+
+<p class="a"><span class="b">footnotes</span>
+</p>
+
+<p class="a"><a name="fn_1">
+<b>1 :</b> </a>
+ Mihai Preda,
+<a href="http://blog.javia.org/implementing-the-lgamma-function-in-java/">Implementing the lgamma() function in Java</a>
+(web article), 2006 Nov 5. This includes an implementation of lgamma
+from SUN's FDLIBM 5.3, which gets the last few bits of precision for
+IEEE binary64 (as compared to the 9-term and 15-term Lanczos
+versions). Java source is here:
+<a href="http://blog.javia.org/docs/Gamma.java">Preda Gamma.java</a>
+</p>
+
+<p class="a"><a name="fn_2">
+<b>2 :</b> </a>
+ Wikipedia, <a href="http://en.wikipedia.org/wiki/Lanczos_approximation">Lanczos approximation</a>. Includes source code of a
+<span class="i">g</span>=7, <span class="i">n</span>=9 version from the GNU Scientific Library.
+</p>
+
+<p class="a"><a name="fn_3">
+<b>3 :</b> </a>
+ Paul Godfrey, <a href="http://my.fit.edu/~gabdo/gamma.txt">A note on the computation of the convergent Lanczos complex Gamma approximation</a> (web page), 2001.
+</p>
+<p class="i">
+ Another version is found
+<a href="http://www.numericana.com/answer/info/godfrey.htm">on Numericana</a>.
+One version describes a "15 term expansion" in the abstract; the other
+a "11 term expansion".
+</p>
+
+<p class="a"><a name="fn_4">
+<b>4 :</b> </a>
+ Ken Takusagawa, source code for
+<a href="http://web.mit.edu/kenta/www/six/parallel/other-files/riemann.src.tar.gz">Riemann-Siegel Z function</a>.
+Gamma function is in file "cheby.el.cc", function "log_gamma" with
+coefficients in file "c-coefficients-for-cheby.h", global "const
+dfloat cof[6]".
+</p>
+
+<p class="a"><a name="fn_5">
+<b>5 :</b> </a>
+
+<a href="http://www.haoli.org/nr/bookcpdf/c6-1.pdf">Section 6.1 (pp. 213-214)</a>
+from: William H. Press et al., Numerical recipes in C: the art of
+scientific computing (2nd edition). Cambridge University Press, (1992)
+ISBN 0521431085.
+</p>
+
+<p class="a"><a name="fn_6">
+<b>6 :</b> </a>
+ Paul Godfrey,
+<a href="http://www.mathworks.com/matlabcentral/fileexchange/978-special-functions-math-library">Special Functions math library</a> (Matlab code), 2001.
+</p>
+
+<p class="a"><a name="fn_7">
+<b>7 :</b> </a>
+ Christian Borgelt,
+<a href="http://public.econ.duke.edu/webfiles//arg/datamine/cases/apriori/math/src/gamma.c">gamma.c</a>
+(source code), 2008.
+</p>
+
+<p class="a"><a name="fn_8">
+<b>8 :</b> </a>
+ Rosetta Code,
+<a href="http://rosettacode.org/wiki/Gamma_function">Gamma function</a>.
+</p>
+
+<p class="a"><a name="fn_9">
+<b>9 :</b> </a>
+ Numerical Recipes Forum,
+<a href="http://www.nr.com/forum/archive/index.php/t-606.html">Bug in 2<sup>nd</sup> edition version of gammaln()</a>
+(discussion thread), July 2005.
+</p>
+
+<p class="a"><a name="fn_10">
+<b>10 :</b> </a>
+ Viktor Toth,
+<a href="http://www.vttoth.com/CMS/projects/41-the-lanczos-approximation">The Lanczos approximation of the Gamma function</a>
+(web page), 2005.
+</p>
+
+<p class="a"><a name="fn_11">
+<b>11 :</b> </a>
+ Tom Minka, <a href="http://pmtksupport.googlecode.com/svn/trunk/lightspeed2.3/util.c">C implementations of useful functions</a>
+</p>
+
+<p class="a"><a name="fn_12">
+<b>12 :</b> </a>
+ Glendon Ralph Pugh,
+<a href="http://web.viu.ca/pughg/phdThesis/phdThesis.pdf">An Analysis of the Lanczos gamma approximation</a>
+(PhD thesis), University of British Columbia, 2004.
+</p>
+
+<p class="a"><a name="fn_13">
+<b>13 :</b> </a>
+ Peter Luschny,
+<a href="http://www.luschny.de/math/factorial/approx/SimpleCases.html">Approximation Formulas for the Factorial Function</a>
+(web page), 2011. This page discusses some Gamma formulas, including
+Lanczos, within the context of approximating the factorial function
+for large positive real arguments.
+</p>
+
+<p class="a"><a name="fn_14">
+<b>14 :</b> </a>
+ John Maddock et al.,
+<a href="https://www.boost.org/doc/libs/1_44_0/libs/math/doc/sf_and_dist/html/math_toolkit/backgrounders/lanczos.html">The Lanczos Approximation</a>
+as implemented in the <a href="http://www.boost.org/">Boost C++ Libraries</a>.
+The C source code can be downloaded, and the implementation of Lanczos
+Gamma are in files containing "lanczos" and "gamma" in their names,
+e.g. <span class="m">special_functions/gamma.hpp</span> and <span class="m">special_functions/lanczos.hpp</span>.</p>
+<p class="i">
+  <span class="i">Old locations:</span>
+</p>
+<p class="i">
+  <span class="m">https://www.boost.org/doc/libs/release/libs/math/doc/sf_and_dist/html/math_toolkit/backgrounders/lanczos.html</span></p>
+<p class="i">
+  <span class="m">www.boost.org/doc/libs/1_44_0/libs/math/doc/sf_and_dist/html/math_toolkit/backgrounders/lanczos.html</span></p>
+<p class="i">
+  <span class="i">Location that never worked:</span>
+</p>
+<p class="i">
+  <span class="m">https://www.boost.org/doc/libs/1_70_0/libs/math/doc/sf_and_dist/html/math_toolkit/backgrounders/lanczos.html</span>
+
+</p><hr>
+<span class="footer">
+<span class="s">Robert Munafo's home pages on <a href="http://www.hostmds.com">HostMDS</a> &#8195;
+&copy; 1996-2020 Robert P. Munafo.</span>
+<br />
+ &#8195; <a href="../../pub/personal.html">about</a> &#8195; <a href="../../main-contact.html">contact</a>
+<br />
+<span class="s">This work is licensed under a Creative Commons
+Attribution-NonCommercial 4.0 International License.
+Details <a href="../../cc-license.html">here</a>.</span>
+</span>
+<br />
+<span class="s">This page was written in the "embarrassingly readable" markup language <a href="../../pub/rhtf/index.html">RHTF</a>, and was last updated on 2020 Mar 26.</span> <img src="../../images/symbols/rbot-16.png" alt=""  ><span style="font-size: small">s.11</span><br /></div>
+</body></html>

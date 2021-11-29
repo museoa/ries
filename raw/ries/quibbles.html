@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1"> <meta name="GENERATOR" content="Rilybot AROS" />
+ <meta name="Author" content="Robert Munafo" />
+ <meta name="format-detection" content="telephone=no">
+ <link rel="search" type="application/opensearchdescription+xml" title="mrob" href="/opensearch.xml" />
+ <meta name="keywords" content="My, Quibbles" />
+ <meta name="description" content="My Quibbles -- Explore a wide variety of topics from large numbers to sociology at mrob.com" />
+ <meta name="x-rhtf-glname" content="ries-quibbles" />
+<link rel="shortcut icon" href="http://mrob.com/favicon.ico" />
+<title> My Quibbles at MROB </title>
+<link rel="stylesheet" href="../../style.css" />
+</head>
+
+<body >
+<div id="banner">
+<div id="topnav">
+<a href="../../pub/index.html">mrob</a>
+&#8195;
+<a href="index.html">RIES</a> <a href="../../pub/math/numbers.html">Numbers</a> <a href="../../pub/math/largenum.html">Largenum</a> <a href="../../pub/math/nu-sequences.html">Sequences</a> <a href="../../pub/muency.html">Mandelbrot</a>
+&#8195;
+<a href="../../pub/comp/xmorphia/index.html">Xmorphia</a>
+</div>
+<div id="search">
+  <form action="http://www.google.com/search" style="margin:0; padding:0;">
+  <label for="q">Search:</label>
+  <input name="query" type="hidden" value="site:mrob.com" />
+  <input style="font-family:Palatino" name="q" id="q" size="15" value="" />
+  <input name="btnG" type="submit" value="Go" />
+  </form>
+</div>
+</div>
+<div style="clear:both;"></div>
+<div id="content">
+<h1>My Quibbles&#8195;&#8195;</h1>
+<p class="a">
+
+</p>
+
+<p class="a">
+The <a href="http://en.wikipedia.org/wiki/Inverse_Symbolic_Calculator">Inverse Symbolic Calculator</a> <sup><a href="#s1">1</a></sup>
+and <span class="b">Plouffe's Inverter</span>  <sup><a href="#s2">2</a></sup> are great
+resources, but they failed to satisfy me, primarily for the following
+reasons:
+</p>
+
+<p class="a"><table border="1" cellspacing="0" cellpadding="2">
+<tr><td>
+<span class="i">Plouffe or ISC</span> </td><td> <span class="i">ries</span>
+</td></tr><tr><td >
+Cryptic output and no glossary (but <a href="#isc_glos">see below</a>). Gives
+answers like -1+x^5+x^6-x^7-x^8+x^9+x^11+x^12 without defining what
+<span class="i">x</span> is. Also gives many answers that can't be checked unless you own a
+copy of <span class="i">Mathematica</span> or <span class="i">Maple</span>.
+</td><td>
+All solutions are self-explanatory. Lesser-known symbols like <span class="i">phi</span>
+are defined by a tagline in the output the first time they are used.
+</td></tr><tr><td >
+Presents all answers in numerical sequence and
+without regard for the complexity of the description of each number.<sup><a href="#fn_1">1</a></sup>
+</td><td>
+Gives answers in order of increasing complexity and increasing
+closeness to your number &#8212; just like continued fractions.
+</td></tr><tr><td >
+Isn't useful for people who only know a number to within 6 or 7 digits,
+but know that it probably has a simple formula &#8212;
+because there are just so many long, complex formulas to wade through.
+</td><td>
+Immediately gives you the simplest formulas or equations for any number
+regardless of the number of digits in your number. It also gives
+matches that are equal to your value in the first 6 or 7 digits, but
+you're free to just ignore those matches.
+</td></tr><tr><td >
+Thinks decimal points don't matter &#8212; search for
+2.5061841 and it gives ln(26263/20441) = 0.25061841... as an answer! Why?!?!?
+</td><td>
+Doesn't consider "a factor of 10" to be any more important than "a
+factor of 9" or "a factor of 11". Numbers are weighted by size and how
+easily they can be formed from other numbers (giving composites an
+advantage).
+</td></tr><tr><td >
+As of late 2011, still didn't know that 2.506184145588... is the solution of
+<span class="i">x<sup>x</sup></span> = 10 (<a href="http://oldweb.cecm.sfu.ca/cgi-bin/isc/lookup?lookup_type=browse&number=2.506184145588">Try it</a>)
+All solutions are in the form <span class="i">K</span> = <span class="i">expression</span>, and apparently the
+<a href="http://en.wikipedia.org/wiki/Lambert_W_function">Lambert W function</a> is not included.
+</td><td>
+Reports this as the 4<sup>th</sup> solution for any value
+within +- 0.00044 of 2.506184.
+</td></tr><tr><td >
+Database is cluttered with stuff like log(26263/20441) and
+cos(Pi*23/56) /
+cos(Pi*15/34).
+</td><td>
+Reports things like log(441/263)
+only if your number is closer to that value than to the
+value of any simpler expression.<sup><a href="#fn_2">2</a></sup>
+</td></tr><tr><td >
+Doesn't let you specify "please ignore these weird functions".
+</td><td>
+Lets you specify any combination of functions, operators, and small integers
+to be used in a search.
+</td></tr><tr><td >
+Requires Internet connection; puts load on someone else's computer.
+</td><td>
+Runs on your computer, but fast enough to try billions of possible
+solutions in less than a minute.
+</td></tr></table>
+</p>
+
+<p class="a">
+Okay, enough complaining. Back to <a href="index.html">ries main page</a>
+</p>
+
+<p class="a"><hr />
+</p>
+
+<p class="a"><h3 id="isc_glos">Glossary for ISC and Plouffe's Inverter</h3></p>
+
+<p class="a">
+I got tired of complaining and eventually started a list of some of
+the constants and functions used in ISC output.
+</p>
+
+<p class="a">
+
+</p>
+
+<p class="a"><span class="b">Artin</span>
+</p>
+<p class="i">
+  Artin's constant 0.3739558136... (see <a href="http://en.wikipedia.org/wiki/Artin%27s_conjecture_on_primitive_roots">Artin's conjecture on primitive roots</a>)
+</p>
+<p class="i">
+  example:
+</p>
+<p class="i">
+  &#8195; <span class="m">2506186020926769 = (0001) GAM(3/4)+Artin+GAM(1/24)</span></p>
+<p class="i">
+  &#8195; &#8195; {~=} 1.2254167024 + 0.3739558136 + 23.462487693
+</p>
+
+<p class="a"><span class="b">BesK</span>
+</p>
+<p class="i">
+  The modified <a href="http://en.wikipedia.org/wiki/Bessel_function">Bessel function</a> of the second kind, commonly
+represented by the symbol <span class="i">K<sub>&#945;</sub></span>(<span class="i">x</span>) for some &#945; and <span class="i">x</span>. In
+Maple and Mathematica this is written <span class="m">BesselK(&#945;,<span class="i">x</span>)</span>.</p>
+<p class="i">
+  example:
+</p>
+<p class="i">
+  &#8195; <span class="m">6019072301972345 = (0001) BesK(1,1)</span></p>
+<p class="i">
+  &#8195; <span class="m">6019072301972345 = (0297) BesselK(1,1)</span></p>
+
+<p class="a"><span class="b">BesselK</span>
+</p>
+<p class="i">
+  Synonym for <span class="b">BesK</span>.
+</p>
+
+<p class="a"><span class="b">Catalan</span>
+</p>
+<p class="i">
+  Catalan's constant 0.915965594177219...
+</p>
+<p class="i">
+  example:
+</p>
+<p class="i">
+  &#8195; <span class="m">2506144130719856 = (0001) Catalan*(sr(5)+1/2)</span></p>
+<p class="i">
+  &#8195; &#8195; {~=} 0.915965594177 * (2.2360679774998 + 0.5)
+</p>
+
+<p class="a"><span class="b">exp</span>(...)
+</p>
+<p class="i">
+  The exponential function
+</p>
+<p class="i">
+  example:
+</p>
+<p class="i">
+  &#8195; |1535063009255209 = (0028) exp(x) x=3/7
+</p>
+
+<p class="a"><span class="b">F</span>(...)
+</p>
+<p class="i">
+  The <a href="http://en.wikipedia.org/wiki/Hypergeometric_function">Hypergeometric function</a> with Maple syntax
+</p>
+<p class="i">
+  examples:
+</p>
+<p class="i">
+  &#8195; <span class="m">1535063009255209 = (0231) F(1,1;3/7)</span></p>
+<p class="i">
+  &#8195; <span class="m">1535063009255209 = (0226) F(1/3,1/3;3/7)</span></p>
+<p class="i">
+  &#8195; <span class="m">2506169291781055 = (0249) F(10/23;19/39;1)</span></p>
+<p class="i">
+  &#8195; <span class="m">2506179399171396 = (0157) F(2/11,10/11;1/2;9/10)</span></p>
+
+<p class="a"><span class="b">Feig1</span>
+</p>
+<p class="i">
+  The first of the two <a href="http://en.wikipedia.org/wiki/Feigenbaum_constants">Feigenbaum constants</a>, 4.669201609102990...
+</p>
+<p class="i">
+  examples:
+</p>
+<p class="i">
+  &#8195; <span class="m">4669201609102990 = (0000) Feigenbaum constant</span></p>
+<p class="i">
+  &#8195; <span class="m">4669201609102990 = (0001) Feig1</span></p>
+<p class="i">
+  &#8195; |1535061093537132 = (0001) exp(-Pi)/(K(1/sr(2))-Feig1)
+</p>
+
+<p class="a"><span class="b">GAM</span>(...)
+</p>
+<p class="i">
+  The <a href="http://en.wikipedia.org/wiki/Gamma_function">Gamma function</a>
+</p>
+<p class="i">
+  examples:
+</p>
+<p class="i">
+  &#8195; <span class="m">2506186020926769 = (0001) GAM(3/4)+Artin+GAM(1/24)</span></p>
+<p class="i">
+  &#8195; &#8195; {~=} 1.2254167024 + 0.3739558136 + 23.462487693
+</p>
+<p class="i">
+  &#8195; <span class="m">3625609908221908 = (0001) GAM(1/4)</span></p>
+<p class="i">
+  &#8195; <span class="m">3625609908221908 = (0001) Pi*sr(2)/GAM(3/4)</span></p>
+
+<p class="a"><span class="b">Gamma</span>(...)
+</p>
+<p class="i">
+  The Gamma function
+</p>
+<p class="i">
+  example:
+</p>
+<p class="i">
+  &#8195; <span class="m">3625609908221908 = (0092) (Gamma(1/4))^n n=1</span></p>
+
+<p class="a"><span class="b">GAMMA</span>(...)
+</p>
+<p class="i">
+  The Gamma function
+</p>
+<p class="i">
+  examples:
+</p>
+<p class="i">
+  &#8195; <span class="m">3625609908221908 = (0000) GAMMA(1/4)</span></p>
+<p class="i">
+  &#8195; <span class="m">3625609908221908 = (0032) GAMMA(1/4)</span></p>
+
+<p class="a"><span class="b">K</span>(...)
+</p>
+<p class="i">
+  The Complete Elliptic Integral of the first kind. In ISC the
+argument is squared; for example, "<span class="m">K(1/sqrt(2))</span>" in ISC means<span class="b">EllipticK[1/2]</span> using the Mathematica <span class="b">EllipticK[]</span> function, and is
+equal to 1.854074677301...
+</p>
+<p class="i">
+  In general, ISC's "<span class="m">K(x)</span>" is equal to <span class="b">EllipticK[x^2]</span> inMathematica. Using <a href="http://en.wikipedia.org/wiki/PARI/GP">PARI/GP</a>, ISC's "<span class="m">K(x)</span>" is equal to "(Pi/2) /agm(1-x,1+x)" where we are computing the elliptic integral via
+the <a href="http://en.wikipedia.org/wiki/Arithmetic–geometric_mean">arithmetic–geometric mean</a>.
+</p>
+<p class="i">
+  examples:
+</p>
+<p class="i">
+  &#8195; <span class="m">2506185982626307 = (0001) K(1/sr(2))/(sin(Pi/5)^W(1))</span></p>
+<p class="i">
+  &#8195; <span class="m">2085935113295952 = (0001) K(1/sr(2))^GAM(1/3)-Pi</span></p>
+<p class="i">
+  &#8195; <span class="m">2085941674074939 = (0001) 2/3+K(1/sr(2))^W(1)</span></p>
+
+<p class="a"><span class="b">Madelung</span>
+</p>
+<p class="i">
+  The Madelung constant -1.747564594633...
+</p>
+<p class="i">
+  example:
+</p>
+<p class="i">
+  &#8195; <span class="m">2506183101609269 (0001) cos(Pi/12)-ln(1+sr(2))*Madelung</span></p>
+
+<p class="a"><span class="b">Parking</span>
+</p>
+<p class="i">
+  Renyi's Parking constant 0.7475979202534...
+</p>
+<p class="i">
+  example:
+</p>
+<p class="i">
+  &#8195; <span class="m">2506185338545284 (0001) (W(1)-Parking*Madelung)/Parking</span></p>
+
+<p class="a"><span class="b">roots</span>(...)
+</p>
+<p class="i">
+  One or more roots of a polynomial
+</p>
+<p class="i">
+  example:
+</p>
+<p class="i">
+  &#8195; <span class="m">1535063009255209 = (0276) exp(roots(-7*x^2-4*x+3))</span></p>
+<p class="i">
+  &#8195; &#8195; = exp(3/7) &#8195; (because 3/7 is a solution of -7*x^2-4*x+3=0)
+</p>
+
+<p class="a"><span class="b">sqrt</span>(..)
+</p>
+<p class="i">
+  Square root
+</p>
+<p class="i">
+  example:
+</p>
+<p class="i">
+  &#8195; <span class="m">2506147722382783 = (0007) sqrt((21+sqrt(17))/4)</span></p>
+<p class="i">
+  &#8195; &#8195; {~=} sqrt((21 + 4.1231056256)/4)
+</p>
+
+<p class="a"><span class="b">sr</span>(..)
+</p>
+<p class="i">
+  Square root
+</p>
+<p class="i">
+  example:
+</p>
+<p class="i">
+  &#8195; <span class="m">2506144130719856 = (0001) Catalan*(sr(5)+1/2)</span></p>
+<p class="i">
+  &#8195; &#8195; {~=} 0.915965594177 * (2.2360679774998 + 0.5)
+</p>
+
+<p class="a"><span class="b">sum</span>(...)
+</p>
+<p class="i">
+  Sum of an infinite series, as normally indicated with "big Sigma" notation
+</p>
+<p class="i">
+  examples:
+</p>
+<p class="i">
+  &#8195; <span class="m">2506181684414645 = (0013) sum((2/3*n^3-3/2*n^2+47/6*n+4)/n^(n-1),n=1..inf)</span></p>
+<p class="i">
+  &#8195; <span class="m">2506185297338450 = (0232) sum(1/(n!*phi(5,7,3)),n=1..inf)</span></p>
+
+<p class="a"><span class="b">TwinPrim</span>
+</p>
+<p class="i">
+  The <a href="http://en.wikipedia.org/wiki/Twin_prime">Twin prime</a> constant, 0.6601618158...
+</p>
+<p class="i">
+  example: 
+</p>
+<p class="i">
+  &#8195; <span class="m">2506141791780115 = (0001) (TwinPrim+exp(sr(2)))^sin(Pi/5)</span></p>
+<p class="i">
+  &#8195; &#8195; {~=} (0.6601618158 + e^1.414213562) ^ sin(0.5877852522)
+</p>
+
+<p class="a"><span class="b">W</span>(...)
+</p>
+<p class="i">
+  The <a href="http://en.wikipedia.org/wiki/Lambert_W_function">Lambert W function</a>
+</p>
+<p class="i">
+  example:
+</p>
+<p class="i">
+  &#8195; <span class="m">5671432904097838 = (0000) W(1)</span></p>
+
+<p class="a"><span class="b"><span class="i">x</span></span>
+</p>
+<p class="i">
+  An ISC result consisting of a <span class="b">polynomial in <span class="i">x</span></span> represents a
+root of that polynomial (a value that <span class="i">x</span> needs to have for the
+polynomial's value to be zero).
+</p>
+<p class="i">
+  example:
+</p>
+<p class="i">
+  &#8195; <span class="m">6019074146223354 = (0315) -2+x+2*x^2+5*x^4+x^8</span></p>
+<p class="i">
+  &#8195; &#8195; (because if <span class="i">x</span> {~=} 0.6019074146223354..., then <span class="i">x</span><sup>8</sup> +
+5<span class="i">x</span><sup>4</sup> + 2<span class="i">x</span><sup>2</sup> + x - 2 is zero)
+</p>
+
+<p class="a"><hr />
+</p>
+
+<p class="a"><span class="b">Sources</span>
+</p>
+
+<p class="a"><a name="s1">The <span class="b">Inverse Symbolic Calculator</span> (with a 1997 version of the
+</a>database) is
+<a href="http://oldweb.cecm.sfu.ca/projects/ISC/ISCmain.html">available here</a>.
+</p>
+
+<p class="a"><a name="s2"><span class="b">Plouffe's Inverter</span> was formerly
+</a><a href="http://pi.lacim.uqam.ca/eng/">here</a>, but is now (as of mid 2013) too
+big to have online but is still maintained by its creator Simon
+Plouffe.
+</p>
+
+<p class="a"><hr />
+</p>
+
+<p class="a"><span class="b">Footnotes</span>
+</p>
+
+<p class="a"><a name="fn_1">
+<b>1 :</b> </a>
+
+Plouffe's Inverter has partly addressed the progressive
+complexity issue by sorting its output, but it continues to only
+report matches that agree in the digits given by the user. Also, it
+scores its matches purely by string length when rendered into ASCII,
+so for example "Riemannzero1" gets the same score as "PisotV*Feig2"
+and "820421/78823" regardless of which is most exceptional.
+</p>
+
+<p class="a"><a name="fn_2">
+<b>2 :</b> </a>
+
+Just for fun, here are the results <span class="k">ries</span> finds for the natural log
+of successive Fibonacci ratios:
+</p>
+
+<p class="q">
+  <table><tr><td width="20px"></td><td><table border="1" cellspacing="0" cellpadding="2" hspace="30px">
+<tr><td>
+  <span class="i">value</span> </td><td> <span class="i">number given to <span class="k">ries</span></span> </td><td> <span class="i"><span class="k">ries</span> finds</span>
+</td></tr><tr><td >
+  ln(3/2)   </td><td> 0.4054651081081    </td><td> 1/e<sup>x</sup> = 2/3 <span class="i">(5<sup>th</sup> answer)</span>
+</td></tr><tr><td >
+  ln(5/3)   </td><td> 0.5108256237659    </td><td> e<sup>x</sup>-1 = 2/3 <span class="i">(9<sup>th</sup> answer)</span>
+</td></tr><tr><td >
+  ln(8/5)   </td><td> 0.4700036292457    </td><td> e<sup>x</sup>-1 = 3/5 <span class="i">(5<sup>th</sup> answer)</span>
+</td></tr><tr><td >
+  ln(13/8)  </td><td> 0.4855078157817    </td><td> e<sup>x</sup>-1 = 5/8 <span class="i">(11<sup>th</sup> answer)</span>
+</td></tr><tr><td >
+  ln(21/13) </td><td> 0.4795730802618    </td><td> 3/e<sup>x</sup> = 2-1/7 <span class="i">(11<sup>th</sup> answer)</span>
+</td></tr><tr><td >
+  ln(34/21) </td><td> 0.4818380868927    </td><td> 3 e<sup>x</sup> = 5-1/7 <span class="i">(12<sup>th</sup> answer)</span>
+</td></tr><tr><td >
+  ln(55/34) </td><td> 0.4809726606163    </td><td> (e<sup>x</sup>-1)/3 = 1/(5-1/7) <span class="i">(9<sup>th</sup> answer)</span>
+</td></tr><tr><td >
+  ln(89/55) </td><td> 0.4813031844996    </td><td> (e<sup>x</sup>-2)/3 = 1/(1/7-8) <span class="i">(13<sup>th</sup> answer)</span>
+</td></tr><tr><td >
+  ln(144/89) </td><td> 0.4811769298438   </td><td> 2/e<sup>x</sup>-1 = 1/8+1/9 <span class="i">(13<sup>th</sup> answer)</span>
+</td></tr><tr><td >
+  ln(233/144) </td><td> 0.4812251539897  </td><td> e<sup>x</sup>-1/4^2 = 5/9+1 <span class="i">(16<sup>th</sup> answer)</span>
+</td></tr><tr><td >
+  ln(377/233) </td><td> 0.4812067338823102 </td><td> 1/((e<sup>x</sup>-1)/9) = (1/4+3)^2+4
+                                   <span class="i">(12<sup>th</sup> answer, requires level-5 search)</span>
+</td></tr><tr><td >
+  ln(610/377) </td><td> 0.48121376971934617 </td><td> 9/(e<sup>x</sup>-2) = 4-(1/4+5)^2
+                                   <span class="i">(24<sup>th</sup> answer, requires level-5 search)</span>
+</td></tr><tr><td >
+  ln(987/610) </td><td> 0.48121108226612465 </td><td> 1/(1/e<sup>x</sup>-2/3) = 2-(5-1/4)^2
+                                   <span class="i">(18<sup>th</sup> answer, requires level-5 search)</span>
+</td></tr><tr><td >
+  ln(1597/987)</td><td> 0.48121210878153085 </td><td> 1/(e<sup>x</sup>-5/3) = 2-(5-1/4)^2
+                                   <span class="i">(16<sup>th</sup> answer, requires level-5 search)</span>
+</td></tr><tr><td >
+  ln(2584/1597)</td><td>0.48121171668748003 </td><td> <span class="i">FAILS</span> (<span class="k">ries</span> reports
+                   "e<sup>x</sup>-4<sup>4<sup>2</sup></sup> = phi-4<sup>4<sup>2</sup></sup>", a false match resulting
+                   from loss of precision. Note that phi - 2584/1597 is about
+                   1.75&times;10<sup>-7</sup> and 4<sup>4<sup>2</sup></sup> is a 10-digit number.)
+</td></tr><tr><td >
+  ln(441/263) </td><td> 0.51689084326908144 </td><td> 2/e<sup>x</sup>+3 = (1/(3*7)+2)<sup>2</sup>
+                                   <span class="i">(14<sup>th</sup> answer, requires level-4 search)</span>
+  </td></tr></table></td></tr></table>
+</p>
+<p class="a">
+
+
+
+</p><hr>
+<span class="footer">
+<span class="s">Robert Munafo's home pages on <a href="http://www.hostmds.com">HostMDS</a> &#8195;
+&copy; 1996-2020 Robert P. Munafo.</span>
+<br />
+ &#8195; <a href="../../pub/personal.html">about</a> &#8195; <a href="../../main-contact.html">contact</a>
+<br />
+<span class="s">This work is licensed under a Creative Commons
+Attribution-NonCommercial 4.0 International License.
+Details <a href="../../cc-license.html">here</a>.</span>
+</span>
+<br />
+<span class="s">This page was written in the "embarrassingly readable" markup language <a href="../../pub/rhtf/index.html">RHTF</a>, and was last updated on 2020 Mar 26.</span> <img src="../../images/symbols/rbot-16.png" alt=""  ><span style="font-size: small">s.11</span><br /></div>
+</body></html>

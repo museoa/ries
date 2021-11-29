@@ -1,0 +1,51 @@
+# Use RIES to find 'dc' expressions (using the 'dc' UNIX program) that
+# approximate the target value
+#
+# To use this file:
+#
+#   Put it in your current directory and call it "dc.ries"
+#   Use the option "-pdc", for example:
+#
+#   ries -pdc 78125 -ie
+#
+#      Your target value: T = 78125                      www.mrob.com/ries
+#
+#     x = 5 7 ^                                   ('exact' match)         {45}
+#  (Stopping now because -ie option was given.)
+#
+# 20130803 First version
+#
+-F  # dc uses postfix
+
+-NSCTlE  # 'dc' does not have these functions
+
+--one-sided  # Alternately you could put -s here
+
+--symbol-names
+  :.:.      # Use '.' for blank space
+  :q:v
+  :s:d.*    # dc has no 'squared' function but d* is equivalent
+  :^:^      # Instead of the normal '**'
+
+--symbol-weights
+  10:1
+  10:f
+  10:2
+  10:e
+  10:3
+  10:p
+  10:4
+  10:5
+  10:6
+  10:7
+  10:8
+  10:9
+  10:+
+  10:-
+  10:*
+  10:/
+  10:s
+  10:q
+  10:^
+  10:v
+  10:L
