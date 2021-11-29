@@ -1,8 +1,8 @@
 /* ries.c
 
     RIES -- Find Algebraic Equations, Given Their Solution
-    Copyright (C) 2000-2013 Robert P. Munafo
-    This is the 2013 Jun 28 version of "ries.c"
+    Copyright (C) 2000-2014 Robert P. Munafo
+    This is the 2014 Oct 18 version of "ries.c"
 
 
     This program is free software; you can redistribute it and/or modify
@@ -38,13 +38,14 @@ HOW TO BUILD:
 
      gcc -o ries ries.c -lm
 
-     Try other flags for optimization if you wish (like: -m64, -O2 or -O3,
-     -ffast-math, etc.)
-
-     If it reports errors like "undefined reference to `pow'", try moving
-     the pieces around: "gcc ries.c -lm -o ries". The command
+     If the compilation fails and reports errors like "undefined reference",
+     try moving the pieces around: "gcc ries.c -lm -o ries". The command
      "gcc -o ries -lm ries.c" is known to NOT work with recent versions
      of GCC.
+
+     Try other flags for optimization if you wish (like: -m64, -O2 or -O3)
+     Note that -ffast-math does *not* work; it prevents IEEE 754 compliance
+     and breaks a few of the RIES algorithms.)
 
   4. Run ries and give it a number, for example:
 
@@ -118,7 +119,7 @@ database. A change like this might be easier (or harder) is it is done
 after (or before) I generalize the handling of restricted symbolsets.
 It also clearly affects the "x on both sides of the equation" change.
 
-2013.0202 --symbol-names is nice, but I need to add definable "begin"
+2013.0202 --symbol.names is nice, but I need to add definable "begin"
 and "end" strings for various things e.g. superscripts, and start
 looking at user-redefinable fixity and precedence for things like
 mapping [abv] -> "Surd[a,b]" for Mathematica.
@@ -286,7 +287,7 @@ solution is probably to make "solve for x" mutually exclusive to the
 -O option. As a sole exception, -Ox can still be implemented, so long
 as all reported results involve just a single LHS and an RHS.
  * 2013.0215: One-sided simplification/reduction rules similar to
-those already in cv_simplify. One simple example is [ss]->[4^]. A lot
+those already in cv.simplify. One simple example is [ss]->[4^]. A lot
 of these are already implicit in the pruning rules, so I can look in
 the comments next to the add_rule() calls to get the list of
 simplifications. Virtually all will be simple string substitutions.
@@ -327,7 +328,7 @@ two different purposes (char[] and symbol[]). The names should be
 improved, and a dedicated symbol[] scratch array added. These changes
 are logically combined with -Fmax, -FHTML, etc. output formats:
 
-2013.0314: Augment --symbol-names in whatever ways are needed for a
+2013.0314: Augment --symbol.names in whatever ways are needed for a
 user to implement output formats such as: raw symbols,
 calculator-keys, HTML, RHTF, TeX, eqn, Maxima, etc.
   Each symbol should have a user-definable precedence, associativity
@@ -383,19 +384,28 @@ __LDBL_MANT_DIG__ is 64, implying that I can use "long double" to get
 a bit more precision. To exploit this I will need to do runtime
 testing to determine what precision I am actually getting, similar to
 the code in hint.c
- * Continue conversion to use of long double and runtime adjustment of
-epsilons and cutoffs.
- * See if I can get RIES to compile in C++ on the old Linux machines.
- * Replace existing calculations (in newton(), exec(), etc.) with
-macros that have an assembly-style syntax, e.g. MUL(src1,src2,dst)
- * Add quad printout capability for e.g. debug_S
- * Start working quad calculations into each case of exec().
-Initialize the special constants (k.vanished_dx, k_prune.deriv, etc.)
-differently depending on precision option. It should be possible to
-add these gradually without breaking normal precision since the rest
-of the code will just ignore the lower half of any quad variables.
- * Get eval() to to calculations in quad precision
- * Get newton() to use quad
+ * (complete by 2013.0626) Continue conversion to use of long double
+and runtime adjustment of epsilons and cutoffs.
+ * Add string-to-float and float-to-string conversion routines based
+on f107_spfg and f107_sscan in f107_o.cpp. (I think these already
+handle the exponent adequately, but I'll want smarter handling of
+extra whitespace when there is no exponent). Convert all instances of
+double printf and scanf to use these routines (including the debug_X
+printfs).
+ * Use three sets of flags:
+    Desired precision: RIES_WANT_F53, RIES_WANT_F64 and RIES_WANT_F107
+    Available types and their precisions: RIES_HAVE_LDBL_F64,
+      RIES_HAVE_LDBL_F107 and RIES_HAVE_F128
+    Which type to use: RIES_VAL_DBL, RIES_VAL_LDBL and RIES_VAL_F128
+ * Don't bother with C++; just use __float128 if it's available and
+too bad if it's not.
+ * No need to use macros like MUL(src1,src2,dst) because __float128 and
+'long double' have fully implemented builtins.
+ * Initialize the special constants (k.vanished_dx, k_prune.deriv,
+etc.) differently depending on precision option. It should be possible
+to add these gradually without breaking normal precision since the
+rest of the code will just ignore the lower half of any quad
+variables.
 
 Consider options for utilizing multiple processors (threads / parallel
 implementation). {As of 2012.0423} I have identified three possible
@@ -448,7 +458,7 @@ and (more crucially) there is no clear way to determine in advance
 whether there will be enough free memory to perform the merge.
 
 2012.0423: BAD: The following does *not* work because of the elaborate
-interleaved nature of the bt_insert algorithm (see note in oldries.c
+interleaved nature of the bt.insert algorithm (see note in oldries.c
 mentioning "memory performance degradation"), however it could if we
 return to the older 2-tree implementation.
   - Have 2 scans running at any one time, an RHS scan and a LHS scan.
@@ -494,7 +504,7 @@ variations on -l that allow specifying limit of search by
 precision, by time, by memory usage, or by number of equations tested.
 The present -l is usually correlated with all of these but is never
 equal to any of them. ('-lmem=10M', '-ltime=20m', '-ldigits=8', 
-'-lexprs=3e6', -leqns=1e10', etc.) --max-memory is a different because
+'-lexprs=3e6', -leqns=1e10', etc.) --max.memory is a different because
 a small -l will still cause RIES to exit before the indicated amount
 of  memory is used.
 
@@ -673,10 +683,11 @@ ARCHITECTURE
            ge_2 -- Generate one step of FORTH code and update metastack,
            :       recurse if more symbols in the form
            :.ge_2 -- Recursive levels until form is complete
-               canonval -- Try to put expression value in [1.0,2.0)
+               canonval -- Try to put expression value in [1.0,2.0) (only if
+                           --canon-reduction option is used)
                bt_insert -- Insert calculated result into LHS or RHS tree
-                 report_match -- Display match without inserting (called
-                                 directly by bt_insert for exact matches)
+                 check_exact_match (called for exact matches)
+                   report_match -- Display match without doing Newton
                  check_sides -- Find closest neighbor of the opposite sidedness
                                 and determine if the pair sets a new record.
                    check_match -- Check a single pair to see if it's a new
@@ -951,8 +962,8 @@ such as a numeric method. This is the "root-finding problem"
 
 Conveniently, all three problems (the error-margin problem, the
 tautology problem, and the root-finding problem) are handled in the
-same way: by calculating the *differential* of all terms and
-subexpressions on the LHS. The differential, when multiplied by the
+same way: by calculating the *derivative* of all terms and
+subexpressions on the LHS. The derivative, when multiplied by the
 lhs/rhs diff, gives a very good approximation to the delta, which as
 mentioned above is the amount that X would need to be changed to make
 the equation a perfect match.
@@ -962,21 +973,21 @@ all equations can get rated in terms of how much X has to change to
 make LHS and RHS match, rather than how much the LHS would have to change.
 
 It solves the tautology problem because, by definition, an LHS with
-a zero differential is constant with respect to X, and therefore
+a zero derivative is constant with respect to X, and therefore
 constitutes a tautology solution.
 
 It also solves the root-finding problem quite conveniently. If you have
 an equation like X^X = 10, and you have an approximation for X, you can
 use derivatives and Newton's method to find a better approximation for
-X. When RIES takes the differential of the LHS and multiplies it by the
+X. When RIES takes the derivative of the LHS and multiplies it by the
 lhs/rhs diff, it is essentially performing one step of Newton's method.
 The resulting value can be added to X to form a better approximation to
 the root of the equation.
 
-Differentials are evaluated for LHS expressions as the expressions are
-generated. In the following table, the calculation of the differential
+Derivatives are evaluated for LHS expressions as the expressions are
+generated. In the following table, the calculation of the derivative
 for each symbol is shown, based on the values of the operands (A and
-B) and their differentials (da and db). Some of these will be familiar
+B) and their derivatives (da and db). Some of these will be familiar
 to anyone who has taken calculus:
 
   seft '0' symbols:
@@ -1250,16 +1261,16 @@ like divide-by-zero. This brings the numbers down to
 20000217 Add using.x (formerly "on_rhs") variable and AM_RHS so it
 generates LHS and RHS expressions, and make main outer loop call
 gen_forms twice. In the LHS case there is lots of pruning. Figure out
-that there is a substantial problem with error factors (differential
+that there is a substantial problem with error factors (derivative
 of X) that will make lots of bogus "solutions" show up in the output.
 
 20000218 Finish figuring out how to deal with the bogus solutions --
-compute differentials on all LHS expressions. This also solves the
+compute derivatives on all LHS expressions. This also solves the
 "trivial solutions" problem (e.g. "x - x = ln(1)"
 
-20000220 Add differential calculation to exec() and the ms_xxx
+20000220 Add derivative calculation to exec() and the ms_xxx
 routines. Initial output looks good, but I'm a bit worried about the
-very high differential values on things like [x8s^] -- they might
+very high derivative values on things like [x8s^] -- they might
 cause lots of bogus matches on things that aren't even close, like
 "x8s^ = 6".
 
@@ -1283,7 +1294,7 @@ and over again.
 rates, such that the population remains equal between the two sides.
 Add a bunch of comments documenting what's been done so far.
 
-20000221 Write bt_insert(); it now reports exact matches! It finds,
+20000221 Write bt.insert(); it now reports exact matches! It finds,
 for example, [x3+] = [4s] for X=13. However, for X=143 it reports
 [xrx*] = [1], with a derivative of 1.9e-19. Add PRUNE_DERIV to try to
 fix this, and it starts reporting [xxqL] = [2] with a derivative of
@@ -1293,7 +1304,7 @@ it a variable and add p_ovr and n_ovr. Write bt_prev() and bt_next(),
 but not using them yet.
 
 20000221 Figure out that I can check just the nearest LHS on either
-side of an RHS, and vice versa. Write check.sides() and check_match.
+side of an RHS, and vice versa. Write check.sides() and check.match.
 It now finds answers and prints them out!
 
 20000221 Fix bug in exact-match reporting. When given 1.5065916, it
@@ -1601,9 +1612,9 @@ fmt_g_xxx and use these in most places a floating-point value is
 displayed. Redo the equation justify (space-padding) code to make the
 best use of 80 columns while still showing centered equations and 15
 significant digits when the -x option is given.
-  Add init_numerics(); k_phi and k_pi are now computed from scratch.
+  Add init.numerics(); k_phi and k_pi are now computed from scratch.
   New 'z' option to -D and debug_z flag to show messages printed by
-init_numerics().
+init.numerics().
 
 20111228
   Add more k_sig_loss tests in sin and cos.
@@ -1613,7 +1624,7 @@ seconds and tenths.
 flag; this fixes a bug that would cause RIES to loop forever if it had
 not yet gotten an "exact match" at the point when best.match goes
 negative.
-  init_numerics() now computes k_e and detects the size of the ULP
+  init.numerics() now computes k_e and detects the size of the ULP
 (Unit in Last Place or "least significant bit").
   Add --min-match.distance option and g_min.matchsize to prevent
 reporting of really close matches (useful in e.g. finding classical
@@ -1708,8 +1719,8 @@ rebalancing the binary tree will help. I conclude that it will not
 help much: in a typical run the average tree depth with rebalancing
 would be 17.5, and the actual (unbalanced) average depth is 24.5.
 
-20120103 Add check_exact_match(), removing more RIES-specific code
-from bt_insert.
+20120103 Add check.exact_match(), removing more RIES-specific code
+from bt.insert.
   Add next_isparam(), clean up argument parsing and fix a bug with
 parsing --significance-loss-margin argument.
 
@@ -1790,18 +1801,18 @@ discussion with Charles Greathouse yesterday.
 
 20120108 More work on thrash_check(); add --min-memory option (which
 presently does nothing, but eventually will prevent RIES from quitting
-early in the event of unanticipated system slowness). Add --max-memory
+early in the event of unanticipated system slowness). Add --max.memory
 option (which makes RIES definitely quit before exceeding a given
 amount of memory).
 
 20120113 Move nested functions out of parse.args() for compatibility
 with non-GCC compilers.
   Presently, "ries 0.9674026381747 --eval-expression xp/T" shows a
-different answer on different computers. For example I get
-1.4511039572620501 on MP16 and 1.4511039572620503 on MBP. This causes
-commands, such as "ries 0.9674026381747 -l3", to produce different
-results ("x/tanpi(x/pi) = 2/3" on MP16 and the bizarre "x/tanpi(x/pi)
-= log_(sqrt(8))(2)" on MBP).
+different answer on different computers: I get "tanpi(x/pi) =
+1.4511039572620501" on MP16 and "tanpi(x/pi) = 1.4511039572620503" on
+MBP. This causes commands, such as "ries 0.9674026381747 -l3", to
+produce different results ("x/tanpi(x/pi) = 2/3" on MP16 and the
+bizarre "x/tanpi(x/pi) = log_(sqrt(8))(2)" on MBP).
   I suspect a variation in the maths library routines under different
 versions of MacOS. To fix this I probably need to bring in my own
 tangent function. Sources for one version are in
@@ -1817,17 +1828,17 @@ argument.
 
 20120122 Add CANONVAL_MUL2 operation and stub cv.simplify() routine.
 
-20120423 Notes on what I need to accomplish to finish canonval,
+20120423 Notes on what I need to accomplish to finish canon.val,
 decanon, and cv.simplify routines:
 
-  canonval adds 'n', 'r', and/or '2/', '4/' to try to put an
+  canon.val adds 'n', 'r', and/or '2/', '4/' to try to put an
   expression's value into the range [1, 2). Call it just before
-  calling bt_insert. It should work on the existing expression
+  calling bt.insert. It should work on the existing expression
   structure and metastack state, and it needs to stop if MAX_ELEN is
   reached. We also need a decanon routine to undo its work before
   proceeding with the rest of ge.2.
     cv.simplify operates on two expressions (an equation), removing
-  any unnecessary symbols that may have been added by canonval. It
+  any unnecessary symbols that may have been added by canon.val. It
   takes two expressions A and B and removes any trailing '2/', '4/',
   'r' and 'n', or possibly shifts symbols from one expression to the
   other, all so as to make the equation A=B lower-complexity. Call
@@ -1968,7 +1979,7 @@ eliminating k_newton_settled later.
 implementing cv.simplify.
  debug_p replaces debug_q for the "first score not good enough" case.
  new flag debug_e replaces debug_E; debug_E replaces debug_F.
- debug_F replaces canonval cases of debug_G
+ debug_F replaces canon.val cases of debug_G
  add new flag debug_Q for cv.simplify
  make debug_S and debug_s distinct variables (but 'S' and 's' debug
 functions still print the same messages)
@@ -1981,7 +1992,7 @@ output.
  new flag debug_N replaces debug_o.
  debug_o replaces debug_p (including the debug_q case changed earlier today).
  debug_p is now used by infix.preproc
- debug_F and debug_f are now distinct (canonval for LHS and RHS respectively)
+ debug_F and debug_f are now distinct (canon.val for LHS and RHS respectively)
  Fix derivative formula for tangent and increase its symbol weight to 6
 (sine and cosine are both 3)
  Add --symbol.weights option. A few simple tests like "ries 2.5063
@@ -2181,22 +2192,22 @@ features.
 many calls to float() with hopefully less aggregate work; look in
 exec() and search for 'g_restrict_subexpr'.)
 
- 20130305 Add --no-solve-for-x option (which merely undoes
+20130305 Add --no-solve-for-x option (which merely undoes
 --try-solve-for-x). Add setup_abc_mmw() as part of refactoring the
 handling of restricted symbolsets.
 
- 20130306 Add --symbol-names option; this involves several changes to
+20130306 Add --symbol.names option; this involves several changes to
 how we define the symbols, all of which will help with future
 improvements like user-defined constants.
 
- 20130307 '=' symbol can now be renamed. Add -r and -re options to
+20130307 '=' symbol can now be renamed. Add -r and -re options to
 ensure that all solutions are rational when solved for x. (These are
 just shorthand for using -N to exclude lots of symbols). Increase
 allocation of temp buffers in infix_1, fixing a crash that happened
 when using an all-seft-b symbolset and solving for x, e.g. "ries
 3.1415926535897932 -SeElq -s".
 
- 20130308 Add --no-refinement option, which causes it to never
+20130308 Add --no-refinement option, which causes it to never
 decrease best.match, and therefore print *all* matches that do better
 then the specified distance. This produces results similar to the ISC
 (except still ordered roughly by increasing complexity) and may be
@@ -2206,10 +2217,10 @@ symstrsymstr, unique.eqn and the g_matches memory block (none of which
 are used unless you choose the option).
   Add the --max-matches option, 100 by default.
 
- 20130309 Add -n as a synonym for --max-matches, --integer-subexpressions
+20130309 Add -n as a synonym for --max-matches, --integer-subexpressions
 as a synonym for -i, and --rational-subexpressions as a synonym for -r.
 
- 20130310 Add the g_nr_deltas array to provide another type of pruning
+20130310 Add the g_nr_deltas array to provide another type of pruning
 for equivalent answers for --no-refinement.
   Add the "-c" (alias --constructible-subexpressions) option which is
 similar to -r but also allows phi, square and square root. Do a little
@@ -2218,10 +2229,10 @@ refactoring of how the -D, -E, -i, -N, -O and -r options are handled.
 each attribute is a subset of another (e.g. the integers are a subset
 of the rationals) I don't really need to use bit-fields.
 
- 20130311 Continued refactoring of tags, add TYPE_CONS and TYPE_ALG
+20130311 Continued refactoring of tags, add TYPE_CONS and TYPE_ALG
 tagging. Implement -a option; add tagname().
 
- 20130312 Add --rational-exponents option, which tests the tag of the
+20130312 Add --rational-exponents option, which tests the tag of the
 argument and generates the new error ERR_EXEC_ILLEGAL_EXPONENT; the
 error is also generated if the argument contains x on the assumption
 that the user probably does not believe x to be rational if he is
@@ -2239,12 +2250,12 @@ and -a.
   Add ":.:." syntax for defining a blank-space character in symbol
 names.
 
- 20130314 Add --any-exponents and --any-trig-args options.
+20130314 Add --any-exponents and --any-trig-args options.
 
- 20130317 Compute rv_maxint and disallow -i when target is too large;
-remove utf8-related code (obviated by --symbol-names)
+20130317 Compute rv_maxint and disallow -i when target is too large;
+remove utf8-related code (obviated by --symbol.names)
 
- 20130318 Expand brief.help.
+20130318 Expand brief.help.
   Add "-l" option (without a numeric argument, i.e. a bare "-l" rather
 than something like "-l3") to restrict answers to those that have
 Liouvillian numbers as roots. With -l it finds that 1.632526919438153
@@ -2254,14 +2265,110 @@ Along with the full unrestricted defaults, and the option "-Ox", this
 makes for a rather full set of options to select popular classes of
 numbers as the roots of the reported results.
 
- 20130219 Test g_restrict_exponents in functions 'l', 'E' and 'L'.
+20130219 Test g_restrict_exponents in functions 'l', 'E' and 'L'.
 
- 20130613 Add --no-slow-messages option; auto-set k_min_best.match and
+20130613 Add --no-slow-messages option; auto-set k_min_best.match and
 k_vanished_dx for small targets.
 
- 20130626 Use "%Lg" in various debug printfs to support RIES_VAL_LDBL.
+20130626 Use "%Lg" in various debug printfs to support RIES_VAL_LDBL.
 Add macros EXP, FABS, etc. and (ries_dif) typecasts in several places;
 get long double precision pretty much working.
+
+20130801 Initialize k_ulp sooner so it can be used by -ce
+  --max-match-distance and --match-all-digits options now cancel each
+other.
+
+20130803 In --symbol-names, allow redefining a symbol to itself (e.g.
+':^:^' when -F format is selected) by accepting space_sym definition
+only once.
+
+20130805 Benchmarks of standalone maths library vs. standard libm.
+Using the command "time ./ries-libm 2.5063141592653589 -l5
+--max-match-distance 1e-10", and SIMULTANEOUSLY running the same
+command with the "ries-sa-math" library, the time is 0m45.373s with
+the sa-math library and 0m45.568s using libm (the sa-math library is
+actually faster).
+
+20130809 Add ieee.paranoia()
+
+20130810 Alphabetize the order of sections in parse_args()
+
+20130811 Add ERR_EXEC_ILLEGAL_DERIV; exec() checks for overflow and
+NaN in derivative calculations in several operators
+  Print error and exit if target value is zero.
+
+20130812 Pass root directly to report.match to get full precision in
+the case where ries_val has much more precision than ries_dif.
+Increase precision of calculations of pi and e in init.numerics. "long
+double" now gives 31 usable digits on the PowerPC G5 (where GCC 4.0.1
+and later provide double-double arithmetic), and show.version now
+shows the architecture (PPC/Intel) and precision:
+
+  ries --version
+  ries version of 2013 Aug 13, Copyright (C) 2000-2013 Robert P. Munafo
+    architecture: PowerPC
+    precision: long double (33 nominal, 31 usable)
+    mathlib: standard
+    profile: -p/Users/munafo/.ries_profile
+  RIES is free software; see the source for copying conditions.  There is NO
+  warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  Dual-G5 /Users/munafo 
+   : ries 2.50618 -x
+
+     Your target value: T = 2.50618                         www.mrob.com/ries
+
+      x = 5/2                    for x = 2.5                               {50}
+      x = e^3/8                  for x = 2.510692115398458467616066206823  {67}
+      x = sqrt(2*pi)             for x = 2.506628274631000502415765284811  {55}
+      x = x"/(1+9)               for x = 2.506184145588769256292940922378  {70}
+      x = pi^(ln(sqrt(6))^2)     for x = 2.506182746702861729338863939787  {84}
+      x = e^(5"/sqrt(3/7))       for x = 2.506182083318281693444031686493  {99}
+      x = ln(pi*e+1+e)           for x = 2.506180094504077068176274103417  {96}
+      x = e^(log_(pi^2)(7))+1/6  for x = 2.506180001393763345666526465285 {107}
+      x = sqrt(1/((1/e-ln(6))+sqrt(x)))
+                                 for x = 2.506180000397503542091976573633 {118}
+                    (for more results, use the option '-l3')
+
+    log_A(B) = logarithm to base A of B = ln(B) / ln(A)  sqrt(x) = square root
+    e = base of natural logarithms, 2.71828...  A"/B = Ath root of B
+    ln(x) = natural logarithm or log base e  pi = 3.14159...
+
+                           --LHS--      --RHS--      -Total-
+       max complexity:          67           62          129
+            dead-ends:     2842183      5668638      8510821  Time: 2.106
+          expressions:      198545       370110       568655
+             distinct:      103576       107460       211036  Memory: 13248KiB
+
+          Total equations tested:             11130276960 (1.113e+10)
+
+By comparison, typical run time for the same command on PMG5 in double
+precision is about 1.49, and memory usage is 10624KiB.
+
+20130816 Add ries_strncpy, ries_intpow, ries_to_digits,
+ries_snprinf_int, ries_strlen, ries_spfg, spfg and spff. Use these
+in a few debug statments.
+
+20130818 Remove trailing 0 digits from ries_spfg output (for example:
+2.50618e+12 instead of 2.50618000e+12); fix a few compilation
+warnings.
+
+20130820 Add ries_spfg_test and msal_test_spfg
+
+20140226 Eliminate conversion to double in ries_to_digits, fixing an
+'exponent adjust failed' error when trying to print values like 1.23e-789
+
+20140227 Minor refactoring; add did_newton parameter to report_match
+
+20140228 Add some logic to check.exact_match, duplicating some of the tests
+done by check.match.
+
+20140303 Generate ERR_EXEC_ZERO_DERIV error in '^', 'L' and 'v'
+operations when the derivative calculation underflows to zero. This
+eliminates several recently-reported tautology errors.
+
+20140831 Expand brief_help() a little,
+
+20141014 Add --min-equate-value and --max-equate-value options.
 
 BUGS and TO-DO
 
@@ -2377,19 +2484,24 @@ all three have to be within 10^-6 of each other.
 
  */
 
-/* stdafx.h is a precompiled header in Microsoft Visual C++. It needs to
-   be first (before all the code, including other includes) because the
-   compiler makes (as an optimization) the assumption that any user code
-   will be parsed only after the precompiled header is loaded. */
+/* stdafx.h (the precompiled header for Microsoft Visual C++) is included
+   by "ries-for-windows.c", which then proceeds to include ries.c. The
+   following intentionally generates an error in the event that someone
+   tries to compile ries.c directly in Microsoft Developer Studio. */
 #ifndef __GNUC__
 # ifdef _WIN32
-#   include "stdafx.h"
+#   ifndef RIES_USED_RFWC
+      please_compile_ries_for_windows.c please_compile_ries_for_windows.c;
+    /* INSTRUCTIONS FOR COMPILING RIES IN MICROSOFT DEVELOPER
+       STUDIO (USING VISUAL C++) ARE PROVIDED IN THE SOURCE FILE
+      "ries-for-windows.c" */
+#   endif
 # endif
 #endif
 
 /* If neither mathlib is selected, default to using the standard library
    provided by the compiler and runtime environment (as it is typically
-   faster) */
+   a few percent faster) */
 #ifndef RIES_USE_SA_M64
 # ifndef RIES_USE_STD_M64
 #   define RIES_USE_STD_M64
@@ -2397,8 +2509,8 @@ all three have to be within 10^-6 of each other.
 #endif
 
 /*
-  We include <math.h> first, because msal_math64 still uses part of the
-  std math library, and its version info uses printf
+  We include <math.h> etc. first, because msal_math64 still uses part of
+  the std math library, and its version info uses printf
  */
 #include <math.h>
 #include <stdio.h>
@@ -2412,11 +2524,13 @@ all three have to be within 10^-6 of each other.
 #   define COS(x) (msal_cosl((x)))
 #   define TAN(x) (msal_tanl((x)))
 #   define LAMBERTW(x) (msal_lambertwl((x))))
+#   define GAMMA(x) (msal_lanczos_gamma((x))))
 # else
 #   define SIN(x) (msal_sin((x)))
 #   define COS(x) (msal_cos((x)))
 #   define TAN(x) (msal_tan((x)))
 #   define LAMBERTW(x) (msal_lambertw((x))))
+#   define GAMMA(x) (msal_lanczos_gammal((x))))
 # endif
 #else
 # ifdef RIES_VAL_LDBL
@@ -2430,6 +2544,7 @@ all three have to be within 10^-6 of each other.
 # endif
   /* You need to use the stand-alone library to get Lambert and Gamma. */
 # define LAMBERTW(x) (0.0)
+# define GAMMA(x) (0.0)
 #endif
 
 /* The following functions are acceptable as-is but need long double
@@ -2439,6 +2554,7 @@ variants. */
 # define FABS(x) (fabsl((x)))
 # define FLOOR(x) (floorl((x)))
 # define LOG(x) (logl((x)))
+# define LOG10(x) (log10l((x)))
 # define POW(x,y) (powl((x),(y)))
 # define SQRT(x) (sqrtl((x)))
 #else
@@ -2446,6 +2562,7 @@ variants. */
 # define FABS(x) (fabs((x)))
 # define FLOOR(x) (floor((x)))
 # define LOG(x) (log((x)))
+# define LOG10(x) (log10((x)))
 # define POW(x,y) (pow((x),(y)))
 # define SQRT(x) (sqrt((x)))
 #endif
@@ -2487,7 +2604,7 @@ variants. */
 
 /* -------------- defines ------------------------------------------------- */
 
-#define RIES_VERSION "2013 Jun 28"
+#define RIES_VERSION "2014 Oct 18"
 
 /* Default search level. For backwards compatibility, the -l option adds
    a number to the DEFAULT_LEV_BASE value. Without a -l option, it acts as if
@@ -2590,7 +2707,7 @@ variants. */
 /    stackoverflow.com/questions/8548521/ )
 /  * Defining "true" to a specific numeric value (like "1"), or comparing a
 /    booolean to a specific numeric value, causes failures:
-/      boolean flag1, flag2;
+/      b001 flag1, flag2;
 /      flag1 = true;        // Default option
 /      flag2 = (argc > 2);  // More than two arguments
 /      ...
@@ -2598,7 +2715,7 @@ variants. */
 /    Given that our definitions, the stdbool.h version, and old compilers'
 /    implementations may differ, we check for boolean sanity in
 /    validate_types().                                                      */
-typedef int boolean;
+typedef int b001;
 #define B_FALSE (1==0)
 #define B_TRUE (1==1)
 
@@ -2655,8 +2772,10 @@ typedef unsigned char symbol;
    by successive calls to exec(). */
 #ifdef RIES_VAL_LDBL
   typedef long double ries_val;
+# define RV_SS_FMT "%Lf"
 #else
   typedef double ries_val;
+# define RV_SS_FMT "%lf"
 #endif
 
 /* A "ries_dif" is the value of a derivative with respect to x (as calculated
@@ -2844,13 +2963,13 @@ underflow.
 #define MS_STK_MAX  (((MAX_ELEN)+1) >> 1)
 typedef struct metastack {
   ries_val uv[MS_UV_MAX]; /* undo values */
-  ries_dif udv[MS_UV_MAX];/* undo values (differentials) */
+  ries_dif udv[MS_UV_MAX];/* undo values (derivatives) */
   ries_tgs utg[MS_UV_MAX];/* undo values (tags) */
   s16    uvp;             /* undo values pointer */
   s16    ms[MS_UNDO_MAX]; /* metastack (undo opcodes) */
   s16    msp;             /* metastack pointer (undo opcodes index) */
   ries_val s[MS_STK_MAX]; /* current stack */
-  ries_dif ds[MS_STK_MAX];/* stack of differentials for LHS */
+  ries_dif ds[MS_STK_MAX];/* stack of derivatives for LHS */
   ries_tgs tg[MS_STK_MAX];/* tags, e.g. integer or rational */
   s16    sp;              /* stack pointer */
 } metastack;
@@ -2964,7 +3083,7 @@ ries_dif g_mag_ulp;/* Magnitude of one base-10 unit in the last place (ulp),
 ries_val exec_x;   /* the value exec() uses for 'x' symbol (differs from
                       g.target during Newton iteration) */
 
-boolean got_exact;
+b001 got_exact;
 stats_count g_num_matches;
 stats_count g_max_matches;
 symbol * g_matches = 0;
@@ -2974,33 +3093,34 @@ ries_val * g_nr_deltas = 0;
 sym_attr_block sym_attrs[SYMBOL_RANGE];
 s16    weight_base;              /* weight per symbol for expression
                                     complexity score */
-boolean x_lhs_only;              /* true if symbol 'x' should only be on
+b001 x_lhs_only;              /* true if symbol 'x' should only be on
                                     LHS (this is not necessarily the same as
                                     "-Ox" because there can be multiple x's
                                     in an LHS) */
 char * g_anagram = 0;            /* A string of digits used for solving
                                     "four 4's" and similar problems. */
-boolean g_one_sided;
-boolean g_solve_for_x;
+b001 g_no_cv_simplify;
+b001 g_one_sided;
+b001 g_solve_for_x;
 #define LINELEFT_INIT (79-2)
 
 int used_trig;                   /* Set if any trig symbol has been used in
                                     a result */
 
-boolean S_option;
-boolean NOS_options;
-boolean g_show_ss;
-boolean g_reported_exhaustion;
+b001 S_option;
+b001 NOS_options;
+b001 g_show_ss;
+b001 g_reported_exhaustion;
 
 ries_tgs g_restrict_subexpr; /* nonzero if they gave -i, -r or -c option */
 
 ries_tgs g_restrict_exponents; /* nonzero to limit exponents to being e.g. rational */
 ries_tgs g_restrict_trig_args;
 
-boolean g_relative_x;  /* true if X values should be given relative to T */
-boolean g_wide_output; /* true if wide output mode is selected (perhaps
+b001 g_relative_x;  /* true if X values should be given relative to T */
+b001 g_wide_output; /* true if wide output mode is selected (perhaps
                           a bitmask in the future, but not yet) */
-boolean g_explicit_multiply; /* Always show '*' symbol for multiplication */
+b001 g_explicit_multiply; /* Always show '*' symbol for multiplication */
 
 /* attribute masks */
 #define AM_KK  0x0001 /* K K - */
@@ -3030,7 +3150,7 @@ s16 g_a_maxw;        /* maximum weight of seft 'a' symbols */
 
 symbol g_bsym[MAX_SEFT_POP];   /* the valid seft 'b' symbols */
 s16 n_bsym;
-boolean g_used_identity;
+b001 g_used_identity;
 s16 g_b_minw;        /* minimum weight of seft 'b' symbols */
 s16 g_b_maxw;        /* maximum weight of seft 'b' symbols */
 
@@ -3064,19 +3184,22 @@ ries_val   k_9 = 9.0L;
 /* Constants that parametrize functions */
 
 ries_val k_sincos_arg_scale = 0;
-boolean g_trig_scale_default;
+b001 g_trig_scale_default;
 
 /* These constants are used to set legal limits in various functions */
-ries_val  k_sin_clip = (ries_val)0.99999L;
+ries_val k_sin_clip = (ries_val)0.99999L;
 ries_val k_2pi = (ries_val)6.28318530717958647692528676655900576839433L;
 ries_dif k_eXlim = 690.0;
+ries_dif k_d_nan;
+ries_dif k_d_inf;
+ries_dif k_d_ninf;
 
 ries_dif k_precision_ulp = 0.0;
 ries_dif k_min_best_match = 1.0e-15;
 ries_dif k_max_match_dist = -0.01; /* Default is to scale by 0.01 of the target
                                     value */
 ries_dif g_init_match_dist;
-boolean g_match_all_digits = B_FALSE;
+b001 g_match_all_digits = B_FALSE;
 
 ries_dif k_sig_loss = 0.01;
 
@@ -3089,11 +3212,14 @@ ries_dif k_prune_deriv = 1.0e-10;
 ries_dif k_newton_settled = 1.0e-15;
 
 ries_dif g_min_matchsize = 0;
-boolean g_exact_exit = B_FALSE;
-boolean g_refinement = B_TRUE;
+b001 g_exact_exit = B_FALSE;
+b001 g_refinement = B_TRUE;
 
 ries_dif p_ovr;
 ries_dif n_ovr;
+
+ries_val g_min_equ_val = -9.9e99;
+ries_val g_max_equ_val = 9.9e99;
 
 /* Format strings and precision constants.
 
@@ -3131,6 +3257,8 @@ set to different values at runtime in init.formats()
 
 int k_nominal_digits = 17;
 int k_usable_digits = 15;
+ries_dif k_ulp = 0.0625;
+float k_mantissa_bits;
 
 ries_val rv_maxint;  /* Largest integer that we can rely on measuring */
 
@@ -3191,46 +3319,46 @@ long g_cv_calls;
 
 /* debugging options: */
 /* numbers from "ries -l2 2.5063141592653589 -DJ | wc -l"   */
-s16 debug_S; /*  try.solve                                     51    */
-s16 debug_s; /*  report.match: "show work"                    272    */
+s16 debug_S; /*  try.solve                                    100    */
+s16 debug_s; /*  report.match: "show work"                    277    */
              /*       (values of all subexpressions)                 */
-s16 debug_N; /*  eval: sym, x and dx at each step             481    */
-s16 debug_n; /*  newton: x and dx at each step                153    */
-s16 debug_o; /*  check.match entry                         562749    */
-s16 debug_p; /*  infix.preproc                                118    */
-s16 debug_Q; /*  cv.simplify                                   53    */
-s16 debug_q; /*  check.match past 1st-stage test              125    */
-s16 debug_m; /*  ms_push, ms_pop, ms_peek, ms_undo        9173410    */
-s16 debug_r; /*  exec                                     1605525    */
+s16 debug_N; /*  eval: sym, x and dx at each step             461    */
+s16 debug_n; /*  newton: x and dx at each step                136    */
+s16 debug_o; /*  check.match entry                         539235    */
+s16 debug_p; /*  infix.preproc                                112    */
+s16 debug_Q; /*  cv.simplify                                   51    */
+s16 debug_q; /*  check.match past 1st-stage test              140    */
+s16 debug_m; /*  ms_push, ms_pop, ms_peek, ms_undo       10247603    */
+s16 debug_r; /*  exec                                     1806085    */
              /*  ge.2:                           UPPERCASE  lowercase
                                                    for LHS   for rhs */
              /*    exec:                                             */
-s16 debug_A; /*      prune partial exec error        61927    130510 */
-s16 debug_B; /*      prune partial 0 or dx near 0     3357      2666 */
-s16 debug_C; /*      prune partial noninteger        79245    671255 */
-             /*                  (using command: "ries 1047 -i -DC") */
-s16 debug_D; /*      prune partial overflow           1948      4321 */
+s16 debug_A; /*      prune partial exec error        42836     87770 */
+s16 debug_B; /*      prune partial 0 or dx near 0     3173      2714 */
+s16 debug_C; /*      prune partial noninteger        81056    697227 */
+             /*              (using command: "ries -l2 1047 -i -DC") */
+s16 debug_D; /*      prune partial overflow           1751      4350 */
              /*    full expr:                                        */
-s16 debug_E; /*      prune expr already in database 105526    281232 */
-s16 debug_F; /*      canonval                       366634    884213 */
+s16 debug_E; /*      prune expr already in database 102356    272746 */
+s16 debug_F; /*      canon.val                      349368    848882 */
              /*   (use: ries -l2 2.50631415926 --canon-reduction nr25 -DF) */
-s16 debug_G; /*      insert                         102307    103587 */
-s16 debug_0; /*      dump entire database                    1811037 */
+s16 debug_G; /*      insert                          96112     97337 */
+s16 debug_0; /*      dump entire database                    1712490 */
              /*    partial expr:                                     */
-s16 debug_H; /*      rules                          418287    624260 */
-s16 debug_I; /*      symbols to try                3985434   5935446 */
-s16 debug_J; /*        prune complexity            2596074   3839185 */
-s16 debug_K; /*        prune rules                  251052    417411 */
-s16 debug_L; /*        prune symcount                72560     95743 */
+s16 debug_H; /*      rules                          409175    816240 */
+s16 debug_I; /*      symbols to try                3904331   7759741 */
+s16 debug_J; /*        prune complexity            2579116   5102516 */
+s16 debug_K; /*        prune rules                  257302    558199 */
+s16 debug_L; /*        prune symcount                61994    114453 */
              /*   (use: ries -l2 2.50631415926 '-O-+/^v*qsrlLeEpf' -Dl) */
              /*  ge_1:                                               */
-s16 debug_t; /*    entry                                    10438    */
-s16 debug_u; /*    rminw and rmaxw calculation              46724    */
-s16 debug_v; /*    expressions generated                     5236    */
-s16 debug_w; /*  gf_1                                       31662    */
-s16 debug_x; /*  add.rule                                      90    */
-s16 debug_y; /*  main loop                                    732    */
-s16 debug_z; /*    init and miscellaneous                      52    */
+s16 debug_t; /*    entry                                    11017    */
+s16 debug_u; /*    rminw and rmaxw calculation              48895    */
+s16 debug_v; /*    expressions generated                     5525    */
+s16 debug_w; /*  gf_1                                       32922    */
+s16 debug_x; /*  add.rule                                      91    */
+s16 debug_y; /*  main loop                                    736    */
+s16 debug_z; /*    init and miscellaneous                      55    */
 s16 debug_M; /*    memory allocation                           46    */
 
 #define DBG_LHS 2
@@ -3249,6 +3377,7 @@ symbol * g_find_expr[MAX_FIND_EXPR];
 
 /* -------------- prototypes ---------------------------------------------- */
 
+void ieee_paranoia(void);
 void init_formats(void);
 void show_version(void);
 void brief_help(void);
@@ -3309,13 +3438,14 @@ void try_solve(symbol * l, symbol * r,
 s16 newton(symbol * lhs, symbol * rhs, ries_val *root, ries_dif *diff_dx,
   ries_tgs *tags);
 s16 cv_simplify(symbol * lhs, symbol * rhs, ries_val *root, ries_dif *diff_dx,
-  ries_tgs *tags);
+  ries_tgs *tags, int do_newton);
 void defsym_used(symbol * expr);
 void describe_symbols(void);
 char * pf_intfloat_wid(stats_count x, int width);
 void print_end(int exit_code);
 void check_exit(int is_exact);
-void report_match(symbol * lhs, symbol * rhs, symbol * exm, ries_dif delta);
+void report_match(symbol * lhs, symbol * rhs, symbol * exm,
+  ries_val root, ries_dif delta, int did_newton);
 int check_match(expr * lhs, expr * rhs);
 
 expr * bt_first(expr * tree);
@@ -3382,8 +3512,36 @@ char * pa_def_path;
 void show_version(void)
 {
   printf(
-    "ries version of %s, Copyright (C) 2000-2013 Robert P. Munafo\n",
+    "ries version of %s, Copyright (C) 2000-2014 Robert P. Munafo\n",
     RIES_VERSION);
+
+  printf(
+    "  architecture: %s\n",
+#ifdef __POWERPC__
+    "PowerPC"
+#else
+# ifdef __i386__
+    "Intel-32"
+# else
+#   ifdef __x86_64__
+    "Intel-64"
+#   else
+    "Unknown"
+#   endif
+# endif
+#endif
+  );
+
+  printf(
+    "  precision: %s (%d nominal, %d usable)\n",
+#ifdef RIES_VAL_LDBL
+    "long double",
+#else
+    "double",
+#endif
+    k_nominal_digits, k_usable_digits
+  );
+
   printf(
     "  mathlib: %s\n",
 #ifdef RIES_USE_SA_M64
@@ -3398,7 +3556,7 @@ void show_version(void)
 #endif
 
   if (pa_def_path) {
-    printf("profile: %s\n", pa_def_path);
+    printf("  profile: %s\n", pa_def_path);
   }
 
   printf("%s",
@@ -3416,15 +3574,613 @@ void brief_help(void)
 "Target value is required and may be any number. Options include:\n"
 "  -l3   Search further (``level-3 search'')\n"
 "  -x    Show matched values as ``x = value'' rather than ``x = T + epsilon''\n"
+"  -s    (Sort of) solve by transforming to ``x = ...'' form\n"
 "  -N+-/ Do not use symbols +, - or /\n"
 "  -S    Show list of all available symbols\n"
+); printf("%s",
+"  -l    Restrict to Liouvillian solutions\n"
 "  -a    Restrict to algebraic solutions\n"
-"  -r    Restrict to rational solutions\n"
-"  -i    Restrict to integer solutions\n"
+"  -c    Restrict to ``constructible'' (straightedge and compass) solutions\n"
+"  -r    Restrict to rational solutions (-re for exact match)\n"
+"  -i    Restrict to integer solutions (-ie for exact match)\n"
 "\n"
 "There are many more options; get the full manual at www.mrob.com/ries\n"
 );
 } /* End of brief.help */
+
+/* -------------- formatting and conversion ------------------------------- */
+
+/* Copy a string as if by strncpy */
+void ries_strncpy(char * to, char * fr, int n);
+void ries_strncpy(char * to, char * fr, int n)
+{
+  int i;
+  for(i=0; (i<n) && fr[i]; i++) {
+    to[i] = fr[i];
+  }
+  /* copy the final 0 if we have room */
+  if (i<n) {
+    to[i] = fr[i];
+  }
+}
+
+/* Raise any value to an integer power. */
+ries_val ries_intpow(ries_val x, int p);
+ries_val ries_intpow(ries_val x, int p)
+{
+  int i;
+  ries_val rv;
+  ries_val pow2;
+  int recip = 0;
+
+  pow2 = x;
+
+  if (p < 0) {
+    p = -p;
+    recip = 1;
+    if (p < 0) {
+      /* p was MININT */
+      p = p / 2;
+      p = -p;
+      pow2 = x * x;
+    }
+  }
+
+  rv = 1.0;
+  pow2 = x;
+  i = p;
+  while(i > 0) {
+    if (i & 1) {
+      rv = rv * pow2;
+    }
+    i >>= 1;
+    if (i) {
+      /* We could do better here by a special-case for x near 1.0 */
+      pow2 = pow2 * pow2;
+    }
+  }
+
+  if (recip) {
+    return(1.0 / rv);
+  }
+  return(rv);
+} /* End of ries_intpow */
+
+/* This routine returns the first N significant digits of an ries_val
+   value. It goes to fairly thorough measures to ensure that rounding
+   is done properly. You supply a string with a little bit more than
+   the needed amount of space, and (if desired) an integer in which to
+   store the exponent. */
+void ries_to_digits(ries_val x, char *s, int *expn, int *sign, int precision);
+void ries_to_digits(ries_val x, char *s, int *expn, int *sign, int precision)
+{
+  int dig1 = precision + 1;  /* number of digits to compute */
+
+  ries_val r; /* "remainder", the portion not yet turned into digits. */
+  ries_val pw;
+  int e;  /* exponent */
+  int i, d;
+  int sgn;
+
+  if (x <= k_d_ninf) {
+    ries_strncpy(s, (char *) "-inf", precision);
+    return;
+  } else if (x >= k_d_inf) {
+    ries_strncpy(s, (char *) "+inf", precision);
+    return;
+  } else if (!((x > k_d_ninf) && (x < k_d_inf))) {
+    ries_strncpy(s, (char *) "NaN", precision);
+    return;
+  }
+
+  sgn = 0;
+  if (x < 0.0) {
+    x = - x;
+    sgn = 1;
+  }
+  if (sign) {
+    *sign = sgn;
+  }
+
+  r = (x<0) ? (-x) : x;
+
+  if (x == 0.0) {
+    /* x == 0.0 */
+    if (expn) {
+      *expn = 0;
+    }
+    for (i = 0; i < precision; i++)
+      s[i] = '0';
+    return;
+  }
+
+  /* First determine the (approximate) exponent. */
+  e = (int) (FLOOR(LOG10(FABS(x))));
+
+  if (e < -300) {
+    r = r * ries_intpow(10.0, 300);
+    pw = ries_intpow(10.0, (e + 300));
+    r = r / pw;
+  } else if (e > 0) {
+    pw = ries_intpow(10.0, e);
+    r = r / pw;
+  } else if (e < 0) {
+    pw = ries_intpow(10.0, -e);
+    r = r * pw;
+  }
+
+  /* Fix exponent if we are off by one */
+  if (r >= 10.0) {
+    r = r / 10.0;
+    e++;
+  } else if (r < 1.0) {
+    r = r * 10.0;
+    e--;
+  }
+
+  if (r >= 10.0 || r < 1.0) {
+    fprintf(stderr, "ries_to_digits: exponent adjust failed (x=%g, r=%g).\n",
+      ((double) x), ((double) r));
+    return;
+  }
+
+  /* Extract the digits */
+  for (i = 0; i < dig1; i++) {
+    d = ((int) r);
+    r = r - ((ries_val) d);
+    r = r * 10.0;
+
+    s[i] = ((char)(((int)'0') + d));
+  }
+
+  /* Fix negative digits. */
+  for (i = dig1-1; i > 0; i--) {
+    if (s[i] < '0') {
+      s[i-1]--;
+      s[i] = ((char)(((int)(s[i])) + 10));
+    }
+  }
+
+  if (s[0] <= '0') {
+    fprintf(stderr, "ries_to_digits: non-positive leading digit.\n");
+    return;
+  }
+
+  /* Round, handle carry */
+  if (s[dig1-1] >= '5') {
+    s[dig1-2]++;
+
+    i = dig1-2;
+    while (i > 0 && s[i] > '9') {
+      s[i] = ((char)(((int)(s[i])) - 10));
+      i--;
+      s[i] = ((char)( ((int)(s[i])) + 1));
+    }
+  }
+
+  /* If first digit is 10, shift everything. */
+  if (s[0] > '9') {
+    e++;
+    for (i = precision; i >= 2; i--) s[i] = s[i-1];
+    s[0] = '1';
+    s[1] = '0';
+  }
+
+  s[precision] = 0;
+  if (expn) *expn = e;
+} /* End of ries_to_digits */
+
+/* Format an int into a string as if by snprintf */
+void ries_snprinf_int(char * to, int len, int x);
+void ries_snprinf_int(char * to, int len, int x)
+{
+  char * s;
+  int x2, i;
+  char c;
+
+  s = to;
+  if(len <= 0) {
+    return;
+  }
+  /* Reserve space for trailing null */
+  len--;
+  if (len <= 0) {
+    /* If that's all we have, leave now */
+    *s++ = 0;
+    return;
+  }
+  if (x<0) {
+    *s++ = '-'; len--;
+    x = -x;
+  }
+  if (len <= 0) { *s++ = 0; return; }
+
+  /* Handle 0 */
+  if (x == 0) {
+    *s++ = '0';
+    *s = 0;
+    return;
+  }
+
+  /* Find out if int will fit */
+  x2 = x;
+  while(x2>0) {
+    len--;
+    x2 = x2 / 10;
+  }
+  if (len <= 0) { *s++ = 0; return; }
+
+  /* Write digits in reverse order */
+  len = 0; /* len now counts number of digits output */
+  x2 = x;
+  while(x2 > 0) {
+    s[len] = ((char)(((int)'0') + (x2 % 10)));
+    len++;
+    x2 = x2 / 10;
+  }
+  /* Trailing null */
+  s[len] = 0;
+
+  /* Reverse the string in place */
+  for(i=0; i<len/2; i++) {
+    c = s[i]; s[i] = s[len-1-i]; s[len-1-i] = c;
+  }
+
+  /* We're done */
+} /* End of ries_snprinf_int */
+
+/* Measure the length of a string as if by strlen */
+int ries_strlen(char * s);
+int ries_strlen(char * s)
+{
+  int i;
+  for(i=0; s[i]; i++) {
+  }
+  return i;
+}
+
+/* Blank out trailing '0' digits in a string */
+void ries_bltr0(char * s);
+void ries_bltr0(char * s)
+{
+  char *t;
+
+  /* Return right away on null inputs */
+  if ((s == 0) || (!(*s))) {
+    return;
+  }
+
+  /* Find the end of s */
+  for(t=s; *t; t++) { }
+
+  /* Back up one character */
+  t--;
+
+  /* Keep backing up and nulling out chars as long as they're 0's */
+  while((t >= s) && (*t == '0')) {
+    *t = 0;
+    t--;
+  }
+}
+
+/* ries_spfg prints an ries_val into a string, using format similar to
+   the standard C library printf("%10.3g", val). There is a length field,
+   controlling the maximum length of output and a precision field
+   specifying how many digits you want. For best results the length should
+   be at least precision+8, to allow for the worst case of the sign,
+   decimal point, "e", exponent sign, and 3-digit exponent plus the trailing
+   null. For example, the string "-1.23e-123" has "precision" 3, but is
+   7 characters longer than the precision.
+
+   The parameters are:
+
+   char * s1       - output string. Must have at least as many bytes as the
+                     parameter 'length'
+   length          - length of the buffer s1. No more than length-1 printable
+                     chars will be emitted, followed by a null.
+   sign_flag       - pass in '+' if you want explicit + signs; pass anything
+                     else to have no '+' signs.
+   precision       - number of significant digits to generate.
+   ries_val x      - the number to format.
+
+   For the opposite conversion, use ries_sscan.
+ */
+void ries_spfg(char *s1, int length, char sign_flag, int precision,
+  ries_val x);
+void ries_spfg(char *s1, int length, char sign_flag, int precision,
+  ries_val x)
+{
+  char *s;
+  int sign;
+  int exponent;
+  int i;
+  char s2[40];
+  char sexp[8]; /* Signed exponent as a string */
+
+  s = s1;
+
+  /* Handle unreasonably short output buffers */
+  if (length <= 0) {
+    return;
+  } else if (length < 8) {
+    for(i=0; i<(length-1); i++) {
+      s[i] = '!';
+    }
+    s[i] = 0;
+    return;
+  }
+
+  if (x <= k_d_ninf) {
+    ries_strncpy(s, (char *) "-inf", precision);
+    return;
+  } else if (x >= k_d_inf) {
+    ries_strncpy(s, (char *) "+inf", precision);
+    return;
+  } else if (!((x > k_d_ninf) && (x < k_d_inf))) {
+    ries_strncpy(s, (char *) "NaN", precision);
+    return;
+  }
+
+  if (precision > 35) {
+    precision = 35;
+  } else if (precision < 1) {
+    precision = 1;
+  }
+
+  ries_to_digits(x, s2, &exponent, &sign, precision);
+
+  if (sign) {
+    *s++ = '-'; length--;
+  } else if (sign_flag == '+') {
+    *s++ = '+'; length--;
+  }
+
+  if ((exponent > 0) && (exponent < precision)) {
+    /* It can be formatted as a normal number without an exponent field */
+    /* length needs to be at least enough for lead digits and trailing null */
+    if (length < exponent+2) {
+      ries_strncpy(s, (char *) "fmt-err", length);
+      return;
+    }
+    i = 0;
+    /* Emit lead digit */
+    *s++ = s2[i++]; length--;
+    /* Emit the rest of the digits before the decimal point */
+    while (exponent) {
+      *s++ = s2[i++]; length--;
+      exponent--;
+    }
+
+    /* Check the rest of the digits for trailing 0's */
+    ries_bltr0(s2);
+    if (*s2 == 0) {
+      *s++ = 0;
+      return;
+    }
+
+    if (length > 1) {
+      *s++ = '.'; length--;
+    }
+    for(; s2[i] && (i<precision) && (length > 1); i++) {
+      *s++ = s2[i]; length--;
+    }
+    *s++ = 0;
+    return;
+
+  } else if (exponent == 0) {
+    /* Values from 1.00000 to 9.99999 */
+    /* length needs to be at least enough for lead digit, decimal point
+       and trailing null */
+    if (length < 3) {
+      ries_strncpy(s, (char *) "!!!", length);
+      return;
+    }
+    *s++ = s2[0]; length--; /* Lead digit */
+
+    /* Check the rest of the digits for trailing 0's */
+    ries_bltr0(s2+1);
+    if (s2[1] == 0) {
+      *s++ = 0;
+      return;
+    }
+
+    *s++ = '.'; length--;
+    for(i=1; s2[i] && (i<precision) && (length > 1); i++) {
+      *s++ = s2[i]; length--;
+    }
+    *s++ = 0;
+    return;
+
+  } else if ((exponent < 0) && (exponent > -5)) {
+    /* Values like 0.12345, 0.012345, etc. */
+    /* Length needs to be enough for leading 0's, decimal point, one
+       significant digit, and trailing null */
+    if (length+exponent < 3) {
+      ries_strncpy(s, (char *) "fmt-err", length);
+      return;
+    }
+
+    /* Add a suitable number of zeros */
+    *s++ = '0'; length--;
+    *s++ = '.'; length--;
+    exponent++;
+    while ((exponent < 0) && (length > 1)) {
+      *s++ = '0'; length--;
+      exponent++;
+    }
+
+    /* Remove extra trailing 0's */
+    ries_bltr0(s2);
+    if (*s2 == 0) {
+      *s++ = 0;
+      return;
+    }
+
+    for(i=0; s2[i] && (i<precision) && (length > 1); i++) {
+      *s++ = s2[i]; length--;
+    }
+    *s++ = 0;
+    return;
+
+  }
+
+  /* General case: use scientific notation */
+
+  /* Get the exponent as a string */
+  if (exponent >= 0) {
+    sexp[0] = '+';
+    ries_snprinf_int(sexp+1, sizeof(sexp)-1, exponent);
+  } else {
+    /* ries_snprinf_int will print the '-' sign */
+    ries_snprinf_int(sexp, sizeof(sexp), exponent);
+  }
+
+  /* Here we are a little forgiving about the length: We'll deduct the
+     space we need for the signed exponent and 'e', then emit as many
+     digits as we can. Note that s2[] already has the requested number
+     of digits. So we just need to make sure the length can accommodate
+     the lead digit, decimal point and exponent. */
+  if (length - (1 + 1 + 1 + ries_strlen(sexp)) < 1) {
+    ries_strncpy(s, (char *) "fmt-err", length);
+    return;      
+  }
+
+  /* Reserve space for 'e' and exponent and null */ 
+  length = length - (1 + ries_strlen(sexp) + 1);
+
+  *s++ = s2[0]; length--; /* Lead digit */
+
+  ries_bltr0(s2+1);
+  if (s2[1]) {
+    /* We have some nonzero digits to print */
+    *s++ = '.'; length--;
+    for(i=1; (i<precision) && s2[i] && (length > 0); i++) {
+      *s++ = s2[i]; length--;
+    }
+  }
+  *s++ = 'e'; length--;
+  /* We now have just enough room for the exponent */
+  for(i=0; sexp[i]; i++) {
+    *s++ = sexp[i];
+  }
+  *s++ = 0;
+} /* End of ries_spfg */
+
+/* Print a ries_val as if by printf("%.23g", x) where the precision is
+given by the parameter 'prec'. */
+void spfg(int prec, ries_val x);
+void spfg(int prec, ries_val x)
+{
+  char tmp[100];
+  ries_spfg(tmp, 100, 0, prec, x);
+  printf("%s", tmp);
+}
+
+/* Print a ries_val as if by printf("%29.23g", x) where the precision is
+given by the parameter 'prec'. */
+void spff(int prec, ries_val x);
+void spff(int prec, ries_val x)
+{
+  char tmp[100]; char fmt[10];
+  ries_spfg(tmp, 100, 0, prec, x);
+  sprintf(fmt, "%%-%ds", prec+6);
+  printf(fmt, tmp);
+}
+
+#ifdef RIES_USE_SA_M64
+
+float g_min_spfg_mbits = 256.0;
+ries_val g_worst_spfg_inpt;
+
+/* Wrapper for ries_spfg that converts the result string bacl to a ries_val
+and watches for the worst result */
+void ries_spfg_test(char *s1, int length, char sign_flag, int precision,
+  ries_val x);
+void ries_spfg_test(char *s1, int length, char sign_flag, int precision,
+  ries_val x)
+{
+  ries_val xc;
+  int nv;
+
+  ries_spfg(s1, length, sign_flag, precision, x);
+  nv = sscanf(s1, RV_SS_FMT, &xc);
+  if ((nv) && (x != 0)) {
+    ries_val rat, diff;
+    float db;
+    rat = xc / x;
+    diff = rat - 1.0;
+    if (diff < 0) {
+      diff = 0 - diff;
+    }
+    if (diff > 0) {
+      db = 0.0;
+      while (diff < 1.0) {
+        db = db + 1.0f;
+        diff *= 2.0;
+      }
+
+      if (db < g_min_spfg_mbits) {
+        g_min_spfg_mbits = db;
+        g_worst_spfg_inpt = x;
+        if (debug_z) {
+          printf("New poorest conversion (%g bits)"
+            " from input %23.17g -> '%s'\n", db, ((double)x), s1);
+        }
+      }
+    }
+  }
+} /* end of ries_spfg_test */
+
+/* Generate a huge number of values and test conversion via ries_spfg */
+void msal_test_spfg(void);
+void msal_test_spfg(void)
+{
+  int ei, n;
+  ries_val eps; /* epsilon */
+  ries_val k8, k10;
+
+  printf("msal_test_spfg: starting...\n"); n = 0;
+  eps = 0.5;
+  k8 = 8.0; k10 = 10.0;
+  /* Test each epsilon */
+  for(ei=0; ei<100; ei++) {
+    ries_val b8, b10; /* "big" test values */
+    ries_val s8, s10; /* "big" test values */
+    int di;
+
+    for (di=0; di<2; di++) {
+      int si;
+      if (di == 0) {
+        b8 = b10 = s8 = s10 = 1.0 - eps;
+      } else {
+        b8 = b10 = s8 = s10 = 1.0 + eps;
+      }
+      /* Run through range of large and small values */
+      for(si=0; si<100; si++) {
+        char tmp[100];
+        int si;
+        /* Make values bigger/smaller */
+        b8 = b8 * k8; b10 = b10 * k10;
+        s8 = s8 / k8; s10 = s10 / k10;
+        for(si=0; si<2; si++) {
+          ries_spfg_test(tmp, 100, 0, k_nominal_digits, b8); n++;
+          ries_spfg_test(tmp, 100, 0, k_nominal_digits, b10); n++;
+          ries_spfg_test(tmp, 100, 0, k_nominal_digits, s8); n++;
+          ries_spfg_test(tmp, 100, 0, k_nominal_digits, s10); n++;
+          /* Negate everything */
+          b8 = -b8; b10 = -b10; s8 = -s8; s10 = -s10;
+        }
+      }
+      /* Go to the next epsilon */
+      eps = eps * 0.375;
+    }
+  }
+  printf("msal_test_spfg: %d tests completed.\n", n);
+}
+
+#endif
+
+/* -------------- profiles and argument parsing --------------------------- */
 
 #define FILE_READ_SIZE 1024
 #define FILE_READ_MAX 10*1024*1024
@@ -3594,6 +4350,8 @@ _____________________________________________________________________________*/
 #define ERR_EC_INCOMPLETE_EXPR -19
 #define ERR_EXEC_ILLEGAL_EXPONENT -20
 #define ERR_EXEC_TRIG_ARGTYPE -21
+#define ERR_EXEC_ILLEGAL_DERIV -22
+#define ERR_EXEC_ZERO_DERIV -23
 /* Add any new ones here */
 #define EXIT_NO_ERROR -9998
 #define ERR_UNKNOWN -9999
@@ -3626,6 +4384,8 @@ err_str error_strings[] = {
   {ERR_EC_INCOMPLETE_EXPR, "Incomplete expression"},
   {ERR_EXEC_ILLEGAL_EXPONENT, "Disallowed exponent"},
   {ERR_EXEC_TRIG_ARGTYPE, "Disallowed trigonometric argument"},
+  {ERR_EXEC_ILLEGAL_DERIV, "Overflow or NaN in derivative"},
+  {ERR_EXEC_ZERO_DERIV, "Underflow in derivative"},
   /* Add any new ones here */
   {EXIT_NO_ERROR, "No error"},
   {ERR_UNKNOWN, "Unknown error"},
@@ -4018,7 +4778,7 @@ void ms_init(metastack *ms)
   ms->sp = 0;
 }
 
-#define Cldbl(x) ((long double)(x))
+#define dbl(x) ((double)(x))
 
 /* ms.push does a standard PUSH operation. */
 void ms_push(metastack *ms, ries_val x, ries_dif dx, ries_tgs tags)
@@ -4037,7 +4797,7 @@ void ms_push(metastack *ms, ries_val x, ries_dif dx, ries_tgs tags)
   ms->ms[msp] = MSO_PUSH;
 
   if (debug_m) {
-    printf("push %d %Lg (%g)%x '%d'\n", sp, Cldbl(x), dx, tags, msp);
+    printf("push %d %g (%g)%x '%d'\n", sp, dbl(x), dx, tags, msp);
   }
 
   /* for a push, we don't need to add any undo values */
@@ -4077,7 +4837,7 @@ ries_val ms_pop(metastack *ms, ries_dif *diff, ries_tgs * tags)
   /* save the popped values in the undo list */
   uvp = ms->uvp;
   if (debug_m) {
-    printf("pop %d %Lg (%g)%x '%d' .%d.\n", sp, Cldbl(rv), drv, tg, msp, uvp);
+    printf("pop %d %g (%g)%x '%d' .%d.\n", sp, dbl(rv), drv, tg, msp, uvp);
   }
   ms->udv[uvp] = drv;
   ms->uv[uvp] = rv;
@@ -4113,7 +4873,7 @@ ries_val ms_peek(metastack *ms, ries_dif *diff, ries_tgs * tag, s16 *sptr)
     *sptr = sp;
   }
   if (debug_m) {
-    printf("peek %d %Lg (%g)%x\n", sp, Cldbl(rv), drv, tg);
+    printf("peek %d %g (%g)%x\n", sp, dbl(rv), drv, tg);
   }
   return (rv);
 }
@@ -4358,7 +5118,7 @@ s16 exec(metastack *ms, symbol op, s16 *undo_count, s16 do_dx)
   ries_tgs tgb;
   ries_tgs trv; /* Tags of result */
 
-  /* set default for differential (overridden if we compute it) */
+  /* set default for derivative (overridden if we compute it) */
   drv = (ries_dif)k_0;
   tga = tgb = trv = TYPE_NONE;
 
@@ -4431,6 +5191,9 @@ s16 exec(metastack *ms, symbol op, s16 *undo_count, s16 do_dx)
     if (do_dx) {
       drv = (ries_dif) (( - da) / (a * a));
     }
+    if (!((drv < k_d_inf) && (drv > k_d_ninf))) {
+      return ERR_EXEC_ILLEGAL_DERIV;
+    }
     rv = k_1 / a;
     /* Int become rational, everything else stays the same */
     trv = TGMIN(tga, TYPE_RAT); /* tgs-manip */
@@ -4490,6 +5253,9 @@ s16 exec(metastack *ms, symbol op, s16 *undo_count, s16 do_dx)
     if (do_dx) {
       drv = (ries_dif) (da / a);
     }
+    if (!((drv < k_d_inf) && (drv > k_d_ninf))) {
+      return ERR_EXEC_ILLEGAL_DERIV;
+    }
     rv = LOG(a);
     trv = TGMIN(tga, TYPE_ELEM); /* tgs-manip */
     ms_push(ms, rv, drv, trv); *undo_count = 2;
@@ -4544,7 +5310,7 @@ s16 exec(metastack *ms, symbol op, s16 *undo_count, s16 do_dx)
       return ERR_EXEC_TRIG_LOW_DX;
     }
     if (FABS(COS(a)) < k_sig_loss) {
-      /* Significance is lost when the value of sin or cos is near +- 1 */
+      /* Significance is lost when the value of sin is near +- 1 */
       return ERR_EXEC_SIG_LOSS;
     }
     if (FABS(rv) < (FABS(a) * k_sig_loss)) {
@@ -4586,7 +5352,7 @@ s16 exec(metastack *ms, symbol op, s16 *undo_count, s16 do_dx)
       return ERR_EXEC_SIG_LOSS;
     }
     if (FABS(SIN(a)) < k_sig_loss) {
-      /* Significance is lost when the value of sin or cos is near +- 1 */
+      /* Significance is lost when the value of cos is near +- 1 */
       return ERR_EXEC_SIG_LOSS;
     }
     if (FABS(rv) > k_sin_clip) {
@@ -4711,9 +5477,12 @@ s16 exec(metastack *ms, symbol op, s16 *undo_count, s16 do_dx)
     if (b == k_0) {
       return ERR_EXEC_DIV_ZERO;
     }
-    a = ms_pop(ms, &da, &tga);
+    a = ms_pop(ms, &da, &tga); *undo_count = 2;
     if (do_dx) {
       drv = (ries_dif) (((b * da) - (a * db)) / (b * b));
+    }
+    if (!((drv < k_d_inf) && (drv > k_d_ninf))) {
+      return ERR_EXEC_ILLEGAL_DERIV;
     }
     rv = a / b;
     if ((tga >= TYPE_RAT) && (tgb >= TYPE_RAT)) {
@@ -4751,6 +5520,12 @@ s16 exec(metastack *ms, symbol op, s16 *undo_count, s16 do_dx)
     rv = POW(a, b);
     if (do_dx) {
       drv = (ries_dif) (rv * ( (b * da / a) + (LOG(a) * db) ));
+      if (!((drv < k_d_inf) && (drv > k_d_ninf))) {
+        return ERR_EXEC_ILLEGAL_DERIV;
+      }
+      if ((da || db) && (drv == k_0)) {
+        return ERR_EXEC_ZERO_DERIV;
+      }
     }
     if (tgb == TYPE_INT) { /* tgs-manip */
       if (b >= 0) {
@@ -4797,6 +5572,12 @@ s16 exec(metastack *ms, symbol op, s16 *undo_count, s16 do_dx)
     rv = POW(a, k_1 / b);
     if (do_dx) {
       drv = (ries_dif) (rv * ( (da / (a * b)) - (LOG(a) * db / (b*b)) ));
+      if ((da || db) && (drv == k_0)) {
+        return ERR_EXEC_ZERO_DERIV;
+      }
+    }
+    if (!((drv < k_d_inf) && (drv > k_d_ninf))) {
+      return ERR_EXEC_ILLEGAL_DERIV;
     }
     if (tgb >= TYPE_RAT) { /* tgs-manip */
       lb=FABS(b);
@@ -4850,6 +5631,12 @@ s16 exec(metastack *ms, symbol op, s16 *undo_count, s16 do_dx)
     rv = LOG(a) / lb;
     if (do_dx) {
       drv = (ries_dif) ((da / (a * lb)) - (rv * db / (b * lb)));
+      if (!((drv < k_d_inf) && (drv > k_d_ninf))) {
+        return ERR_EXEC_ILLEGAL_DERIV;
+      }
+      if ((da || db) && (drv == k_0)) {
+        return ERR_EXEC_ZERO_DERIV;
+      }
     }
     trv = TGMIN(tga, TGMIN(tgb, TYPE_ELEM)); /* tgs-manip */
     ms_push(ms, rv, drv, trv); *undo_count = 3;
@@ -4878,16 +5665,16 @@ s16 exec(metastack *ms, symbol op, s16 *undo_count, s16 do_dx)
 
   if (debug_r) {
     if (do_dx && sym_attrs[op].seft == 'c') {
-      printf("exec %8.5Lg", Cldbl(a));
+      printf("exec %8.5g", dbl(a));
       printf(" (%8.5g)%x", da, tga);
       printf(" '%c'", op);
-      printf(" %8.5Lg", Cldbl(b));
+      printf(" %8.5g", dbl(b));
       printf(" (%8.5g)%x", db, tgb);
-      printf(" -> %10.6Lg", Cldbl(rv));
+      printf(" -> %10.6g", dbl(rv));
       printf(" d/dx=%10.6g", drv);
     } else {
       if (sym_attrs[op].seft != 'a') {
-        printf("exec %14.10Lg", Cldbl(a));
+        printf("exec %14.10g", dbl(a));
         if (do_dx) {
           printf(" (%14.10g)", da);
         }
@@ -4895,13 +5682,13 @@ s16 exec(metastack *ms, symbol op, s16 *undo_count, s16 do_dx)
       }
       printf(" '%c'", op);
       if (sym_attrs[op].seft == 'c') {
-        printf(" %14.10Lg", Cldbl(b));
+        printf(" %14.10g", dbl(b));
         if (do_dx) {
           printf(" (%14.10g)", db);
         }
         printf("%x", tgb);
       }
-      printf(" -> %14.10Lg", Cldbl(rv));
+      printf(" -> %14.10g", dbl(rv));
       if (do_dx) {
         printf(" d/dx=%14.10g", drv);
       }
@@ -5482,7 +6269,7 @@ s16 infix_expand(char * input, char * output)
     c = (symbol) input[i];
     /* printf("sym '%c', name '%s'\n", c, symbol_names[c]); */
     l2 = strlen(sym_attrs[c].sa_name);
-    strncpy(output+j, sym_attrs[c].sa_name, l2);
+    ries_strncpy(output+j, (char *) (sym_attrs[c].sa_name), (int)l2);
     j = j + l2;
   }
   output[j] = 0;
@@ -5778,7 +6565,7 @@ s16 eval(symbol * expr, ries_val * val, ries_dif * dx, ries_tgs * tags,
           printf(" ");
         }
         printf("%s = ", gscratch);
-        printf(fmt_g_nom_fixed, v);
+        spfg(k_nominal_digits, v); /* printf(fmt_g_nom_fixed, v); */
         if (dv != k_0) {
           printf(" (d/dx = ");
           printf(fmt_g_diff, dv);
@@ -6060,7 +6847,7 @@ s16 newton(symbol * lhs, symbol * rhs, ries_val *root, ries_dif *diff_dx,
   }
   if (debug_n) {
     printf("newton RHS [%s] = ", rhs);
-    printf(fmt_g_nominal, rhs_val);
+    spfg(k_nominal_digits, rhs_val); /* printf(fmt_g_nominal, rhs_val); */
     printf("  tag %x", rhs_tg);
     printf("\n");
     printf("       iterating LHS [%s]", lhs);
@@ -6088,9 +6875,9 @@ s16 newton(symbol * lhs, symbol * rhs, ries_val *root, ries_dif *diff_dx,
     }
     if (debug_n) {
       printf("       step %d l=", i);
-      printf(fmt_g_nom_fixed, lhs_val);
+      spff(k_nominal_digits, lhs_val); /* printf(fmt_g_nom_fixed, lhs_val); */
       printf("  dl=");
-      printf(fmt_g_nominal, lhs_dx);
+      spfg(k_nominal_digits, lhs_dx); /* printf(fmt_g_nominal, lhs_dx); */
       printf("  tag %x", lhs_tg);
       printf("\n");
     }
@@ -6109,9 +6896,9 @@ s16 newton(symbol * lhs, symbol * rhs, ries_val *root, ries_dif *diff_dx,
       }
       if (debug_n) {
         printf("          RHS r=");
-        printf(fmt_g_nom_fixed, rhs_val);
+        spff(k_nominal_digits, rhs_val); /* printf(fmt_g_nom_fixed, rhs_val); */
         printf("  dr=");
-        printf(fmt_g_nominal, rhs_dx);
+        spfg(k_nominal_digits, rhs_dx); /* printf(fmt_g_nominal, rhs_dx); */
         printf("  tag %x", rhs_tg);
         printf("\n");
       }
@@ -6157,7 +6944,7 @@ s16 newton(symbol * lhs, symbol * rhs, ries_val *root, ries_dif *diff_dx,
     if (tags) { *tags = rhs_tg; }
     if (debug_n) {
       printf("       converged precisely on ");
-      printf(fmt_g_nominal, curr);
+      spfg(k_nominal_digits, curr); /* printf(fmt_g_nominal, curr); */
       printf("\n");
     }
     return 0;
@@ -6167,9 +6954,9 @@ s16 newton(symbol * lhs, symbol * rhs, ries_val *root, ries_dif *diff_dx,
     if (tags) { *tags = rhs_tg; }
     if (debug_n) {
       printf("       converged on ");
-      printf(fmt_g_nominal, curr);
+      spfg(k_nominal_digits, curr); /* printf(fmt_g_nominal, curr); */
       printf(" by margin of ");
-      printf(fmt_g_nominal, FABS(curr - prev));
+      spfg(k_nominal_digits, FABS(curr - prev)); /* printf(fmt_g_nominal, FABS(curr - prev)); */
       printf("\n");
     }
     return 0;
@@ -6177,7 +6964,7 @@ s16 newton(symbol * lhs, symbol * rhs, ries_val *root, ries_dif *diff_dx,
 
   if (debug_n) {
     printf("       did not converge (last delta = ");
-    printf(fmt_g_nominal, curr - prev);
+      spfg(k_nominal_digits, curr - prev); /* printf(fmt_g_nominal, curr - prev); */
     printf(").\n");
   }
   return ERR_NEWTON_NO_CONVERGE;
@@ -6193,16 +6980,20 @@ reorder things, so for example [xn2*]=[p2*n] would be left untouched.
 through to it.
  */
 s16 cv_simplify(symbol * lhs, symbol * rhs, ries_val *root, ries_dif *diff_dx,
-  ries_tgs *tags)
+  ries_tgs *tags, int do_newton)
 {
   s16 rv;
   int gg;
+  s16 err;
 
   if (debug_Q) {
-    printf("cv_simplify: [%s]=[%s]\n", lhs, rhs);
+    printf("cv.simplify: [%s]=[%s]\n", lhs, rhs);
   }
 
   gg = 1;
+  if (g_no_cv_simplify) {
+    gg = 0;
+  }
   while(gg) {
     gg = 0;
 
@@ -6293,9 +7084,20 @@ s16 cv_simplify(symbol * lhs, symbol * rhs, ries_val *root, ries_dif *diff_dx,
     }
   }
 
-  rv = newton(lhs, rhs, root, diff_dx, tags);
+  if (do_newton) {
+    rv = newton(lhs, rhs, root, diff_dx, tags);
+  } else {
+    /* Do not perform Newton, but instead assume that lhs and rhs are already
+       equal. This isn't currently used, but might be used by
+       check.exact_match in the future. */
+    *root = g_target;
+    /* diff_dx will have been already set by caller */
+    /* Call eval on the RHS to get the tags, and to discover any eval error. */
+    err = eval(rhs, 0, 0, tags, 0, 0);
+    return err;
+  }
   return rv;
-}
+} /* End of cv.simplify */
 
 void defsym_used(symbol * expr)
 {
@@ -6380,7 +7182,7 @@ void describe_symbols(void)
       if (k_sincos_arg_scale == 1.0) {
         printf("2 pi");
       } else {
-        printf("%Lg", Cldbl(2.0 * k_pi / k_sincos_arg_scale));
+        printf("%g", dbl(2.0 * k_pi / k_sincos_arg_scale));
       }
       printf(" units are a full circle.\n");
     }
@@ -6504,11 +7306,64 @@ void print_end(int exit_code)
 /
 */
 
+/* ieee.paranoia tries to check for IEEE-compliant compile options. Some optiona
+   (such as those mentioned in the error printfs), make it hard to detect
+   overflow, roundoff, etc. For background see:
+
+     www.gnu.org/software/libc/manual/html_node/Infinity-and-NaN.html
+     gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html
+ */
+void ieee_paranoia(void)
+{
+  ries_dif a1;
+
+#ifdef __FAST_MATH__
+  fprintf(stderr,
+    "RIES does not work when compiled with the --ffast-math option.\n");
+  exit(-1);
+#endif
+
+  /*
+  Detect IEEE NaN compliance, by generating a NaN and trying to detect it in
+  the manner supported by IEEE 754: a NaN is defined to be "unordered", i.e. it
+  is not equal to, greater than, or less than anything, including even itself.
+
+  Note that in most GCC implementations, the C99 isnan() function exists but
+  is merely defined by a macro, e.g.:
+
+    static __inline__ int __inline_isnanf( float __x ) { return __x != __x; }
+
+  We create a NaN by generating an oveflow value and subtracting it from
+  itself.
+  */
+
+  /* Generate an overflow value by starting with 2 and self-squaring 100
+     times. This overflows if the exponent field is less than 100 bits. */
+  for(k_d_inf=2.0,a1=1.0; a1<100.0; k_d_inf*=k_d_inf,a1++) { }
+  k_d_ninf = 0.0 - k_d_inf;
+
+  /* Subtract this overflowed value from itself: inf-inf is NaN. */
+  k_d_nan = k_d_inf - k_d_inf;
+
+  /* By definition, a NaN is not equal to itself. */
+  if (k_d_nan != k_d_nan) {
+    /* printf("detected NaN\n"); */
+  } else {
+    /* printf("did not detect NaN\n"); */
+    fprintf(stderr,
+"RIES does not work when compiled with options that prevent full IEEE 754\n"
+"compliance, such as the GCC compiler options --ffast-math, -ffinite-math-only,\n"
+"and -funsafe-math-optimizations.\n");
+    exit(-1);
+  }
+}
+
 /* init.formats measures available precision and sets the formatting strings
-   and other values used to format and print numbers. */
+   and other values used to format and print numbers.
+     For initialization of constants like pi and e, see init_numerics */
 void init_formats(void)
 {
-  float mant_bits, digits_usable, digits_nominal;
+  float digits_usable, digits_nominal;
   ries_val a1, a2, k0, k1, k2;
   const char * gstr;
 
@@ -6525,45 +7380,54 @@ void init_formats(void)
      perhaps 2 or a larger power of 2). The "a2-a1==k1" test catches this.
    - Arbitrary-precision types might be able to continue intil we fill
      available memory, or there might be some numerical oddity that our
-     other tests miss. The "mant_bits<256" test catches these cases.
+     other tests miss. The "k_mantissa_bits<256" test catches these cases.
    - Dekker-style "double-double" arithmetic manages to pass all of the
      above tests when working with powers of 2. Therefore, rather than
      just doubling a1 each time through, every other time we add 2 so that
      when expressed in binary the mantissa has a "10101010..." pattern. */
   a1 = k2;           /*  2 */
   a2 = a1 + k1;      /*  3 */
-  mant_bits = 1;
+  k_mantissa_bits = 1;
   rv_maxint = 1.0;
-  while ((a2-a1 == k1) && (a1>k0) && (a1-a1==0) && (mant_bits < 256)) {
+  while ((a2-a1 == k1) && (a1>k0) && (a1-a1==0) && (k_mantissa_bits < 666)) {
     a1 = a1 + a1;    /*  4  20   84  340 */
     a2 = a1 + 1;     /*  5  21   85  341 */
-    mant_bits++;
-    if ((a2-a1 == k1) && (a1>k0) && (a1-a1==0) && (mant_bits < 256)) {
+    k_mantissa_bits++;
+    if ((a2-a1 == k1) && (a1>k0) && (a1-a1==0) && (k_mantissa_bits < 666)) {
       a1 = a1+a1+k2; /* 10  42  170  682 */
       a2 = a1 + 1;   /* 11  43  171  683 */
-      mant_bits++;
+      k_mantissa_bits++;
     }
     rv_maxint *= 2.0;
   }
   rv_maxint /= 4.0;
+
+  /* NOTE: Cannot use test debug_z flag here because args have not
+     been parsed yet */
 #ifdef RIES_DEBUG_FORMATS
-  printf("init.formats: got %d mantissa bits\n", (int) mant_bits);
+  printf("init.formats: got %d mantissa bits\n", (int) k_mantissa_bits);
 #endif
   /* Make sure the answer is "sane" */
-  if ((int)mant_bits < 20) {
-    printf("init.formats: Precision seems to be only %d binary bits; RIES cannot proceed.\n", (int) mant_bits);
+  if ((int)k_mantissa_bits < 20) {
+    printf("init.formats: Precision seems to be only %d binary bits; RIES cannot proceed.\n", (int) k_mantissa_bits);
     print_end(-1);
   }
-  if (mant_bits > (float)(sizeof(ries_val))*9.0) {
-    printf("init.formats: ries_val seems to have %d binary bits, but only uses %d bytes!\n",
-      (int) mant_bits, (int) (sizeof(ries_val) * 8));
+  if (k_mantissa_bits > (float)(sizeof(ries_val))*9.0) {
+    printf("init.formats: ries_val seems to have %d binary bits, but only uses %d bits!\n",
+      (int) k_mantissa_bits, (int) (sizeof(ries_val) * 8));
     print_end(-1);
   }
-  if (mant_bits > 256.0) {
-    mant_bits = 256.0;
+  if (k_mantissa_bits > 256.0) {
+    k_mantissa_bits = 256.0;
   }
-  digits_nominal = (mant_bits+1.0f) / 3.321928f;
-  digits_usable = (mant_bits-3.0f) / 3.321928f;
+  /* Compute size of the ULP (unit in the last place) for values in
+     [0.5..1.0) */
+  k_ulp = 0.5;
+  for(a1=0.5; a1<k_mantissa_bits; a1+=1.0) {
+    k_ulp *= 0.5;
+  }
+  digits_nominal = (k_mantissa_bits+1.0f) / 3.321928f;
+  digits_usable = (k_mantissa_bits-3.0f) / 3.321928f;
   k_nominal_digits = (int)floor(digits_nominal + 1.0);
   k_usable_digits = (int)floor(digits_usable);
 #ifdef RIES_DEBUG_FORMATS
@@ -6604,6 +7468,8 @@ void check_exit(int is_exact)
     printf("  (Stopping now because -ie option was given.)\n");
   } else if (is_exact && (g_restrict_subexpr == TYPE_RAT) && g_exact_exit) {
     printf("  (Stopping now because -re option was given.)\n");
+  } else if (is_exact && (g_restrict_subexpr == TYPE_CONS) && g_exact_exit) {
+    printf("  (Stopping now because -ce option was given.)\n");
   } else if (is_exact && (k_max_match_dist == 0)) {
     printf("  (Stopping now because an exact match was found.)\n");
   } else if (is_exact && g_exact_exit) {
@@ -6664,7 +7530,8 @@ int unique_eqn(symbol * lhs, symbol * rhs, int addit)
    supply an LHS and RHS that are already in the tree, or just one tree
    member and a pe (which you would do if reporting an exact match and
    don't want to insert the item) */
-void report_match(symbol * lhs, symbol * rhs, symbol * exm, ries_dif delta)
+void report_match(symbol * lhs, symbol * rhs, symbol * exm,
+       ries_val root, ries_dif delta, int did_newton)
 {
   symbol * le;
   symbol * re;
@@ -6765,9 +7632,13 @@ void report_match(symbol * lhs, symbol * rhs, symbol * exm, ries_dif delta)
     printf(" to ");
     expr_print_infix(re, 0);
     printf(",\n");
-    printf("  and solving for x by the Newton-Raphson method, I got\n");
+    printf("  ");
+    if (did_newton) {
+      printf("and solving for x by the Newton-Raphson method, ");
+    }
+    printf("I got\n");
     printf("  x = ");
-    printf(fmt_g_usable, g_target + delta);
+    spfg(k_usable_digits, root); /* printf(fmt_g_usable, root); */
     printf(" = T ");
     if (delta < k_0) {
       printf("- %.6g\n", -delta);
@@ -6916,7 +7787,7 @@ void report_match(symbol * lhs, symbol * rhs, symbol * exm, ries_dif delta)
     }
   }
 
-  sprintf(froot, fmt_g_usable, g_target + delta);
+  ries_spfg(froot, 30, 0, k_usable_digits, root); /* sprintf(froot, fmt_g_usable, root); */
 
   x_T_intro = (char *) "for x ";
   if (g_enable_output && g_wide_output) {
@@ -6939,7 +7810,7 @@ void report_match(symbol * lhs, symbol * rhs, symbol * exm, ries_dif delta)
     got_exact = B_TRUE;
   } else if (g_enable_output && (!(g_relative_x))) {
     printf("for x = ");
-    sprintf(fval, fmt_g_usable, g_target + delta);
+    ries_spfg(fval, 30, 0, k_usable_digits, root); /* sprintf(fval, fmt_g_usable, root); */
     posn = (s16) (8 + strlen(fval));
   } else if (g_enable_output && (delta < k_0)) {
     /* Delta is negative */
@@ -7034,8 +7905,8 @@ int check_match(expr * lhs, expr * rhs)
   delta = (ries_dif) ((rhs->val - lhs->val) / total_deriv);
   score = fabs(delta);
   if (debug_o) {
-    printf("check_match score %g, best_match %Lg, g_mms %g\n",
-      score, Cldbl(best_match), g_min_matchsize);
+    printf("check_match score %g, best_match %g, g_mms %g\n",
+      score, dbl(best_match), g_min_matchsize);
   }
 
   if ((score > best_match) || (score < g_min_matchsize)) {
@@ -7072,8 +7943,9 @@ int check_match(expr * lhs, expr * rhs)
         lexpr, rexpr, score);
     }
 
-    err = cv_simplify(lexpr, rexpr, &root, &total_deriv, 0);
-
+    /* cv.simplify removes things from both sides where possible, then
+       calls newton */
+    err = cv_simplify(lexpr, rexpr, &root, &total_deriv, 0, 1);
     if (err) {
       /* Eval got an error, or Newton did not converge: in either case
          we don't accept, because a failed Newton converge is probably
@@ -7082,6 +7954,12 @@ int check_match(expr * lhs, expr * rhs)
         printf("            newton returned %d (%s)\n", err, err_string(err));
       }
       return 0;
+    } else {
+      if (debug_q) {
+        printf("root: ");
+        spfg(k_nominal_digits, root); /* printf(fmt_g_nominal, root); */
+        printf("\n");
+      }
     }
 
     if (FABS(total_deriv) < k_vanished_dx) {
@@ -7092,8 +7970,8 @@ int check_match(expr * lhs, expr * rhs)
 
     delta = (ries_dif) (root - g_target);
     if (debug_q) {
-      printf("newton: target %Lg root %Lg delta %g\n", Cldbl(g_target),
-        Cldbl(root), delta);
+      printf("newton: target %g root %g delta %g\n", dbl(g_target),
+        dbl(root), delta);
     }
     score = fabs(delta);
 
@@ -7105,13 +7983,13 @@ int check_match(expr * lhs, expr * rhs)
         printf("            exact match\n");
       }
 
-      report_match(lexpr, rexpr, 0, delta);
+      report_match(lexpr, rexpr, 0, root, delta, 1);
       return 1;
     } else if (score < best_match) {
       if (debug_q) {
         printf("            new record %g\n", score);
       }
-      report_match(lexpr, rexpr, 0, delta);
+      report_match(lexpr, rexpr, 0, root, delta, 1);
       if(g_refinement) {
         /* The minus k_min_best.match is to avoid having lots of matches
            that beat each other only because of roundoff in the score
@@ -7119,8 +7997,8 @@ int check_match(expr * lhs, expr * rhs)
            "ries 0.434294481903252" */
         best_match = (score * 0.999) - k_min_best_match;
         if (debug_q) {
-          printf("            lowering match threshold to %Lg\n",
-                   Cldbl(best_match));
+          printf("            lowering match threshold to %g\n",
+                   dbl(best_match));
         }
       }
       check_exit(0);
@@ -7171,10 +8049,10 @@ void bt_stats(void)
   while(it) {
     if (debug_0) {
       printf("%8ld %10s {%3d} = ", n, it->sym, complexity(it->sym));
-      printf(fmt_g_nom_fixed, it->val);
+      spff(k_nominal_digits, it->val); /* printf(fmt_g_nom_fixed, it->val); */
       if (it->der) {
         printf(", dx = ");
-        printf(fmt_g_nominal, it->der);
+        printf(fmt_g_diff, it->der); /* printf(fmt_g_nominal, it->der); */
       }
       printf("\n");
     }
@@ -7247,7 +8125,7 @@ expr * bt_next(expr *it)
 check.sides looks for a match for a given expression. It checks
 expressions of the opposite type (LHS or RHS) on either side (lower-
 and higher-valued) of the supplied expression, and for each, calls
-check_match.
+check.match.
  */
 void check_sides(expr *it)
 {
@@ -7300,22 +8178,33 @@ void check_sides(expr *it)
       }
     }
   }
-} /* end of check_sides */
+} /* end of check.sides */
 
 void check_exact_match(expr * it, ries_dif new_dx, pe *ex)
 {
+  symbol * lhs;
+  symbol * rhs;
+  ries_val x, xpe;
+  ries_dif eps, total_deriv, delta, score;
+
+  lhs = rhs = 0;
+
   if (new_dx == k_0) {
     /* new item is RHS. */
     if (it->der == k_0) {
       /* Tree item is RHS, too. We just discard in this case. */
+      return;
     } else {
       /* Tree item is LHS... */
       if (fabs(it->der) < k_vanished_dx) {
         if (debug_q) {
           printf("chk_ex_match it->dx = %g is too small\n", it->der);
         }
+        return;
       } else {
-        report_match(it->sym, 0, ex->sym, (ries_dif) k_0);
+        lhs = it->sym;
+        rhs = ex->sym;
+        total_deriv = it->der;
       }
     }
   } else {
@@ -7326,21 +8215,51 @@ void check_exact_match(expr * it, ries_dif new_dx, pe *ex)
         if (debug_q) {
           printf("chk_ex_match dx = %g is too small\n", new_dx);
         }
+        return;
       } else {
-        report_match(0, it->sym, ex->sym, (ries_dif) k_0);
+        lhs = ex->sym;
+        rhs = it->sym;
+        total_deriv = 0 - new_dx;
       }
     } else {
-      /* Tree item is LHS too, discard.
-         %%% In this instance we will want to do a normal check_match
-         and reject if the two derivatives are equal (indicating a
-         tautology). Even if we get a match, we would still discard the new
+      /* Tree item is LHS too, discard. */
+      return;
+      /* %%% For x-on-both-sides, in this instance we will want to do
+         a normal check.match, subtracting the two derivatives and
+         rejecting if the result is too small (indicating an excessively
+         high correlation or a tautology).
+           Even if we get a match, we would still discard the new
          node afterwards because the existing node is more likely
          to yield equations with a lesser combined complexity. */
     }
   }
+
+  x = it->val; eps = ((ries_dif)x) * 1.0e-14; xpe = x + eps;
+  if (x == xpe) {
+    /* Answer is so small that we underflowed trying to compute epsilon */
+    return;
+  }
+  if (total_deriv == 0) {
+    return;
+  }
+  delta = eps / total_deriv;
+  score = fabs(delta);
+  if ((best_match > 0) && (score > best_match)) {
+    return;
+  }
+  if (score < g_min_matchsize) {
+    return;
+  }
+  if(!(g_refinement)) {
+    if (!(unique_eqn(lhs, rhs, 0))) {
+      return;
+    }
+  }
+
+  report_match(lhs, rhs, ex->sym, g_target, (ries_dif) k_0, 0);
 }
 
-/* bt_insert adds an expression to the tree. The dx parameter
+/* bt.insert adds an expression to the tree. The dx parameter
    is used to determine if it's an RHS or an LHS expression. */
 s16 bt_insert(ries_val x, ries_dif dx, ries_tgs tg, pe *ex, s16 * res1)
 {
@@ -7502,8 +8421,8 @@ s16 canonval(
   x = *p_x; dx = *p_dx; tg = *p_tg;
 
   if (debug_F & g_dbg_side) {
-    printf("canonval: ip %d, el %d [%s] val=%Lg, dv=%g\n",
-      ip, bpe->elen, bpe->sym, Cldbl(x), dx);
+    printf("canonval: ip %d, el %d [%s] val=%g, dv=%g\n",
+      ip, bpe->elen, bpe->sym, dbl(x), dx);
   }
 
   if ((g_canon_ops & CANONVAL_NEGATE)
@@ -7520,8 +8439,8 @@ s16 canonval(
     x = ms_peek(ms, &dx, &tg, &sp);
     if (debug_F & g_dbg_side) {
       bpe->sym[ip] = 0;
-      printf("   neg -> ip %d, el %d [%s] val=%Lg, dv=%g, tg %x\n",
-       ip, bpe->elen, bpe->sym, Cldbl(x), dx, tg);
+      printf("   neg -> ip %d, el %d [%s] val=%g, dv=%g, tg %x\n",
+       ip, bpe->elen, bpe->sym, dbl(x), dx, tg);
     }
   }
 
@@ -7540,8 +8459,8 @@ s16 canonval(
     x = ms_peek(ms, &dx, &tg, &sp);
     if (debug_F & g_dbg_side) {
       bpe->sym[ip] = 0;
-      printf(" recip -> ip %d, el %d [%s] val=%Lg, dv=%g, tg %x\n",
-        ip, bpe->elen, bpe->sym, Cldbl(x), dx, tg);
+      printf(" recip -> ip %d, el %d [%s] val=%g, dv=%g, tg %x\n",
+        ip, bpe->elen, bpe->sym, dbl(x), dx, tg);
     }
   }
 
@@ -7567,8 +8486,8 @@ s16 canonval(
     x = ms_peek(ms, &dx, &sp, &tg);
     if (debug_F & g_dbg_side) {
       bpe->sym[ip] = 0;
-      printf("    2/ -> ip %d, el %d [%s] val=%Lg, dv=%g, tg %x\n",
-        ip, bpe->elen, bpe->sym, Cldbl(x), dx, tg);
+      printf("    2/ -> ip %d, el %d [%s] val=%g, dv=%g, tg %x\n",
+        ip, bpe->elen, bpe->sym, dbl(x), dx, tg);
     }
   }
 
@@ -7594,8 +8513,8 @@ s16 canonval(
     x = ms_peek(ms, &dx, &sp, &tg);
     if (debug_F & g_dbg_side) {
       bpe->sym[ip] = 0;
-      printf("    2* -> ip %d, el %d [%s] val=%Lg, dv=%g, tg %x\n",
-        ip, bpe->elen, bpe->sym, Cldbl(x), dx, tg);
+      printf("    2* -> ip %d, el %d [%s] val=%g, dv=%g, tg %x\n",
+        ip, bpe->elen, bpe->sym, dbl(x), dx, tg);
     }
   }
 
@@ -7605,7 +8524,7 @@ s16 canonval(
   *p_x = x; *p_dx = dx; *p_tg = tg;
   *muc_ptr = muc;
   return 0;
-}
+} /* End of canon.val */
 
 void decanon(metastack * ms, s16 muc)
 {
@@ -7686,7 +8605,7 @@ stats_count ge_2(
       if (debug_B & g_dbg_side) {
         bpe->sym[ip] = 0;
         printf("prune partial zero [%s) = ", bpe->sym);
-        printf(fmt_g_usable, curtop);
+        spfg(k_usable_digits, curtop); /* printf(fmt_g_usable, curtop); */
         printf("\n");
       }
       while(muc) { ms_undo(ms); muc--; }
@@ -7700,7 +8619,7 @@ stats_count ge_2(
        if (debug_C & g_dbg_side) {
           bpe->sym[ip] = 0;
           printf("prune partial noninteger [%s) = ", bpe->sym);
-          printf(fmt_g_nominal, curtop);
+          spfg(k_nominal_digits, curtop); /* printf(fmt_g_nominal, curtop); */
           printf(" %s", tagname(cttg));
           printf("\n");
         }
@@ -7721,12 +8640,12 @@ stats_count ge_2(
 
     /* %%% this could be done more efficiently inside exec() */
     /* Any subexpression that overflows either in value or in the
-       differential causes pruning. */
+       derivative causes pruning. */
     if ((curtop >= p_ovr) || (curtop <= n_ovr)) {
       if (debug_D & g_dbg_side) {
         bpe->sym[ip] = 0; /* Do not display not-yet-exec'd symbols */
         printf("prune partial overflow [%s) = ", bpe->sym);
-        printf(fmt_g_nominal, curtop);
+        spfg(k_nominal_digits, curtop); /* printf(fmt_g_nominal, curtop); */
         printf("\n");
       }
       while(muc) { ms_undo(ms); muc--; }
@@ -7747,7 +8666,7 @@ stats_count ge_2(
         bpe->sym[ip] = 0; /* Do not display not-yet-exec'd symbols */
         if (debug_B & g_dbg_side) {
           printf("prune partial dx~=0 [%s) = ", bpe->sym);
-          printf(fmt_g_usable, curtop);
+          spfg(k_usable_digits, curtop); /* printf(fmt_g_usable, curtop); */
           printf(", d/dx = ");
           printf(fmt_g_diff, ctdx);
           printf(" %s", tagname(cttg));
@@ -7766,7 +8685,7 @@ stats_count ge_2(
         bpe->sym[ip] = 0; /* Do not display not-yet-exec'd symbols */
         if (debug_B & g_dbg_side) {
           printf("prune full.1 dx~=0 [%s] = ", bpe->sym);
-          printf(fmt_g_usable, curtop);
+          spfg(k_usable_digits, curtop); /* printf(fmt_g_usable, curtop); */
           printf(", d/dx = ");
           printf(fmt_g_diff, ctdx);
           printf(" %s", tagname(cttg));
@@ -7791,7 +8710,7 @@ stats_count ge_2(
 
     /* We still have values of curtop, dx, and cur_sp from calling
        ms_peek() above */
-    bpe->sym[ip] = 0; /* Needed by bt_insert */
+    bpe->sym[ip] = 0; /* Needed by bt.insert */
 
     /* Implement the --find.expression option */
     if (g_num_find_expr) {
@@ -7799,7 +8718,7 @@ stats_count ge_2(
       for(i=0; i<g_num_find_expr; i++) {
         if(symstrcmp(bpe->sym, g_find_expr[i]) == 0) {
           printf(" [%s] = ", bpe->sym);
-          printf(fmt_g_usable, curtop);
+          spfg(k_usable_digits, curtop); /* printf(fmt_g_usable, curtop); */
           if (ctdx != 0) {
             printf(", d/dx = %g", ctdx);
           }
@@ -7812,11 +8731,29 @@ stats_count ge_2(
     if (using_x && (fabs(ctdx) < k_vanished_dx)) {
       if (debug_B & g_dbg_side) {
         printf("prune full.2 dx~=0 [%s) = ", bpe->sym);
-        printf(fmt_g_usable, curtop);
+        spfg(k_usable_digits, curtop); /* printf(fmt_g_usable, curtop); */
         printf(", d/dx = ");
         printf(fmt_g_diff, ctdx);
         printf(" %s", tagname(cttg));
         printf("\n");
+      }
+      while(muc) { ms_undo(ms); muc--; }
+      prune_count += 1.0;
+      return 0;
+    } else if (curtop < g_min_equ_val) {
+      if (debug_B & g_dbg_side) {
+        printf("prune equval [%s) = ", bpe->sym);
+        spfg(k_usable_digits, curtop);
+        printf(" too low\n");
+      }
+      while(muc) { ms_undo(ms); muc--; }
+      prune_count += 1.0;
+      return 0;
+    } else if (curtop > g_max_equ_val) {
+      if (debug_B & g_dbg_side) {
+        printf("prune equval [%s) = ", bpe->sym);
+        spfg(k_usable_digits, curtop);
+        printf(" too high\n");
       }
       while(muc) { ms_undo(ms); muc--; }
       prune_count += 1.0;
@@ -7836,7 +8773,7 @@ stats_count ge_2(
         return 0; /* Don't count this as a valid generated expression. */
       }
       /* Looks good so far, now try to insert in tree */
-      bpe->sym[bpe->elen] = 0; /* Needed by bt_insert */
+      bpe->sym[bpe->elen] = 0; /* Needed by bt.insert */
       if (bt_insert(curtop, ctdx, cttg, bpe, &res1)) { /* this is in ge_2 */
         fprintf(stderr, "%s: Out of memory\n", g_argv0);
         print_end(1);
@@ -7845,7 +8782,7 @@ stats_count ge_2(
       if (res1 == 0) {
         if (debug_E & g_dbg_side) {
           printf("reject [%s] = ", bpe->sym);
-          printf(fmt_g_usable, curtop);
+          spfg(k_usable_digits, curtop); /* printf(fmt_g_usable, curtop); */
           printf(" (duplicate value)\n");
         }
         /* We do not undo and return 0 here, because we want to count this as a
@@ -7856,13 +8793,13 @@ stats_count ge_2(
         printf("ge_2 inserted ");
         expr_print_infix(bpe->sym, 0);
         printf(" = ");
-        printf(fmt_g_usable, curtop);
+        spfg(k_usable_digits, curtop); /* printf(fmt_g_usable, curtop); */
         if (ctdx != 0) {
           printf(", d/dx = ");
           printf(fmt_g_diff, ctdx);
         }
         printf(" %s", tagname(cttg));
-        printf(", comp {%d}\n", bpe->cplx);
+        printf(" {%d}\n", bpe->cplx);
       }
 
       /* Undo the canonval ops */
@@ -8668,10 +9605,17 @@ void add_rule(const char * ss, char sy, attr_bits mask)
   }
 } /* End of add.rule */
 
-/* Initialize numerics and related values (like printf format strings) */
+/* Initialize numerics (values of constants)
+   For initialization of printf format strings, see init_formats */
 void init_numerics(void)
 {
+  if (debug_z) {
+    printf("init_num: nominal %d digits, usable %d\n",
+      k_nominal_digits, k_usable_digits);
+  }
+
   {
+#ifdef REDUNDANT_ULP_INIT
     /* Figure out the size of the ULP (unit in least position), used to
        auto-compute some of the constants used for precision, rounding,
        overflow, and tautology handling. */
@@ -8683,15 +9627,14 @@ void init_numerics(void)
       sum = k14 + ulp;
     }
     k_precision_ulp = (ries_dif) ulp;
-    if (debug_z) {
-      printf("init_num: ulp == %g\n", k_precision_ulp);
-    }
+#endif
+    k_precision_ulp = 2.0 * k_ulp;
     /* Before 20120102, RIES was setting k_min_best.match to 1.0e-15,
        which is 9.0072 times the ULP of IEEE binary64. */
-    k_min_best_match = 9.0072 * (ries_dif) ulp;
+    k_min_best_match = 9.0072 * (ries_dif) k_precision_ulp;
     if (debug_z) {
-      printf("init_num: ulp=%g , kmbm=%g\n",
-               k_precision_ulp, k_min_best_match);
+      printf("init_num: ulps are %g, %g ; kmbm=%g\n",
+               k_precision_ulp, k_ulp, k_min_best_match);
     }
   }
 
@@ -8704,8 +9647,11 @@ void init_numerics(void)
 
     k_phi = (SQRT(5.0) + 1.0) / 2.0;
     if (debug_z) {
-      printf("init_num: k_phi %.20Lg chk %.20Lg diff %Lg\n",
-        Cldbl(k_phi), Cldbl(check_phi), Cldbl(check_phi - k_phi));
+      printf("init_num: k_phi ");
+      spfg(k_nominal_digits, k_phi);
+      printf(" chk ");
+      spfg(k_nominal_digits, check_phi);
+      printf(" diff %g\n", dbl(check_phi - k_phi));
     }
   }
 
@@ -8722,7 +9668,8 @@ void init_numerics(void)
 
        which can be readily unrolled into the loop shown here.
     */
-    i = 23.0; /* 19 for IEEE binary64; 23 For 64-bit mantissa */
+    i = 31.0; /* 19 for IEEE binary64; 23 For 64-bit mantissa;
+                 31 for PowerPC long double  */
     k_e = 1.0 / i;
     while(i > 1.0) {
       i -= 1.0;
@@ -8730,8 +9677,11 @@ void init_numerics(void)
       k_e = 1.0 + k_e / i;
     }
     if (debug_z) {
-      printf("init_num: k_e %.20Lg chk %.20Lg diff %Lg\n",
-        Cldbl(k_e), Cldbl(check_e), Cldbl(check_e - k_e));
+      printf("init_num: k_e ");
+      spfg(k_nominal_digits, k_e);
+      printf(" chk ");
+      spfg(k_nominal_digits, check_e);
+      printf(" diff %g\n", dbl(check_e - k_e));
     }
   }
 
@@ -8752,7 +9702,8 @@ void init_numerics(void)
        faster-converging methods like Gauss-Legendre and Borwein-Borwein
        in that it produces the most precise possible answer in IEEE binary64.
     */
-    i = 61.0; /* 50 for IEEE binary64; 61 for long double */
+    i = 103.0; /* 50 for IEEE binary64; 61 for long double;
+                  103 for PowerPC long double */
     k_pi = 1.57;
     while(i > 1.0) {
       i -= 1.0;
@@ -8760,8 +9711,11 @@ void init_numerics(void)
     }
     k_pi = 2.0 * k_pi;
     if (debug_z) {
-      printf("init_num: k_pi %.20Lg chk %.20Lg diff %Lg\n",
-        Cldbl(k_pi), Cldbl(check_pi), Cldbl(check_pi - k_pi));
+      printf("init_num: k_pi ");
+      spfg(k_nominal_digits, k_pi);
+      printf(" chk ");
+      spfg(k_nominal_digits, check_pi);
+      printf(" diff %g\n", dbl(check_pi - k_pi));
     }
 
     /* If the trig scale hasn't been set, use the default value */
@@ -8885,6 +9839,7 @@ void init1()
   NOS_options = B_FALSE;
   g_show_ss = B_FALSE;
   x_lhs_only = B_FALSE;
+  g_no_cv_simplify = B_FALSE;
   g_one_sided = B_FALSE;
   g_solve_for_x = B_FALSE;
   g_reported_exhaustion = B_FALSE;
@@ -8921,6 +9876,8 @@ void init1()
 
   g_min_memory = 0;
   g_max_memory = 1.0e20;
+
+  g_target = 1.0;
 } /* End of init1 */
 
 /* Post-arguments initialization: All the command-line arguments have been
@@ -9316,6 +10273,11 @@ void init2()
     symstrncat(g_matches, ((symbol *) " "), 2);
     mem_used_KiB = mem_used_KiB + (long)((g_mtch_alloc * sizeof(symbol))>>10);
   }
+
+  if (g_target == 0) {
+    fprintf(stderr, "%s: Target number cannot be zero.\n", g_argv0);
+    exit(-1);
+  }
 } /* End of init.2() */
 
 int g_got_target;
@@ -9417,12 +10379,10 @@ int parse_target(char *str)
   }
 
   if (last_digit) {
-    long double inc_ulp;  /* value altered by one Unit in the Last Place (ulp) */
-    long double t;
+    ries_val inc_ulp;  /* value altered by one Unit in the Last Place (ulp) */
     /* We successfully located a last digit, so we can use the converted
        string to get the target number. */
-    nv = sscanf(s, "%Lf", &t);
-    targ = (ries_val) t;
+    nv = sscanf(s, RV_SS_FMT, &targ);
     if (nv) {
       /* So far, so good. Now try altering the last digit. Whenever possible
          we want to diminish this digit, to avoid bumping up the base-2
@@ -9432,8 +10392,7 @@ int parse_target(char *str)
       } else {
         *last_digit = (char)((*last_digit) - 1);
       }
-      if (sscanf(s, "%Lf", &t)) {
-        inc_ulp = t;
+      if (sscanf(s, RV_SS_FMT, &inc_ulp)) {
         if (inc_ulp > targ) {
           g_mag_ulp = (ries_dif) (inc_ulp - targ);
         } else {
@@ -9829,6 +10788,9 @@ void parse_args(size_t nargs, char *argv[])
           print_end(-1);
         }
 
+      } else if (strcmp(pa_this_arg, "--canon-simplify") == 0) {
+        g_no_cv_simplify = B_FALSE;
+
       } else if (strcmp(pa_this_arg, "--derivative-margin") == 0) {
         /* Override default value of k_vanished.dx */
         ries_dif t;
@@ -9911,19 +10873,29 @@ void parse_args(size_t nargs, char *argv[])
           print_end(-1);
         }
 
-      } else if (strcmp(pa_this_arg, "--min-match-distance") == 0) {
-        ries_dif t;
+      } else if ((strcmp(pa_this_arg, "--match-all-digits") == 0)
+              || (strcmp(pa_this_arg, "--mad") == 0)
+      ) {
+        g_match_all_digits = B_TRUE;
+        k_max_match_dist = -0.01; /* This will be calculated from the target
+                                     by init.2 */
+
+      } else if (strcmp(pa_this_arg, "--max-equate-value") == 0) {
+        ries_val t;
         pa_get_arg();
-        if (pa_this_arg && sscanf(pa_this_arg, "%lf", &t)) {
-          g_min_matchsize = fabs(t);
-          if (g_min_matchsize == 0.0) {
-            printf("Will exit if an 'exact' match is found.\n");
-            g_exact_exit = B_TRUE;
-          } else {
-            printf("Using minimum match distance: %g\n", g_min_matchsize);
+        if (pa_this_arg && sscanf(pa_this_arg, RV_SS_FMT, &t)) {
+          if (t <= g_min_equ_val) {
+            printf("%s: --max-equate-value argument cannot be greater than "
+              "--min-equate-value argument.\n", g_argv0);
+            brief_help();
+            print_end(-1);
           }
+          g_max_equ_val = t;
+          printf("Equations will have both sides at most ");
+          spfg(k_usable_digits, g_max_equ_val);
+          printf("\n");
         } else {
-          printf("%s: --min-match-distance should be followed by a numeric "
+          printf("%s: --max-equate-value should be followed by a numeric "
             "argument.\n"
             "\n", g_argv0);
           brief_help();
@@ -9935,6 +10907,7 @@ void parse_args(size_t nargs, char *argv[])
         pa_get_arg();
         if (pa_this_arg && sscanf(pa_this_arg, "%lf", &t)) {
           k_max_match_dist = t;
+          g_match_all_digits = B_FALSE; /* Cannot use both options together */
           if (k_max_match_dist < 0) {
             printf(
               "First match must be closer than %g times your target value.\n",
@@ -9956,9 +10929,9 @@ void parse_args(size_t nargs, char *argv[])
              || (strncmp(pa_this_arg, "-n", 2) == 0)) {
         double t;
         if (pa_this_arg[1] == 'n') {
-          pa_this_arg += 2;
+          pa_this_arg += 2; /* Skip the '-n' */
         } else {
-          pa_get_arg();
+          pa_get_arg(); /* Get the next arg */
         }
         if (pa_this_arg && sscanf(pa_this_arg, "%lf", &t)) {
           if (t >= 1) {
@@ -9974,26 +10947,6 @@ void parse_args(size_t nargs, char *argv[])
           printf("%s: --max-matches should be followed by a numeric "
             "argument.\n"
             "examples:  -n7  or  --max-matches 7\n"
-            "\n", g_argv0);
-          brief_help();
-          print_end(-1);
-        }
-
-      } else if ((strcmp(pa_this_arg, "--match-all-digits") == 0)
-              || (strcmp(pa_this_arg, "--mad") == 0)
-      ) {
-        g_match_all_digits = B_TRUE;
-
-      } else if (strcmp(pa_this_arg, "--min-memory") == 0) {
-        time_flt t;
-        pa_get_arg();
-        if (pa_this_arg && sscanf(pa_this_arg, "%lf", &t)) {
-          g_min_memory = fabs(t);
-          printf("Memory-hogging safeguard disabled for the first %g bytes.\n",
-            g_min_memory);
-        } else {
-          printf("%s: --min-memory should be followed by a numeric "
-            "argument.\n"
             "\n", g_argv0);
           brief_help();
           print_end(-1);
@@ -10038,14 +10991,82 @@ void parse_args(size_t nargs, char *argv[])
           print_end(-1);
         }
 
+      } else if (strcmp(pa_this_arg, "--min-equate-value") == 0) {
+        ries_val t;
+        pa_get_arg();
+        if (pa_this_arg && sscanf(pa_this_arg, RV_SS_FMT, &t)) {
+          if (t >= g_max_equ_val) {
+            printf("%s: --min-equate-value argument cannot be greater than "
+              "--max-equate-value argument.\n", g_argv0);
+            brief_help();
+            print_end(-1);
+          }
+          g_min_equ_val = t;
+          printf("Equations will have both sides at least ");
+          spfg(k_usable_digits, g_min_equ_val);
+          printf("\n");
+        } else {
+          printf("%s: --min-equate-value should be followed by a numeric "
+            "argument.\n"
+            "\n", g_argv0);
+          brief_help();
+          print_end(-1);
+        }
+
+      } else if (strcmp(pa_this_arg, "--min-match-distance") == 0) {
+        ries_dif t;
+        pa_get_arg();
+        if (pa_this_arg && sscanf(pa_this_arg, "%lf", &t)) {
+          g_min_matchsize = t;
+          if (g_min_matchsize == 0.0) {
+            printf("Will exit if an 'exact' match is found.\n");
+            g_exact_exit = B_TRUE;
+          } else if (g_min_matchsize < -0.1) {
+            printf("%s: --min-match-distance argument can be negative but not "
+              "less than -0.1\n"
+              "\n", g_argv0);
+            brief_help();
+            print_end(-1);
+          } else if (g_min_matchsize < 0.0) {
+            printf("Using a minimum match distance of %g times your "
+              "target value.\n", g_min_matchsize);
+          } else {
+            printf("Using minimum match distance: %g\n", g_min_matchsize);
+          }
+        } else {
+          printf("%s: --min-match-distance should be followed by a numeric "
+            "argument.\n"
+            "\n", g_argv0);
+          brief_help();
+          print_end(-1);
+        }
+
+      } else if (strcmp(pa_this_arg, "--min-memory") == 0) {
+        time_flt t;
+        pa_get_arg();
+        if (pa_this_arg && sscanf(pa_this_arg, "%lf", &t)) {
+          g_min_memory = fabs(t);
+          printf("Memory-hogging safeguard disabled for the first %g bytes.\n",
+            g_min_memory);
+        } else {
+          printf("%s: --min-memory should be followed by a numeric "
+            "argument.\n"
+            "\n", g_argv0);
+          brief_help();
+          print_end(-1);
+        }
+
+      } else if (strcmp(pa_this_arg, "--no-canon-simplify") == 0) {
+        g_no_cv_simplify = B_TRUE;
+
+      } else if (strcmp(pa_this_arg, "--no-refinement") == 0) {
+        g_refinement = 0;
+
       } else if (strcmp(pa_this_arg, "--no-slow-messages") == 0) {
         g_allow_slow_message = 0;
 
       } else if (strcmp(pa_this_arg, "--no-solve-for-x") == 0) {
         g_solve_for_x = B_FALSE;
-
-      } else if (strcmp(pa_this_arg, "--no-refinement") == 0) {
-        g_refinement = 0;
 
       } else if (strcmp(pa_this_arg, "--numeric-anagram") == 0) {
         if (pa_next_isparam()) {
@@ -10064,6 +11085,12 @@ void parse_args(size_t nargs, char *argv[])
       } else if (strcmp(pa_this_arg, "--one-sided") == 0) {
         g_one_sided = B_TRUE;
 
+      } else if (strcmp(pa_this_arg, "--rational-exponents") == 0) {
+        g_restrict_exponents = TYPE_RAT;
+
+      } else if (strcmp(pa_this_arg, "--rational-trig-args") == 0) {
+        g_restrict_trig_args = TYPE_RAT;
+
       } else if (strcmp(pa_this_arg, "--relative-roots") == 0) {
         /* Show "x = T + epsilon" rather than absolute values  */
         if (g_match_all_digits) {
@@ -10072,12 +11099,6 @@ void parse_args(size_t nargs, char *argv[])
         } else {
           g_relative_x = B_TRUE;
         }
-
-      } else if (strcmp(pa_this_arg, "--rational-exponents") == 0) {
-        g_restrict_exponents = TYPE_RAT;
-
-      } else if (strcmp(pa_this_arg, "--rational-trig-args") == 0) {
-        g_restrict_trig_args = TYPE_RAT;
 
       } else if (strcmp(pa_this_arg, "--significance-loss-margin") == 0) {
         ries_dif t;
@@ -10113,7 +11134,8 @@ void parse_args(size_t nargs, char *argv[])
             symbol sym;
             a = pa_get_arg();
             if (  (a[0] == ':') && a[1]
-               && (a[2] == ':') && (a[3]==a[1]) && (a[4] == 0)) {
+               && (a[2] == ':') && (a[3]==a[1]) && (a[4] == 0)
+               && (space_sym == ' ')) {
               /* This syntax is used to define a symbol that stands in for
                  blank space. */
               space_sym = a[1];
@@ -10154,7 +11176,7 @@ void parse_args(size_t nargs, char *argv[])
             unsigned char argtmp[20];
             int i; ries_dif w;
             a = pa_get_arg();
-            strncpy((char *) argtmp, a, 20);
+            ries_strncpy((char *) argtmp, a, 20);
             /* Skip the numeric portion */
             for(i=0;
                 (argtmp[i]=='.') || ((argtmp[i]>='0') && (argtmp[i]<='9'));
@@ -10188,14 +11210,14 @@ void parse_args(size_t nargs, char *argv[])
         }
 
       } else if (strcmp(pa_this_arg, "--trig-argument-scale") == 0) {
-        long double t;
+        ries_val t;
         pa_get_arg();
-        if (pa_this_arg && sscanf(pa_this_arg, "%Lf", &t)) {
+        if (pa_this_arg && sscanf(pa_this_arg, RV_SS_FMT, &t)) {
           if ((t >= 0.0) && (t < 100.0)) {
             k_sincos_arg_scale = (ries_val) t;
             g_trig_scale_default = (k_sincos_arg_scale == k_pi);
             printf("Argument of trig functions will be scaled by ");
-            printf(fmt_g_usable, k_sincos_arg_scale);
+            spfg(k_usable_digits, k_sincos_arg_scale); /* printf(fmt_g_usable, k_sincos_arg_scale); */
             printf("\n");
           } else {
             printf("%s: --trig-argument-scale must be between 0.0 "
@@ -10262,10 +11284,9 @@ void parse_args(size_t nargs, char *argv[])
         /* Subexpressions must be constructible numbers */
         g_restrict_subexpr = TYPE_CONS;
         if (pa_this_arg[2] == 'e') {
-          /* They gave "-ce"
-             %%% This should instead set an epsilon as with
-             --min-match-distance with a negative argument proportional
-             to the ULP as measured by init.formats */
+          /* They gave "-ce": exit on exact match.
+             NOTE: We already set k_min_best_match proportionally
+             to the target size */
           g_exact_exit = B_TRUE;
         }
         /* This option is just shorthand for turning off a bunch of
@@ -10351,19 +11372,6 @@ void parse_args(size_t nargs, char *argv[])
           }
         }
 
-      } else if (strncmp(pa_this_arg, "-S", 2) == 0) {
-        /* Only these symbols */
-        pa_this_arg += 2;   /* skip the "-S" */
-        if (*pa_this_arg == 0) {
-          /* Without args, show the symbols in use and their definitions */
-          g_show_ss = B_TRUE;
-        } else {
-          S_option = B_TRUE;
-          NOS_options = B_TRUE;
-          allsyms_set(0, 0);
-          somesyms_set((symbol *) pa_this_arg, MAX_ELEN);
-        }
-
       } else if (strncmp(pa_this_arg, "-N", 2) == 0) {
         /* Not these symbols */
         NOS_options = B_TRUE;
@@ -10381,6 +11389,19 @@ void parse_args(size_t nargs, char *argv[])
         if (pa_this_arg[2] == 'e') {
           /* They gave "-re" */
           g_exact_exit = B_TRUE;
+        }
+
+      } else if (strncmp(pa_this_arg, "-S", 2) == 0) {
+        /* Only these symbols */
+        pa_this_arg += 2;   /* skip the "-S" */
+        if (*pa_this_arg == 0) {
+          /* Without args, show the symbols in use and their definitions */
+          g_show_ss = B_TRUE;
+        } else {
+          S_option = B_TRUE;
+          NOS_options = B_TRUE;
+          allsyms_set(0, 0);
+          somesyms_set((symbol *) pa_this_arg, MAX_ELEN);
         }
 
       } else if ((strcmp(pa_this_arg, "-x") == 0)
@@ -10438,7 +11459,7 @@ void validate_types(void)
   }
 #endif
 
-  boolean flag1, flag2;
+  b001 flag1, flag2;
   flag1 = B_TRUE;
   flag2 = (1==1);
 
@@ -10446,7 +11467,7 @@ void validate_types(void)
     /* All is well */
   } else {
     /* Non-standard compiler and/or non-standard definition of B_TRUE: This
-    /  happens if "boolean" is int, "B_TRUE" is 1, and "(1==1)" is __INT_MIN__,
+    /  happens if "b001" is int, "B_TRUE" is 1, and "(1==1)" is __INT_MIN__,
     /  or something similar. */
     printf("validate_types: B_TRUE does not match (1==1).\n");
     print_end(-1);
@@ -10501,6 +11522,7 @@ int main(int nargs, char *argv[])
 #endif
 
   validate_types();
+  ieee_paranoia();
   init_formats();
 
   g_argv0 = argv[0];  /* Used in various sudden-death printf's */
@@ -10571,7 +11593,7 @@ int main(int nargs, char *argv[])
       contains_x = (symstrsym(expr, 'x') != 0);
       if (contains_x) {
         printf(" with x=");
-        printf(fmt_g_usa_fixed, exec_x);
+        spff(k_usable_digits, exec_x); /* printf(fmt_g_usa_fixed, exec_x); */
       }
       printf("\n");
       err = eval(expr, &x, &dx, &tg, &sp, 1); /* In main() */
@@ -10584,7 +11606,7 @@ int main(int nargs, char *argv[])
           sp);
       } else {
         printf("[%s] = ", expr);
-        printf(fmt_g_usable, x);
+        spfg(k_usable_digits, x); /* printf(fmt_g_usable, x); */
         printf("; d/dx = ");
         printf(fmt_g_diff, dx);
         printf(" %s", tagname(tg));
@@ -10682,9 +11704,9 @@ int main(int nargs, char *argv[])
   if (k_vanished_dx >= 1.0/FABS(g_target)) {
     printf(
 "%s: With this --derivative-margin option (%g) and\n"
-"  target value (%Lg), I cannot compute any expressions.  Either\n"
+"  target value (%g), I cannot compute any expressions.  Either\n"
 "  use a smaller target value, or a derivative margin below %g\n\n",
-        g_argv0, k_vanished_dx, Cldbl(g_target), 1.0/fabs((ries_dif)g_target));
+        g_argv0, k_vanished_dx, dbl(g_target), 1.0/fabs((ries_dif)g_target));
     print_end(-1);
   }
   if (FABS((ries_dif)g_target) / k_vanished_dx >= 1.0e15) {
@@ -10706,6 +11728,11 @@ int main(int nargs, char *argv[])
     }
   }
 
+  if (g_min_matchsize < 0.0) {
+    /* Variable minimum match threshold */
+    g_min_matchsize = fabs((ries_dif)g_target * (-g_min_matchsize));
+  }
+
   if (k_max_match_dist >= 0) {
     /* They have set a fixed starting match threshold */
     g_init_match_dist = k_max_match_dist;
@@ -10715,7 +11742,7 @@ int main(int nargs, char *argv[])
   }
   best_match = g_init_match_dist;
   if (debug_q) {
-    printf("Initial match threshold = %Lg\n", Cldbl(best_match));
+    printf("Initial match threshold = %g\n", dbl(best_match));
   }
   /* Adjust k_min_best.match to accomodate precision and large targets.
      %%% We do this for large-magnitude targets and for targets close to 0.
@@ -10744,7 +11771,7 @@ int main(int nargs, char *argv[])
   if (g_enable_output) {
     printf("\n");
     printf("   Your target value: T = ");
-    printf(fmt_g_usa_fixed, tgt_to_print);
+    spff(k_usable_digits, tgt_to_print); /* printf(fmt_g_usa_fixed, tgt_to_print) */
     printf("%s", "           www.mrob.com/ries\n\n");
   }
 
@@ -10752,9 +11779,9 @@ int main(int nargs, char *argv[])
   if (debug_z) {
     printf("Symbol weight ranges:\n");
     printf(" seft  num  minw  maxw\n");
-   printf("   %c   %3d   %3d   %3d\n", 'a', n_asym, g_a_minw, g_a_maxw);
-   printf("   %c   %3d   %3d   %3d\n", 'b', n_bsym, g_b_minw, g_b_maxw);
-   printf("   %c   %3d   %3d   %3d\n", 'c', n_csym, g_c_minw, g_c_maxw);
+    printf("   %c   %3d   %3d   %3d\n", 'a', n_asym, g_a_minw, g_a_maxw);
+    printf("   %c   %3d   %3d   %3d\n", 'b', n_bsym, g_b_minw, g_b_maxw);
+    printf("   %c   %3d   %3d   %3d\n", 'c', n_csym, g_c_minw, g_c_maxw);
   }
 
   /* calculate search cutoff. This number is the total number of
@@ -10788,6 +11815,7 @@ int main(int nargs, char *argv[])
   if (debug_z) {
     msal_test_lambert();
     msal_test_gamma();
+    msal_test_spfg();
   }
 #endif
 
@@ -10989,7 +12017,7 @@ int main(int nargs, char *argv[])
 /*
     ries.c
     RIES -- Find Algebraic Equations, Given Their Solution
-    Copyright (C) 2000-2013 Robert P. Munafo
+    Copyright (C) 2000-2014 Robert P. Munafo
 
     See copyright notice at beginning of this file.
  */
