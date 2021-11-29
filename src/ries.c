@@ -2,7 +2,7 @@
 
     RIES -- Find Algebraic Equations, Given Their Solution
     Copyright (C) 2000-2016 Robert P. Munafo
-    This is the 2016 Jan 31 version of "ries.c"
+    This is the 2016 Mar 25 version of "ries.c"
 
 
     This program is free software: you can redistribute it and/or modify
@@ -2440,8 +2440,12 @@ pruning for deep searches.
 20141216 Replace all "sprintf" with snprintf.
 20141217 Add #defines for most of the snprintf tempbuf sizes.
 
-20160104 Add code to enable cube root of a negative argument (presently
-disabled pending testing)
+20160104 Enable cube root of a negative argument ("-9.8222414378011"
+vector in qualify tests it)
+
+20160131 Add mem_used_bytes for more precise reporting of how much
+memory would be needed for small tasks; to support this I did some
+signed-vs.-unsigned cleanup.
 
 */ /*
 
@@ -2687,7 +2691,7 @@ variants. */
 
 /* -------------- defines ------------------------------------------------- */
 
-#define RIES_VERSION "2016 Jan 31"
+#define RIES_VERSION "2016 Mar 25"
 
 /* Default search level. For backwards compatibility, the -l option adds
    a number to the DEFAULT_LEV_BASE value. Without a -l option, it acts as if
