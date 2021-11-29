@@ -2,7 +2,7 @@
 
     RIES -- Find Algebraic Equations, Given Their Solution
     Copyright (C) 2000-2018 Robert P. Munafo
-    This is the 2018 Mar 01 version of "ries.c"
+    This is the 2018 Apr 11 version of "ries.c"
 
 
     This program is free software: you can redistribute it and/or modify
@@ -2707,7 +2707,7 @@ variants. */
 
 /* -------------- defines ------------------------------------------------- */
 
-#define RIES_VERSION "2018 Mar 01"
+#define RIES_VERSION "2018 Apr 11"
 
 /* Default search level. For backwards compatibility, the -l option adds
    a number to the DEFAULT_LEV_BASE value. Without a -l option, it acts as if
