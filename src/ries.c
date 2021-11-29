@@ -1,8 +1,8 @@
 /* ries.c
 
     RIES -- Find Algebraic Equations, Given Their Solution
-    Copyright (C) 2000-2015 Robert P. Munafo
-    This is the 2015 Jan 27 version of "ries.c"
+    Copyright (C) 2000-2016 Robert P. Munafo
+    This is the 2016 Jan 31 version of "ries.c"
 
 
     This program is free software: you can redistribute it and/or modify
@@ -112,20 +112,22 @@ the rest of the manual for similar errors and make sure "-n1" and
 2013.0314 Look into adding two more classes of numbers: -e for
 "elementary" and something like -t for "transcendental". The
 uncertainty has to do with which definitions I wish to use.
-  I would like to have a class of numbers where exponentiation is
-unrestricted, so sqrt(2)^sqrt(2) would be allowed. That is kind of
-like what we'd get now with "-a --any-exponents", but I don't want to
-allow x in exponents because I consider the root of "x^x=2" to be
-non-elementary. So we need a "--no-x-in-exponents" option to do -e the
-way I envision it. Since trig functions are linked to exponents
-(Euler's formula; complex exponential function) it seems to make sense
-to have a "--no-x-in-trig" setting as well (which conveniently also
-makes try_solve's job easier). I should allow e and the exponential
-function but with no x in the exponent; logarithms should also be
-allowed, but with no x inside a logarithm (otherwise we get things
-like "x*ln(x)=3" which is just another form of "x*e^x=e^3"). This only
-needs one setting, that is, --no-x-in-exponents also implies no x in
-arguments to [E], [l] or in either argument of [L].
+  -e for "elementary" fills the rather wide conceptual gap between -a
+(algebraic) and -l (Liouvillian). I would like to have a class of
+numbers where exponentiation is unrestricted, so sqrt(2)^sqrt(2) would
+be allowed. That is kind of like what we'd get now with "-a
+--any-exponents", but I don't want to allow x in exponents because I
+consider the root of "x^x=2" to be non-elementary. So we need a
+"--no-x-in-exponents" option to do -e the way I envision it. Since
+trig functions are linked to exponents (Euler's formula; complex
+exponential function) it seems to make sense to have a
+"--no-x-in-trig" setting as well (which conveniently also makes
+try_solve's job easier). I should allow e and the exponential function
+but with no x in the exponent; logarithms should also be allowed, but
+with no x inside a logarithm (otherwise we get things like "x*ln(x)=3"
+which is just another form of "x*e^x=e^3"). This only needs one
+setting, that is, --no-x-in-exponents also implies no x in arguments
+to [E], [l] or in either argument of [L].
   -t would allow everything, and would also enable the W function if
 it is available. The only difference versus -EW is that -t would not
 generate an error when W is not available, but would just silently
@@ -220,9 +222,21 @@ argument *does* contain x, and all others are disallowed.
   --unit-fractions option: reciprocal only if argument is integer
 (possibly useful for Egyptian fractions work)
 
-2012.1222 Allow odd integer roots of a negative argument (tags should
-help with this; requires extra wizardry in try_solve); add an option
-to display "3,/(...)" as "cbrt(...)"
+2012.1222 Allow all odd integer roots of a negative argument (3
+currently allowed, but better if any odd integer were detected, tags
+should help with this; requires extra wizardry in try_solve); add an
+option to display "3,/(...)" as "cbrt(...)" (Unicode handled separately
+with a .ries profile)
+
+2016.0131 The "unicode.ries" profile is disappointing for a few reasons:
+  * The legend at the bottom of RIES' output still uses the standard
+    ASCII symbols
+  * sqrt(2) becomes "/(2)" (where / is the radical sign) but the parens
+    shouldn't be there if the argument is only one character long
+  * Nth root, e.g. 3,/7 for cube root, should use a "3" superscript or
+    the Unicode cobe-root symbol (U+221B), and other special cases
+For all of these we need some sort of user-definable cascading list of
+transformation rules.
 
 2013.0205 Output format option that prints any integer-valued
 subexpression as an integer, so that "ries -s -l3 351.36306009596398"
@@ -1993,7 +2007,7 @@ causing newton() to not converge in many (if not most) cases.
 
 20121209 Add period-2 loop detection in newton(); this might allow
 eliminating k_newton_settled later.
- Add symstrlen, symstrtrail, bothtrail and symstrclip and begin
+ Add sym.strlen, sym.strtrail, bothtrail and sym.strclip and begin
 implementing cv.simplify.
  debug_p replaces debug_q for the "first score not good enough" case.
  new flag debug_e replaces debug_E; debug_E replaces debug_F.
@@ -2232,8 +2246,8 @@ decrease best.match, and therefore print *all* matches that do better
 then the specified distance. This produces results similar to the ISC
 (except still ordered roughly by increasing complexity) and may be
 useful to folks (like the 137 cultists) who are happy with any formula
-within a known error bound. It required adding symstrneq,
-symstrsymstr, unique.eqn and the g_matches memory block (none of which
+within a known error bound. It required adding sym.strneq,
+symstrsymstr, unique.eqn and the g.matches memory block (none of which
 are used unless you choose the option).
   Add the --max-matches option, 100 by default.
 
@@ -2425,6 +2439,9 @@ pruning for deep searches.
 
 20141216 Replace all "sprintf" with snprintf.
 20141217 Add #defines for most of the snprintf tempbuf sizes.
+
+20160104 Add code to enable cube root of a negative argument (presently
+disabled pending testing)
 
 */ /*
 
@@ -2670,13 +2687,16 @@ variants. */
 
 /* -------------- defines ------------------------------------------------- */
 
-#define RIES_VERSION "2015 Jan 27"
+#define RIES_VERSION "2016 Jan 31"
 
 /* Default search level. For backwards compatibility, the -l option adds
    a number to the DEFAULT_LEV_BASE value. Without a -l option, it acts as if
    -l was given with the parameter DEFAULT_LEV_ADJ. */
 #define DEFAULT_LEV_BASE 2.0
 #define DEFAULT_LEV_ADJ 2.0
+
+/* Maximum number of matches to output. Changed with --max-matches or -n */
+#define DEFAULT_MAX_MATCHES 100
 
 /* Maximum length of a symbolic expression. NOTE: right now it's dimensioned
    to reflect a normal symbol set. However, in a run with a very limited
@@ -3379,6 +3399,7 @@ stats_count g_ne;
 long insert_count;
 stats_count prune_count, lhs_prune, rhs_prune;
 long mem_used_KiB;
+unsigned long mem_used_bytes;
 int out_expr_format;
 #define OF_POSTFIX 0
 #define OF_CONDENSED 1
@@ -3500,12 +3521,12 @@ void cv_phantoms(symbol * s);
 void infix_preproc(symbol * expr, symbol * out);
 
 symbol * symstrsym(symbol * exp1, symbol sym);
-int symstrlen(symbol * s);
+unsigned int symstrlen(symbol * s);
 int symstrtrail(symbol * big, symbol * little);
 int bothtrail(symbol * a, symbol * b, symbol *tr);
-void symstrclip(symbol * s, int len);
+void symstrclip(symbol * s, unsigned int len);
 int symstrcmp(symbol * a, symbol * b);
-int symstrneq(symbol * a, symbol * b, int n);
+int symstrneq(symbol * a, symbol * b, unsigned int n);
 symbol * symstrsymstr(symbol * haystack, symbol * needle);
 int symstrncpy0(symbol *to, symbol *from, int len);
 void symstrncat(symbol *to, symbol *from, long len);
@@ -3605,7 +3626,7 @@ char * pa_def_path;
 void show_version(void)
 {
   printf(
-    "ries version of %s, Copyright (C) 2000-2015 Robert P. Munafo\n",
+    "ries version of %s, Copyright (C) 2000-2016 Robert P. Munafo\n",
     RIES_VERSION);
 
   printf(
@@ -4740,6 +4761,7 @@ void init_mem(void)
   freesize = 0;
   block_base = 0;
   mem_used_KiB = 0;
+  mem_used_bytes = 0;
 }
 
 /* All allocation is done in fixed-size blocks, and nothing is ever
@@ -4792,6 +4814,8 @@ void * my_alloc(size_t size)
       freepool += sizeof(char *); /* This is where the user's data will
                                      be allocated */
       freesize -= sizeof(char *); /* We used up some space */
+      /* Carefully track memory usage */
+      mem_used_bytes += sizeof(char *);
     }
   }
 
@@ -4801,13 +4825,18 @@ void * my_alloc(size_t size)
     freepool += size;  /* %%% how do I find out the alignment
                           requirement for pointers to structs? */
     freesize -= size;
+    /* Carefully track memory usage */
+    mem_used_bytes += size;
   }
 
   return((void *) rv);
 } /* End of my.alloc() */
 
-/* I said above that "nothing is ever deallocated", but here you can deallocate
-everything all at once if you wish. */
+/* I said above that "nothing is ever deallocated", but here you can
+   deallocate everything all at once if you wish.
+   %%% NOTE: As of 20160131, this is still not used; the plan is to facilitate
+   running searches against multiple targets and avoid some of the duplicated
+   recalculation. */
 void purgeall_mem(void)
 {
   char * prev_block;
@@ -5230,9 +5259,10 @@ s16 exec(metastack *ms, symbol op, s16 *undo_count, s16 do_dx)
   ries_dif da = 0;/* Derivatives */
   ries_dif db = 0;
   ries_dif drv;
-  ries_tgs tga;
-  ries_tgs tgb;
-  ries_tgs trv; /* Tags of result */
+  ries_tgs tga;   /* Tags of arg 1 */
+  ries_tgs tgb;   /* Tags of arg 2 */
+  ries_tgs trv;   /* Tags of result */
+  int f1;         /* flag */
 
   /* set default for derivative (overridden if we compute it) */
   drv = (ries_dif)k_0;
@@ -5711,7 +5741,14 @@ s16 exec(metastack *ms, symbol op, s16 *undo_count, s16 do_dx)
       return ERR_EXEC_SIG_LOSS;
     }
     a = ms_pop(ms, &da, &tga); *undo_count = 2;
-    if (a < k_0) {
+    f1 = 0;
+    if (b == k_3) {
+      /* Cube root can handle any argument */
+      if (a < k_0) {
+        a = -a;
+        f1 = 1;
+      }
+    } else if (a < k_0) {
       return ERR_EXEC_ROOT_NEG;
     }
     rv = POW(a, k_1 / b);
@@ -5720,6 +5757,9 @@ s16 exec(metastack *ms, symbol op, s16 *undo_count, s16 do_dx)
       if ((da || db) && (drv == k_0)) {
         return ERR_EXEC_ZERO_DERIV;
       }
+    }
+    if (f1) {
+      rv = -rv;
     }
     if (!((drv < k_d_inf) && (drv > k_d_ninf))) {
       return ERR_EXEC_ILLEGAL_DERIV;
@@ -6215,9 +6255,9 @@ symbol * symstrsym(symbol * exp1, symbol sym)
 }
 
 /* symstrlen is just like strlen, for symbol strings. */
-int symstrlen(symbol * s)
+unsigned int symstrlen(symbol * s)
 {
-  int l;
+  unsigned int l;
   if (s == 0) {
     return 0;
   }
@@ -6231,7 +6271,7 @@ cases (e.g. if either string is null or 'little' is longer than 'big')
 it returns 0. */
 int symstrtrail(symbol * big, symbol * little)
 {
-  int i, l1, l2;
+  unsigned int i, l1, l2;
   symbol * s;
   l1 = symstrlen(big);
   l2 = symstrlen(little);
@@ -6241,7 +6281,7 @@ int symstrtrail(symbol * big, symbol * little)
   if (l1 < l2) {
     return 0;
   }
-  s = big + (l1 - l2);
+  s = big + (((int)l1) - ((int)l2));
   for(i=0; i<l2; i++) {
     if (s[i] != little[i]) {
       return 0;
@@ -6259,9 +6299,9 @@ int bothtrail(symbol * a, symbol * b, symbol *tr)
 
 /* symstrclip removes len symbols from the end of a symbol string (but does
 nothing if the symbol string doesn't have that many symbols to start with) */
-void symstrclip(symbol * s, int len)
+void symstrclip(symbol * s, unsigned int len)
 {
-  int l;
+  unsigned int l;
   l = symstrlen(s);
   if (l >= len) {
     l -= len;
@@ -6295,9 +6335,9 @@ int symstrcmp(symbol * a, symbol * b)
 
 /* symstrneq compares the first n symbols in two strings; it returns 1 only
    of that many symbols exist in both strings and all are equal. */
-int symstrneq(symbol * a, symbol * b, int n)
+int symstrneq(symbol * a, symbol * b, unsigned int n)
 {
-  int i;
+  unsigned int i;
   i = 0;
   while((*a) && (*b) && (*a == *b) && (i<n)) {
     a++;
@@ -6315,7 +6355,7 @@ symbol * symstrsymstr(symbol * haystack, symbol * needle)
 {
   symbol * hs = haystack;
   symbol c1;
-  int l, n;
+  unsigned int l, n;
 
   n = 0;
   if ((hs == 0) || (needle == 0)) {
@@ -6765,7 +6805,7 @@ void try_solve(symbol * l, symbol * r,
   symbol rhs[TS_ALLOC_R];
   symbol tmpc[TS_ALLOC_R];
 
-  int gg, l1;
+  unsigned int gg, l1;
 
   symstrncpy0(lhs, l, TS_ALLOC_L);
   symstrncpy0(rhs, r, TS_ALLOC_R);
@@ -7465,14 +7505,23 @@ void print_end(int exit_code)
     printf("        expressions: %11s", pf_intfloat_wid(lhs_gen, 11));
                        printf("  %11s", pf_intfloat_wid(rhs_gen, 11));
                       printf("  %11s\n", pf_intfloat_wid(gen_total, 11));
-    printf("           distinct: %11ld  %11ld  %11ld  Memory: %ldKiB\n",
-         lhs_insert, rhs_insert, total_insert, mem_used_KiB);
+    printf("           distinct: %11ld  %11ld  %11ld",
+                                        lhs_insert, rhs_insert, total_insert);
+    if (mem_used_KiB > 1024L) {
+      printf("  Memory: %ldKiB\n", mem_used_KiB);
+    } else {
+      printf("  Memory: %ld B\n", mem_used_bytes);
+    }
 
     /* tell them how much work we did. */
     printf("\n");
     combos = ((stats_count) lhs_insert) * ((stats_count) rhs_insert);
-    printf("        Total equations tested:    %20s (%.4g)\n",
-        pf_intfloat_wid(combos, 20), (stats_count) combos);
+    printf("        Total equations tested:    %20s",
+                                                 pf_intfloat_wid(combos, 20));
+    if (combos > 9999) {
+      printf(" (%.4g)", (stats_count) combos);
+    }
+    printf("\n");
   }
 
   if (exit_code) {
@@ -7676,8 +7725,12 @@ void check_exit(int is_exact)
       "  (Stopping now because best match is within %7.3g of target value.)\n",
       t);
   } else if (g_num_matches >= g_max_matches) {
-    printf("  (Stopping now because %ld matches were found.)\n",
+    if (g_num_matches == 1) {
+      printf("  (Stopping now because 1 match was found.)\n");
+    } else {
+      printf("  (Stopping now because %ld matches were found.)\n",
                                                        (long) g_num_matches);
+    }
   } else {
     /* No exit condition was matched. */
     return;
@@ -7687,7 +7740,7 @@ void check_exit(int is_exact)
 }
 
 /* unique.eqn takes an equation (in the form of LHS and RHS) and searches the
-   list g_matches (which gets filled with all equations that we have decided
+   list g.matches (which gets filled with all equations that we have decided
    to report as a match) */
 int unique_eqn(symbol * lhs, symbol * rhs, int addit)
 {
@@ -7708,6 +7761,8 @@ int unique_eqn(symbol * lhs, symbol * rhs, int addit)
   }
   if (addit) {
     symstrncat(g_matches, te+1, (long) g_mtch_alloc);
+    /* Carefully track memory usage */
+    mem_used_bytes += (sizeof(symbol) * (symstrlen(te+1)+1));
     /* printf("unique.eqn: added '%s', result '%s'\n",
        (char *) te+1, (char *) g_matches); */
   }
@@ -7760,24 +7815,27 @@ void report_match(symbol * lhs, symbol * rhs, symbol * exm,
   /* If not doing refinement, prune based on the delta */
   if (!(g_refinement)) {
     stats_count i;
-    ries_val * cm;
-    cm = g_nr_deltas;
+    ries_val * closeness;
+    closeness = g_nr_deltas;
     for(i=0; i<g_num_matches; i++) {
-      if (*cm == delta) {
+      if (*closeness == delta) {
         if (debug_o) {
           printf("reject4 [%s]=[%s], duplicte delta value\n",
                                                    (char *)lhs, (char *)rhs);
         }
         return;
       }
-      cm++;
+      closeness++;
     }
     /* It's a new delta value, save it. NOTE: other conditions later in
     /  this routine may cause us to exit, in which case g_num_matches
     /  won't get incremented and this saved delta will get overwritten
     /  later, but that's okay because we only care about saving the
     /  deltas of results that actually get reported. */
-    *cm = delta;
+    *closeness = delta;
+
+    /* Carefully track memory usage */
+    mem_used_bytes += sizeof(ries_val);
   }
 
   /* If we are not doing refinement, then we should prune duplicate eqns */
@@ -10112,7 +10170,7 @@ void init1()
   g_solve_for_x = B_FALSE;
   g_reported_exhaustion = B_FALSE;
   g_refinement = B_TRUE;
-  g_max_matches = 100;
+  g_max_matches = DEFAULT_MAX_MATCHES;
 
   /* Set default serach level */
   g_levadj = DEFAULT_LEV_ADJ;
@@ -10281,8 +10339,8 @@ void init2()
   }
 
   add_symbol(ADDSYM_NAMES('W', "W", "W"),
-	     'b', 5, "W(x) = LambertW(x) = inverse(x=w*e^w)",
-	     "W(x) = LambertW(x) = inverse(x=w*e^w)", "W");
+      'b', 5, "W(x) = LambertW(x) = inverse(x=w*e^w)",
+                               "W(x) = LambertW(x) = inverse(x=w*e^w)", "W");
 
 
   /* seft 'c' symbols */
@@ -10544,6 +10602,9 @@ void init2()
                "\n\n", g_argv0, (long)g_mtch_alloc, (long)g_max_matches);
       exit(-1);
     }
+    /* g_nr_deltas never gets reallocated, because we never store more
+       than g_max_matches into it. This global defaults to DEFAULT_MAX_MATCHES
+       and can be altered by the --max-matches or -n option. */
 
     /* Allocate a block to hold a list of all matched equations. */
     n_exprs_space = ((size_t)g_max_matches) * ((size_t) (MAX_ELEN+1));
@@ -10569,6 +10630,8 @@ void init2()
     }
     symstrncat(g_matches, ((symbol *) " "), 2);
     mem_used_KiB = mem_used_KiB + (long)((g_mtch_alloc * sizeof(symbol))>>10);
+    /* Carefully track memory usage */
+    mem_used_bytes += (2 * sizeof(symbol));
   }
 
   if (g_target == 0) {
@@ -11337,8 +11400,8 @@ void parse_args(size_t nargs, char *argv[])
         }
 
       } else if (strcmp(pa_this_arg, "--min-match-distance") == 0) {
-        /* %%% I might want to have "-e" or "-ee" be a synonym for
-               "--min-match-distance 0" */
+        /* %%% I might want to have "-ee" be a synonym for
+               "--max-match-distance 0" */
         ries_dif t;
         pa_get_arg();
         if (pa_this_arg && sscanf(pa_this_arg, "%lf", &t)) {
@@ -11574,11 +11637,13 @@ void parse_args(size_t nargs, char *argv[])
         g_relative_x = B_TRUE;
 
       /* Single-character arguments:
+       { %% those in braces are not yet implemented }
          -0 to -9    target number with leading - sign
          -a          Algebraic class
          -c          Constructible class
                -D    Debug
-       { -e          Exact exit (possibly as -ee) (%% not yet implemented) }
+       { -e          Elementary class (between algebraic and Liouvillian) }
+       { -ee         Exact exit (might be confused with -e plus 'exact') }
                -F    Format
          -i          Integer class (and -ie)
          -l          Liouvillian (if bare); level (if with digit)
@@ -11588,6 +11653,7 @@ void parse_args(size_t nargs, char *argv[])
          -r          Rational class (and -re)
          -s          (try to) solve for x
                -S    Symbolset
+       { -t          Transcendental class (enable [W], [G], etc.) }
          -x          Show X, not T+epsilon
        */
       /* Next we check the "-xN" type options, in which the "opcode" is a
@@ -12378,7 +12444,7 @@ int main(int nargs, char *argv[])
 /*
     ries.c
     RIES -- Find Algebraic Equations, Given Their Solution
-    Copyright (C) 2000-2015 Robert P. Munafo
+    Copyright (C) 2000-2016 Robert P. Munafo
 
     See copyright notice at beginning of this file.
  */
