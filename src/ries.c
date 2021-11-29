@@ -2,7 +2,7 @@
 
     RIES -- Find Algebraic Equations, Given Their Solution
     Copyright (C) 2000-2018 Robert P. Munafo
-    This is the 2018 Apr 11 version of "ries.c"
+    This is the 2018 Aug 12 version of "ries.c"
 
 
     This program is free software: you can redistribute it and/or modify
@@ -2463,6 +2463,10 @@ parse.args()
 
 20170211 Add '--show-work' as a synonym for '-Ds'
 
+20180713 Add '--max-trig-argument' option.
+
+20180802 Rename '--max-trig-argument' to '--max-trig-cycles'
+
 */ /*
 
 BUGS and TO-DO
@@ -2707,7 +2711,7 @@ variants. */
 
 /* -------------- defines ------------------------------------------------- */
 
-#define RIES_VERSION "2018 Apr 11"
+#define RIES_VERSION "2018 Aug 12"
 
 /* Default search level. For backwards compatibility, the -l option adds
    a number to the DEFAULT_LEV_BASE value. Without a -l option, it acts as if
@@ -3301,6 +3305,7 @@ ries_val   k_9 = 9.0L;
 
 ries_val k_sincos_arg_scale = 0;
 b001 g_trig_scale_default;
+ries_val k_sincos_max_arg = 1.0;
 
 /* These constants are used to set legal limits in various functions */
 ries_val k_sin_clip = (ries_val)0.99999L;
@@ -5460,8 +5465,14 @@ s16 exec(metastack *ms, symbol op, s16 *undo_count, s16 do_dx)
       }
     }
     a *= k_sincos_arg_scale;
-    if ((a >= k_pi) || (-a >= k_pi)) {
-      /* This is to eliminate nonsense "solutions" like "sin(X^9) = 1/4" */
+    /* This is to eliminate nonsense "solutions" like "sin(X^9) = 1/4"
+       Note that if we're comparing to pi, the "equal" case doesn't matter
+       because sin(pi)=0 and cos(pi)=-1, etc. so we can generate the error
+       when a==pi without losing ny useful solutions. However if the max_arg
+       option is not 1, then the foregoing no longer applies. */
+    if ((a > (k_pi * k_sincos_max_arg))
+     || (-a > (k_pi * k_sincos_max_arg)))
+    {
       return ERR_EXEC_TRIG_RANGE;
     }
     rv = SIN(a);
@@ -5507,8 +5518,10 @@ s16 exec(metastack *ms, symbol op, s16 *undo_count, s16 do_dx)
       }
     }
     a *= k_sincos_arg_scale;
-    if ((a >= k_pi) || (-a >= k_pi)) {
-      /* This is to eliminate nonsense "solutions" like "sin(X^9) = 1/4" */
+    /* Same comment as above (in SIN function section) */
+    if ((a > (k_pi * k_sincos_max_arg))
+     || (-a > (k_pi * k_sincos_max_arg)))
+    {
       return ERR_EXEC_TRIG_RANGE;
     }
     rv = COS(a);
@@ -5546,8 +5559,10 @@ s16 exec(metastack *ms, symbol op, s16 *undo_count, s16 do_dx)
       }
     }
     a *= k_sincos_arg_scale;
-    if ((a >= k_pi) || (-a >= k_pi)) {
-      /* This is to eliminate nonsense "solutions" like "tan(X^9) = 1/4" */
+    /* Same comment as above (in SIN function section) */
+    if ((a > (k_pi * k_sincos_max_arg))
+     || (-a > (k_pi * k_sincos_max_arg)))
+    {
       return ERR_EXEC_TRIG_RANGE;
     }
     rv = TAN(a);
@@ -11446,6 +11461,29 @@ void parse_args(size_t nargs, char *argv[])
         printf("%s: --min-match-distance should be followed by a numeric "
             "argument.\n"
             "\n", g_argv0);
+        brief_help();
+        print_end(-1);
+      }
+
+    } else if (strcmp(pa_this_arg, "--max-trig-cycles") == 0) {
+      ries_val t;
+      pa_get_arg();
+      if (pa_this_arg && sscanf(pa_this_arg, RV_SS_FMT, &t)) {
+        if ((t > 0.0) && (t <= 100.0)) {
+          k_sincos_max_arg = (ries_val) t;
+          printf("Arguments of trig functions will be restricted to ");
+          spfg(k_usable_digits, k_sincos_max_arg * 0.5);
+          printf(" cycles on either side of zero.\n");
+        } else {
+          printf("%s: --max-trig-cycles must be between 0.0 and 100.0\n\n",
+                                                                    g_argv0);
+          brief_help();
+          print_end(-1);
+        }
+      } else {
+        printf("%s: --max-trig-cycles should be followed by a numeric "
+          "argument.\n"
+          "\n", g_argv0);
         brief_help();
         print_end(-1);
       }
